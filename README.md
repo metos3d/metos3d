@@ -1,4 +1,2 @@
-metos3d
-=======
-
-Easy install bundle.
+Start here. Install the toolkit.
+================================
