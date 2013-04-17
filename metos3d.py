@@ -26,7 +26,7 @@ Brewing:
   open https://github.com/mxcl/homebrew/wiki/Formula-Cookbook
 
 Further help:
-  man brew
+   man brew
   brew home'''
     else:
         sys.exit(0)
