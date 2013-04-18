@@ -181,7 +181,7 @@ def dispatch_subcommand(argv):
         do_model(argv)
         status = "OK"
     if argv[1] == "compile":
-        do_model(argv)
+        do_compile(argv)
         status = "OK"
     if status == "unknown":
         print "# ERROR: Unknown command:", argv[1]
