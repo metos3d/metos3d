@@ -159,7 +159,7 @@ def do_model(argv):
 #
 #   do_compile
 #
-def do_compile():
+def do_compile(argv):
     import sys
     print "# Compiling model ..."
     # check for model name
