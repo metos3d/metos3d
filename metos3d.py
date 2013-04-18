@@ -83,6 +83,7 @@ def do_update_all():
     do_update_data()
     do_update_model()
     do_update_simpack()
+    print "# All packages successfully updated."
 
 #
 #   do_update
