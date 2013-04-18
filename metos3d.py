@@ -59,7 +59,7 @@ def dispatch_subcommand(argv):
     if argv[1] == "data":
         do_data()
         status = "OK"
-    if status == "unknown"
+    if status == "unknown":
         print "# ERROR: Unknown command:", argv[1]
 
 #
