@@ -17,7 +17,7 @@ def print_usage():
 #
 #   execute_command
 #
-def execute_command(cmd, msg):
+def execute_command(cmd, msg, errmsg):
     # execute command
     import subprocess
     print "# Executing:", cmd
@@ -52,7 +52,7 @@ def do_selfupdate():
     cmd = "cd " + mdir + "/metos3d/; git pull; cd ../../"
     msg = "# Selfupdate successfully applied."
     errmsg = "Could not update myself."
-    if not execute_command(cmd, msg) == 0: sys.exit(0)
+    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
 #
 #   do_update_data
@@ -63,7 +63,7 @@ def do_update_data():
     cmd = "cd " + mdir + "/data/; git pull; cd ../../"
     msg = "# Data update successfully applied."
     errmsg = "Could not update data."
-    if not execute_command(cmd, msg) == 0: sys.exit(0)
+    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
 #
 #   do_update_model
@@ -74,7 +74,7 @@ def do_update_model():
     cmd = "cd " + mdir + "/model/; git pull; cd ../../"
     msg = "# Model update successfully applied."
     errmsg = "Could not update model."
-    if not execute_command(cmd, msg) == 0: sys.exit(0)
+    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
 #
 #   do_update_simpack
@@ -85,7 +85,7 @@ def do_update_simpack():
     cmd = "cd " + mdir + "/simpack/; git pull; cd ../../"
     msg = "# Simpack update successfully applied."
     errmsg = "Could not update simpack."
-    if not execute_command(cmd, msg) == 0: sys.exit(0)
+    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
 #
 #   do_update_all
@@ -125,6 +125,35 @@ def do_update(argv):
         print "# ERROR: Unknown subcommand:", argv[2]
 
 #
+#   do_model_show
+#
+def do_model_show():
+    print "# Listing available models ..."
+    # list models
+    cmd = "cat .local/model/official_model_list.txt"
+    msg = "# End of list."
+    errmsg = "Could not show available models."
+    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
+
+#
+#   do_model
+#
+def do_model(argv):
+    import sys
+    print "# Model ..."
+    # dispatch subcommand
+    if len(argv) < 3:
+        print "# ERROR: No subcommand given."
+        print_usage()
+        sys.exit(0)
+    status = "unknown"
+    if argv[2] == "show":
+        do_model_show()
+        status = "OK"
+    if status == "unknown":
+        print "# ERROR: Unknown subcommand:", argv[2]
+
+#
 #   dispatch_subcommand
 #
 def dispatch_subcommand(argv):
@@ -134,6 +163,9 @@ def dispatch_subcommand(argv):
         status = "OK"
     if argv[1] == "update":
         do_update(argv)
+        status = "OK"
+    if argv[1] == "model":
+        do_model(argv)
         status = "OK"
     if status == "unknown":
         print "# ERROR: Unknown command:", argv[1]
