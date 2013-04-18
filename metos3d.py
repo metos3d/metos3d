@@ -52,11 +52,14 @@ def do_data():
 #   dispatch_subcommand
 #
 def dispatch_subcommand(argv):
+    status = "unknown"
     if argv[1] == "selfupdate":
         do_selfupdate()
+        status = "OK"
     if argv[1] == "data":
         do_data()
-    else:
+        status = "OK"
+    if status == "unknown"
         print "# ERROR: Unknown command:", argv[1]
 
 #
