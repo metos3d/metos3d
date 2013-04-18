@@ -3,6 +3,18 @@
 global mdir
 
 #
+#   print_usage
+#
+def print_usage():
+    print "Example usage:"
+    print "  ./metos3d selfupdate"
+    print "  ./metos3d update [data | model | simpack | all]"
+    print "  ./metos3d model show"
+#        print "  ./metos3d simpack"
+#        print "  ./metos3d petsc"
+#        print "  ./metos3d help"
+
+#
 #   execute_command
 #
 def execute_command(cmd, msg):
@@ -93,8 +105,8 @@ def do_update(argv):
     print "# Update ..."
     # dispatch subcommand
     if len(argv) < 3:
-        print "Usage:"
-        print "  ./metos3d update [data | model | simpack | all]"
+        print "# ERROR: No subcommand given."
+        print_usage()
         sys.exit(0)
     status = "unknown"
     if argv[2] == "data":
@@ -132,13 +144,7 @@ def dispatch_subcommand(argv):
 if __name__ == "__main__":
     import sys
     if len(sys.argv) == 1:
-        print "Example usage:"
-        print "  ./metos3d selfupdate"
-        print "  ./metos3d update [data | model | simpack | all]"
-#        print "  ./metos3d model"
-#        print "  ./metos3d simpack"
-#        print "  ./metos3d petsc"
-#        print "  ./metos3d help"
+        print_usage()
     else:
         mdir = ".local"
         dispatch_subcommand(sys.argv)
