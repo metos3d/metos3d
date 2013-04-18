@@ -43,11 +43,19 @@ def do_selfupdate():
     if not execute_command(cmd, msg) == 0: sys.exit(0)
 
 #
+#   do_data
+#
+def do_data():
+    print "# data ..."
+
+#
 #   dispatch_subcommand
 #
 def dispatch_subcommand(argv):
     if argv[1] == "selfupdate":
         do_selfupdate()
+    if argv[1] == "data":
+        do_data()
     else:
         print "# ERROR: Unknown command:", argv[1]
 
@@ -59,7 +67,7 @@ if __name__ == "__main__":
     if len(sys.argv) == 1:
         print "Example usage:"
         print "  ./metos3d selfupdate"
-#        print "  ./metos3d data"
+        print "  ./metos3d data"
 #        print "  ./metos3d model"
 #        print "  ./metos3d simpack"
 #        print "  ./metos3d petsc"
