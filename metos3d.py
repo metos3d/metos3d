@@ -7,10 +7,9 @@ global mdir
 #
 def print_usage():
     print "Example usage:"
-    print "  ./metos3d selfupdate"
-    print "  ./metos3d update [data | model | simpack | all]"
+    print "  ./metos3d update [all | self | data | model | simpack]"
     print "  ./metos3d model show"
-#        print "  ./metos3d simpack"
+    print "  ./metos3d compile MODELNAME..."
 #        print "  ./metos3d petsc"
 #        print "  ./metos3d help"
 
@@ -44,9 +43,9 @@ def execute_command(cmd, msg, errmsg):
         return proc.returncode
 
 #
-#   do_selfupdate
+#   do_update_self
 #
-def do_selfupdate():
+def do_update_self():
     print "# Selfupdate ..."
     # update metos3d
     cmd = "cd " + mdir + "/metos3d/; git pull; cd ../../"
@@ -92,6 +91,7 @@ def do_update_simpack():
 #
 def do_update_all():
     print "# Updating all ..."
+    do_update_self()
     do_update_data()
     do_update_model()
     do_update_simpack()
@@ -109,6 +109,12 @@ def do_update(argv):
         print_usage()
         sys.exit(0)
     status = "unknown"
+    if argv[2] == "all":
+        do_update_self()
+        status = "OK"
+    if argv[2] == "self":
+        do_update_data()
+        status = "OK"
     if argv[2] == "data":
         do_update_data()
         status = "OK"
@@ -117,9 +123,6 @@ def do_update(argv):
         status = "OK"
     if argv[2] == "simpack":
         do_update_simpack()
-        status = "OK"
-    if argv[2] == "all":
-        do_update_all()
         status = "OK"
     if status == "unknown":
         print "# ERROR: Unknown subcommand:", argv[2]
@@ -131,7 +134,7 @@ def do_model_show():
     print "# Listing available models ..."
     # list models
     cmd = "cat .local/model/official_model_list.txt"
-    msg = "# End of list."
+    msg = "# End of list"
     errmsg = "Could not show available models."
     if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
@@ -154,17 +157,30 @@ def do_model(argv):
         print "# ERROR: Unknown subcommand:", argv[2]
 
 #
+#   do_compile
+#
+def do_compile():
+    import sys
+    print "# Compiling model ..."
+    # check for model name
+    if len(argv) < 3:
+        print "# ERROR: No MODELNAME... given."
+        print_usage()
+        sys.exit(0)
+
+
+#
 #   dispatch_subcommand
 #
 def dispatch_subcommand(argv):
     status = "unknown"
-    if argv[1] == "selfupdate":
-        do_selfupdate()
-        status = "OK"
     if argv[1] == "update":
         do_update(argv)
         status = "OK"
     if argv[1] == "model":
+        do_model(argv)
+        status = "OK"
+    if argv[1] == "compile":
         do_model(argv)
         status = "OK"
     if status == "unknown":
