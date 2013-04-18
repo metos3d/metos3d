@@ -110,10 +110,10 @@ def do_update(argv):
         sys.exit(0)
     status = "unknown"
     if argv[2] == "all":
-        do_update_self()
+        do_update_all()
         status = "OK"
     if argv[2] == "self":
-        do_update_data()
+        do_update_self()
         status = "OK"
     if argv[2] == "data":
         do_update_data()
