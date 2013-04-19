@@ -147,6 +147,7 @@ def do_compile_model(modelname):
     dirpath = mdir + "/model/" + modelname
     if not os.path.exists(dirpath):
         print "# ERROR: Model directory does not exist."
+        do_model_show()
         sys.exit(0)
 
 #
@@ -157,7 +158,7 @@ def do_compile(argv):
     print "# Compile ..."
     # show models
     if len(argv) < 3:
-        print "# No MODELNAME given."
+        print "# ERROR: No MODELNAME given."
         do_model_show()
         sys.exit(0)
     else:
