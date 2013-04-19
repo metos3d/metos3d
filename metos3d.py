@@ -21,7 +21,7 @@ def execute_command(cmd, msg, errmsg):
     print "# Executing:", cmd
     proc = subprocess.Popen(cmd, shell=True)
     out  = proc.communicate()
-    # check for erro
+    # check for error
     if proc.returncode == 0:
         print msg
         return proc.returncode
@@ -138,6 +138,12 @@ def do_model_show():
     if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
 #
+#   do_compile_model
+#
+def do_compile_model(modelname):
+    print "# MODELNAME:", modelname
+
+#
 #   do_compile
 #
 def do_compile(argv):
@@ -145,12 +151,11 @@ def do_compile(argv):
     print "# Compile ..."
     # show models
     if len(argv) < 3:
-        print "# No MODELNAME... given ..."
+        print "# No MODELNAME given."
         do_model_show()
         sys.exit(0)
-    modelname = argv[2]
-    
-
+    else:
+        do_compile_model(argv[2])
 
 #
 #   dispatch_subcommand
