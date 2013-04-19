@@ -6,10 +6,9 @@ global mdir
 #   print_usage
 #
 def print_usage():
-    print "Example usage:"
+    print "Usage:"
     print "  ./metos3d update [all | self | data | model | simpack]"
-    print "  ./metos3d model show"
-    print "  ./metos3d compile MODELNAME..."
+    print "  ./metos3d compile [MODELNAME...]"
 #        print "  ./metos3d petsc"
 #        print "  ./metos3d help"
 
@@ -139,34 +138,17 @@ def do_model_show():
     if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
 #
-#   do_model
-#
-def do_model(argv):
-    import sys
-    print "# Model ..."
-    # dispatch subcommand
-    if len(argv) < 3:
-        print "# ERROR: No subcommand given."
-        print_usage()
-        sys.exit(0)
-    status = "unknown"
-    if argv[2] == "show":
-        do_model_show()
-        status = "OK"
-    if status == "unknown":
-        print "# ERROR: Unknown subcommand:", argv[2]
-
-#
 #   do_compile
 #
 def do_compile(argv):
     import sys
-    print "# Compiling model ..."
-    # check for model name
+    print "# Compiling ..."
+    # show models
     if len(argv) < 3:
-        print "# ERROR: No MODELNAME... given."
-        print_usage()
+        do_model_show()
         sys.exit(0)
+    modelname = argv[2]
+    
 
 
 #
@@ -176,9 +158,6 @@ def dispatch_subcommand(argv):
     status = "unknown"
     if argv[1] == "update":
         do_update(argv)
-        status = "OK"
-    if argv[1] == "model":
-        do_model(argv)
         status = "OK"
     if argv[1] == "compile":
         do_compile(argv)
