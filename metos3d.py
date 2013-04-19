@@ -149,6 +149,12 @@ def do_compile_model(modelname):
         print "# ERROR: Model directory does not exist."
         do_model_show()
         sys.exit(0)
+    else:
+        # compile model
+        cmd = "cd " + mdir + "/simpack/; cd ../../"
+        msg = "# Successfully compiled " + modelname + " model."
+        errmsg = "Could not compile " + modelname + " model."
+        if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
 #
 #   do_compile
