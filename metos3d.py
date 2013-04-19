@@ -141,7 +141,13 @@ def do_model_show():
 #   do_compile_model
 #
 def do_compile_model(modelname):
+    import os
+    import sys
     print "# MODELNAME:", modelname
+    dirpath = mdir + "/model/" + modelname
+    if not os.path.exists(dirpath):
+        print "# ERROR: Model directory does not exist."
+        sys.exit(0)
 
 #
 #   do_compile
