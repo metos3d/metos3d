@@ -142,9 +142,10 @@ def do_model_show():
 #
 def do_compile(argv):
     import sys
-    print "# Compiling ..."
+    print "# Compile ..."
     # show models
     if len(argv) < 3:
+        print "# No MODELNAME... given ..."
         do_model_show()
         sys.exit(0)
     modelname = argv[2]
