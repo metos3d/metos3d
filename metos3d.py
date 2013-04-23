@@ -1,21 +1,5 @@
 #!/usr/bin/env python
 
-global mdir
-
-#
-#   print_usage
-#
-def print_usage():
-    import metos3d_util as m3d
-    
-    m3d.my_test_routine()
-    
-    print "Usage:"
-    print "  ./metos3d update [all | self | data | model | simpack]"
-    print "  ./metos3d compile [MODELNAME...]"
-#        print "  ./metos3d petsc"
-#        print "  ./metos3d help"
-
 #
 #   execute_command
 #
@@ -101,36 +85,6 @@ def do_update_all():
     print "# All packages successfully updated."
 
 #
-#   do_update
-#
-def do_update(argv):
-    import sys
-    print "# Update ..."
-    # dispatch subcommand
-    if len(argv) < 3:
-        print "# ERROR: No subcommand given."
-        print_usage()
-        sys.exit(0)
-    status = "unknown"
-    if argv[2] == "all":
-        do_update_all()
-        status = "OK"
-    if argv[2] == "self":
-        do_update_self()
-        status = "OK"
-    if argv[2] == "data":
-        do_update_data()
-        status = "OK"
-    if argv[2] == "model":
-        do_update_model()
-        status = "OK"
-    if argv[2] == "simpack":
-        do_update_simpack()
-        status = "OK"
-    if status == "unknown":
-        print "# ERROR: Unknown subcommand:", argv[2]
-
-#
 #   do_model_show
 #
 def do_model_show():
@@ -175,26 +129,12 @@ def do_compile(argv):
         do_compile_model(argv[2])
 
 #
-#   dispatch_subcommand
-#
-def dispatch_subcommand(argv):
-    status = "unknown"
-    if argv[1] == "update":
-        do_update(argv)
-        status = "OK"
-    if argv[1] == "compile":
-        do_compile(argv)
-        status = "OK"
-    if status == "unknown":
-        print "# ERROR: Unknown command:", argv[1]
-
-#
 #   main
 #
 if __name__ == "__main__":
     import sys
+    import metos3d_util as m3d
     if len(sys.argv) == 1:
-        print_usage()
+        m3d.print_usage()
     else:
-        mdir = "local"
-        dispatch_subcommand(sys.argv)
+        m3d.dispatch_subcommand(sys.argv)
