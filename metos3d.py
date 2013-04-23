@@ -192,5 +192,5 @@ if __name__ == "__main__":
     if len(sys.argv) == 1:
         print_usage()
     else:
-        mdir = ".local"
+        mdir = "local"
         dispatch_subcommand(sys.argv)
