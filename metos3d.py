@@ -6,6 +6,10 @@ global mdir
 #   print_usage
 #
 def print_usage():
+    import metos3d_util as m3d
+    
+    m3d.my_test_routine()
+    
     print "Usage:"
     print "  ./metos3d update [all | self | data | model | simpack]"
     print "  ./metos3d compile [MODELNAME...]"
