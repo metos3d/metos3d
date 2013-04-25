@@ -142,7 +142,7 @@ def do_update(argv):
 def do_model_show():
     print "# Listing available models ..."
     # list models
-    cmd = "cat .local/model/official_model_list.txt"
+    cmd = "cat " + mdir + "/model/official_model_list.txt"
     msg = "# End of list"
     errmsg = "Could not show available models."
     if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
