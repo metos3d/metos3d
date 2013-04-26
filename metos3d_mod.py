@@ -30,10 +30,26 @@ m3ddir = "local"
 ########################################################################
 
 # print_error
-def print_error(msg):
+def print_error(msgs):
     print "#"
-    print "#   ERROR:", msg
+    for msg in msgs:
+        print "#   ERROR:", msg
     print "#"
+
+# print_usage_compile
+def print_usage_compile():
+    print "Usage:"
+    print "  ./metos3d compile [MODELNAME...]"
+
+# print_usage_update
+def print_usage_update():
+    print "Usage:"
+    print "  ./metos3d update [all | self | data | model | simpack]"
+
+# print_usage_help
+def print_usage_help():
+    print "Usage:"
+    print "  ./metos3d help [all | self | data | model | simpack]"
 
 # print_usage
 def print_usage():
@@ -128,20 +144,7 @@ def update_all():
 ### compile
 ########################################################################
 
-#
-#   compile_model_show
-#
-def compile_model_show():
-    print "# Listing available models ..."
-    # list models
-    cmd = "cat " + m3ddir + "/model/official_model_list.txt"
-    msg = "# End of list"
-    errmsg = "Could not show available models."
-    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
-
-#
-#   compile_model
-#
+# compile_model
 def compile_model(modelname):
     print "# MODELNAME:", modelname
     modeldir = m3ddir + "/model/" + modelname
@@ -161,6 +164,14 @@ def compile_model(modelname):
 ### help
 ########################################################################
 
+# help_model
+def help_model():
+    print "# Listing available models ..."
+    # list models
+    cmd = "ls -al " + m3ddir + "/model/"
+    msg = "# End of list"
+    errmsg = "Could not show available models."
+    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
 ########################################################################
 ### subcommand dispatch
@@ -171,8 +182,9 @@ def dispatch_update(argv):
     print "# Update ..."
     # no subcommand
     if len(argv) < 3:
-        print_error("No subcommand given.")
-        print_usage()
+        errmsg = "No subcommand given."
+        print_error([errmsg])
+        print_usage_update()
         return "not updated"
     # all
     status = "unknown"
@@ -192,7 +204,8 @@ def dispatch_update(argv):
         status = update_simpack()
     # unknown
     if status == "unknown":
-        print_error("Unknown subcommand: " + argv[2])
+        errmsg = "Unknown subcommand: " + argv[2]
+        print_error([errmsg])
         print_usage()
     return status
 
@@ -201,8 +214,9 @@ def dispatch_compile(argv):
     print "# Compile ..."
     # no model name
     if len(argv) < 3:
-        print_error("No model name given.")
-        print_usage()
+        errmsg = ["No model name given. See: ./metos3d help model"]
+        print_error(errmsg)
+        print_usage_compile()
         return "not compiled"
     # compile model
     status = compile_model(argv[2])
@@ -213,8 +227,9 @@ def dispatch_help(argv):
     print "# Help ..."
     # no subcommand
     if len(argv) < 3:
-        print_error("No subcommand given.")
-        print_usage()
+        errmsg = ["No subcommand given."]
+        print_error(errmsg)
+        print_usage_help()
         return "no help showed"
     # all
     status = "unknown"
@@ -234,7 +249,8 @@ def dispatch_help(argv):
         status = help_simpack()
     # unknown
     if status == "unknown":
-        print_error("Unknown subcommand: " + argv[2])
+        errmsg = ["Unknown subcommand: " + argv[2]]
+        print_error(errmsg)
         print_usage()
     return status
 
@@ -256,10 +272,11 @@ def dispatch_command(argv):
         status = dispatch_help(argv)
     # unknown
     if status == "unknown":
-        print_error("Unknown command: " + argv[1])
+        errmsg = ["Unknown command: " + argv[1]]
+        print_error(errmsg)
         print_usage()
 
-    print "# DEBUG: Status:", status
+#    print "# DEBUG: Status:", status
 
 
 
