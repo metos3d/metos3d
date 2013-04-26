@@ -1,31 +1,52 @@
 #
-#   Metos3D Utilities Module
+# Metos3D: A Marine Ecosystem Toolkit for Optimization and Simulation in 3-D
+# Copyright (C) 2013  Jaroslaw Piwonski, CAU, jpi@informatik.uni-kiel.de
 #
-
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#   deinfe used modules globally
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#   Metos3D module
 #
 import os
 import sys
 import subprocess
 
-#
-#   define local metos3d directory globally
-#
-global mdir
-mdir = "local"
+# define local metos3d directory globally
+global m3ddir
+m3ddir = "local"
 
-#
-#   print_usage
-#
+########################################################################
+### output
+########################################################################
+
+# print_error
+def print_error(msg):
+    print "#"
+    print "#   ERROR:", msg
+    print "#"
+
+# print_usage
 def print_usage():
     print "Usage:"
-    print "  ./metos3d update [all | self | data | model | simpack]"
     print "  ./metos3d compile [MODELNAME...]"
+    print "  ./metos3d update  [all | self | data | model | simpack]"
+    print "  ./metos3d help    [all | self | data | model | simpack]"
 
-#
-#   execute_command
-#
+########################################################################
+### shell command execution
+########################################################################
+
+# execute_command
 def execute_command(cmd, msg, errmsg):
     print "# Executing:", cmd
     proc = subprocess.Popen(cmd, shell=True)
@@ -50,143 +71,207 @@ def execute_command(cmd, msg, errmsg):
         print "#"
         return proc.returncode
 
-#
-#   do_update_self
-#
-def do_update_self():
+# execute_commands
+def execute_commands(cmds, msg, errmsg):
+    print cmds, msg, errmsg
+
+########################################################################
+### update
+########################################################################
+
+# update_self
+def update_self():
     print "# Selfupdate ..."
     # update metos3d
-    cmd = "cd " + mdir + "/metos3d/; git pull; cd ../../"
+    cmd = "cd " + m3ddir + "/metos3d/; git pull; cd ../../"
     msg = "# Selfupdate successfully applied."
     errmsg = "Could not update myself."
     if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
-#
-#   do_update_data
-#
-def do_update_data():
+# update_data
+def update_data():
     print "# Updating data ..."
     # update data
-    cmd = "cd " + mdir + "/data/; git pull; cd ../../"
+    cmd = "cd " + m3ddir + "/data/; git pull; cd ../../"
     msg = "# Data update successfully applied."
     errmsg = "Could not update data."
     if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
-#
-#   do_update_model
-#
-def do_update_model():
+# update_model
+def update_model():
     print "# Updating model ..."
     # update model
-    cmd = "cd " + mdir + "/model/; git pull; cd ../../"
+    cmd = "cd " + m3ddir + "/model/; git pull; cd ../../"
     msg = "# Model update successfully applied."
     errmsg = "Could not update model."
     if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
-#
-#   do_update_simpack
-#
-def do_update_simpack():
+# update_simpack
+def update_simpack():
     print "# Updating simpack ..."
     # update simpack
-    cmd = "cd " + mdir + "/simpack/; git pull; cd ../../"
+    cmd = "cd " + m3ddir + "/simpack/; git pull; cd ../../"
     msg = "# Simpack update successfully applied."
     errmsg = "Could not update simpack."
     if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
-#
-#   do_update_all
-#
-def do_update_all():
+# update_all
+def update_all():
     print "# Updating all ..."
-    do_update_self()
-    do_update_data()
-    do_update_model()
-    do_update_simpack()
+    update_self()
+    update_data()
+    update_model()
+    update_simpack()
     print "# All packages successfully updated."
 
-#
-#   do_update
-#
-def do_update(argv):
-    print "# Update ..."
-    # dispatch subcommand
-    # no subcommand
-    if len(argv) < 3:
-        print "# ERROR: No subcommand given."
-        print_usage()
-        sys.exit(0)
-    # all, self, data, model, simpack
-    status = "unknown"
-    if argv[2] == "all":
-        do_update_all()
-        status = "OK"
-    if argv[2] == "self":
-        do_update_self()
-        status = "OK"
-    if argv[2] == "data":
-        do_update_data()
-        status = "OK"
-    if argv[2] == "model":
-        do_update_model()
-        status = "OK"
-    if argv[2] == "simpack":
-        do_update_simpack()
-        status = "OK"
-    if status == "unknown":
-        print "# ERROR: Unknown subcommand:", argv[2]
+########################################################################
+### compile
+########################################################################
 
 #
-#   do_model_show
+#   compile_model_show
 #
-def do_model_show():
+def compile_model_show():
     print "# Listing available models ..."
     # list models
-    cmd = "cat " + mdir + "/model/official_model_list.txt"
+    cmd = "cat " + m3ddir + "/model/official_model_list.txt"
     msg = "# End of list"
     errmsg = "Could not show available models."
     if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
 #
-#   do_compile_model
+#   compile_model
 #
-def do_compile_model(modelname):
+def compile_model(modelname):
     print "# MODELNAME:", modelname
-    dirpath = mdir + "/model/" + modelname
-    if not os.path.exists(dirpath):
-        print "# ERROR: Model directory does not exist."
-        do_model_show()
-        sys.exit(0)
+    modeldir = m3ddir + "/model/" + modelname
+    # no model dir
+    if not os.path.exists(modeldir):
+        print_error("Model directory does not exist: " + modeldir)
+        compile_model_show()
+        return "not compiled"
+    # compile model
     else:
-        # compile model
-        cmd = "cd " + mdir + "/simpack/; cd ../../"
+        cmd = "cd " + m3ddir + "/simpack/; cd ../../"
         msg = "# Successfully compiled " + modelname + " model."
         errmsg = "Could not compile " + modelname + " model."
         if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
-#
-#   do_compile
-#
-def do_compile(argv):
-    print "# Compile ..."
-    # show models
-    if len(argv) < 3:
-        print "# ERROR: No MODELNAME given."
-        do_model_show()
-        sys.exit(0)
-    else:
-        do_compile_model(argv[2])
+########################################################################
+### help
+########################################################################
 
-#
-#   dispatch_command
-#
+
+########################################################################
+### subcommand dispatch
+########################################################################
+
+# dispatch_update
+def dispatch_update(argv):
+    print "# Update ..."
+    # no subcommand
+    if len(argv) < 3:
+        print_error("No subcommand given.")
+        print_usage()
+        return "not updated"
+    # all
+    status = "unknown"
+    if argv[2] == "all":
+        status = update_all()
+    # self
+    if argv[2] == "self":
+        status = update_self()
+    # data
+    if argv[2] == "data":
+        status = update_data()
+    # model
+    if argv[2] == "model":
+        status = update_model()
+    # simpack
+    if argv[2] == "simpack":
+        status = update_simpack()
+    # unknown
+    if status == "unknown":
+        print_error("Unknown subcommand: " + argv[2])
+        print_usage()
+    return status
+
+# dispatch_compile
+def dispatch_compile(argv):
+    print "# Compile ..."
+    # no model name
+    if len(argv) < 3:
+        print_error("No model name given.")
+        print_usage()
+        return "not compiled"
+    # compile model
+    status = compile_model(argv[2])
+    return status
+
+# dispatch_help
+def dispatch_help(argv):
+    print "# Help ..."
+    # no subcommand
+    if len(argv) < 3:
+        print_error("No subcommand given.")
+        print_usage()
+        return "no help showed"
+    # all
+    status = "unknown"
+    if argv[2] == "all":
+        status = help_all()
+    # self
+    if argv[2] == "self":
+        status = help_self()
+    # data
+    if argv[2] == "data":
+        status = help_data()
+    # model
+    if argv[2] == "model":
+        status = help_model()
+    # simpack
+    if argv[2] == "simpack":
+        status = help_simpack()
+    # unknown
+    if status == "unknown":
+        print_error("Unknown subcommand: " + argv[2])
+        print_usage()
+    return status
+
+########################################################################
+### main dispatch
+########################################################################
+
+# dispatch_command
 def dispatch_command(argv):
     status = "unknown"
+    # update
     if argv[1] == "update":
-        do_update(argv)
-        status = "OK"
+        status = dispatch_update(argv)
+    # compile
     if argv[1] == "compile":
-        do_compile(argv)
-        status = "OK"
+        status = dispatch_compile(argv)
+    # help
+    if argv[1] == "help":
+        status = dispatch_help(argv)
+    # unknown
     if status == "unknown":
-        print "# ERROR: Unknown command:", argv[1]
+        print_error("Unknown command: " + argv[1])
+        print_usage()
+
+    print "# DEBUG: Status:", status
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
