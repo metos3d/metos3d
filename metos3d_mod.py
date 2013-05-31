@@ -283,6 +283,12 @@ def dispatch_command(argv):
 
 
 
+#
+#   DUMP
+#
+
+#export PETSC_DIR=/gfs/work-sh1/sunip194/CODE/petsc/petsc-3.3-p5
+#export PETSC_ARCH=arch-linux2-c-opt
 
 
 
