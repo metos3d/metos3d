@@ -185,14 +185,20 @@ def compile_simpack(modelname):
         cmd = "make BGC=model/" + modelname
         execute_command(cmd)
         # copy test option file
-        cmd = "cp model/" + modelname + "/option/test." + modelname + ".option.txt ."
+        cmd = "cp -n model/" + modelname + "/option/test." + modelname + ".option.txt ."
         execute_command(cmd)
         # remove links
         cmd = "rm -f model simpack Makefile"
         execute_command(cmd)
+        # work
+        cmd = "mkdir -p work"
+        execute_command(cmd)
 
-
-        print "compiled"
+    # info
+    print "#"
+    print "#   Compiled executable: metos3d-simpack-" + modelname + ".exe"
+    #print "#   Metos3D simulation package and " + modelname + " has been successfully compiled."
+    print "#"
 
 
 
