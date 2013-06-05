@@ -184,18 +184,13 @@ def compile_simpack(modelname):
         # make
         cmd = "make BGC=model/" + modelname
         execute_command(cmd)
+        # copy test option file
+        cmd = "cp model/" + modelname + "/option/test." + modelname + ".option.txt ."
+        execute_command(cmd)
+        # remove links
+        cmd = "rm -f model simpack Makefile"
+        execute_command(cmd)
 
-
-#        print "'" + os.environ['PETSC_DIR'] + "'"
-#        print "'" + os.environ['PETSC_ARCH'] + "'"
-#        if not (os.environ['PETSC_DIR'] and os.environ['PETSC_ARCH']):
-#            print "No PETSc variables set!"
-
-#    ln -fs ~/.metos3d/data/data
-#    ln -fs ~/.metos3d/model/model
-#    ln -fs ~/.metos3d/simpack
-
-#    make BGC=model/MITgcm-PO4-DOP
 
         print "compiled"
 
