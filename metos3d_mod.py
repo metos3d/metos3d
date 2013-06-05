@@ -167,17 +167,18 @@ def compile_simpack(modelname):
             sys.exit(1)
         # set links
         # data
-        linkpath = "~/.metos3d/data/data"
-        cmd = "ln -fs " + linkpath
+        cmd = "ln -fs ~/.metos3d/data/data"
         execute_command(cmd)
         # model
-        linkpath = "~/.metos3d/model/model"
-        cmd = "ln -fs " + linkpath
+        cmd = "ln -fs ~/.metos3d/model/model"
         execute_command(cmd)
-            # simpack
-        linkpath = "~/.metos3d/simpack"
-        cmd = "ln -fs " + linkpath
+        # simpack
+        cmd = "ln -fs ~/.metos3d/simpack"
         execute_command(cmd)
+        # Makefile
+        cmd = "ln -fs ~/.metos3d/metos3d/Makefile"
+        execute_command(cmd)
+
 
 #        print "'" + os.environ['PETSC_DIR'] + "'"
 #        print "'" + os.environ['PETSC_ARCH'] + "'"
@@ -325,15 +326,15 @@ def dispatch_command(argv):
 #
 #   PETSc
 #
-#    curl -O ftp://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.3-p7.tar.gz
-#    gunzip petsc-lite-3.3-p7.tar.gz
-#    tar xf petsc-lite-3.3-p7.tar
-#    cd petsc-3.3-p7/
-#    ./configure
-#    make PETSC_DIR=/Users/jpicau/Documents/ARBEIT/CODE/TEST/PETSc/INSTALL/petsc-3.3-p7 PETSC_ARCH=arch-darwin-c-debug all
-#    make PETSC_DIR=/Users/jpicau/Documents/ARBEIT/CODE/TEST/PETSc/INSTALL/petsc-3.3-p7 PETSC_ARCH=arch-darwin-c-debug test
-#    export PETSC_DIR=/Users/jpicau/Documents/ARBEIT/CODE/TEST/PETSc/INSTALL/petsc-3.3-p7
-#    export PETSC_ARCH=arch-darwin-c-debug test
+#curl -O ftp://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.3-p7.tar.gz
+#gunzip petsc-lite-3.3-p7.tar.gz
+#tar xf petsc-lite-3.3-p7.tar
+#cd petsc-3.3-p7/
+#./configure
+#make PETSC_DIR=/Users/jpicau/Documents/ARBEIT/CODE/TEST/PETSc/INSTALL/petsc-3.3-p7 PETSC_ARCH=arch-darwin-c-debug all
+#make PETSC_DIR=/Users/jpicau/Documents/ARBEIT/CODE/TEST/PETSc/INSTALL/petsc-3.3-p7 PETSC_ARCH=arch-darwin-c-debug test
+#export PETSC_DIR=/Users/jpicau/Documents/ARBEIT/CODE/TEST/PETSc/INSTALL/petsc-3.3-p7
+#export PETSC_ARCH=arch-darwin-c-debug test
 
 
 
