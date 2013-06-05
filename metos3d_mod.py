@@ -282,7 +282,6 @@ def dispatch_simpack(argv):
 
 # dispatch_command
 def dispatch_command(argv):
-#    status = "unknown"
     # simpack
     if argv[1] == "simpack":
         dispatch_simpack(argv)
@@ -295,11 +294,8 @@ def dispatch_command(argv):
 #        status = dispatch_help(argv)
     # unknown
     else:
-#    if status == "unknown":
         errmsg = "Unknown command: " + argv[1]
         print_error(errmsg)
-#        print_usage()
-
 
 #
 #   PETSc
