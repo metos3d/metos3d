@@ -151,15 +151,45 @@ def execute_command(cmd):#, msg, errmsg):
 
 # compile_simpack
 def compile_simpack(modelname):
-    modeldir = "~/.metos3d/model/" + modelname
+    modeldir = "~/.metos3d/model/model/" + modelname
     # no model dir
     if not os.path.exists(os.path.expanduser(modeldir)):
         print_error("Model directory '" + modeldir + "' does not exist.")
-#        print_usage_simpack()
-#        compile_model_show()
-#        return "not compiled"
     # compile model
     else:
+        # check PETSc variables
+        try:
+            petscdir = os.environ["PETSC_DIR"]
+            petscarch = os.environ["PETSC_ARCH"]
+        except KeyError:
+            errmsg = "PETSc variables are not set."
+            print_error(errmsg)
+            sys.exit(1)
+        # set links
+        # data
+        linkpath = "~/.metos3d/data/data"
+        cmd = "ln -fs " + linkpath
+        execute_command(cmd)
+        # model
+        linkpath = "~/.metos3d/model/model"
+        cmd = "ln -fs " + linkpath
+        execute_command(cmd)
+            # simpack
+        linkpath = "~/.metos3d/simpack"
+        cmd = "ln -fs " + linkpath
+        execute_command(cmd)
+
+#        print "'" + os.environ['PETSC_DIR'] + "'"
+#        print "'" + os.environ['PETSC_ARCH'] + "'"
+#        if not (os.environ['PETSC_DIR'] and os.environ['PETSC_ARCH']):
+#            print "No PETSc variables set!"
+
+#    ln -fs ~/.metos3d/data/data
+#    ln -fs ~/.metos3d/model/model
+#    ln -fs ~/.metos3d/simpack
+
+#    make BGC=model/MITgcm-PO4-DOP
+
         print "compiled"
 
 
@@ -279,7 +309,6 @@ def dispatch_command(argv):
     # simpack
     if argv[1] == "simpack":
         dispatch_simpack(argv)
-#        status = dispatch_simpack(argv)
 #    # update
 #    if argv[1] == "update":
 #        status = dispatch_update(argv)
