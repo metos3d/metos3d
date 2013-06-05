@@ -178,6 +178,12 @@ def compile_simpack(modelname):
         # Makefile
         cmd = "ln -fs ~/.metos3d/metos3d/Makefile"
         execute_command(cmd)
+        # make clean
+        cmd = "make BGC=model/" + modelname + " clean"
+        execute_command(cmd)
+        # make
+        cmd = "make BGC=model/" + modelname
+        execute_command(cmd)
 
 
 #        print "'" + os.environ['PETSC_DIR'] + "'"
