@@ -69,8 +69,10 @@ def print_usage():
 
 # execute_command
 def execute_command(cmd):#, msg, errmsg):
-#    print "### Executing:", cmd
-    proc = subprocess.Popen(cmd, shell=True)
+    print "### EXECUTING: " + cmd
+#    print "### INFO: " + cmd
+#    print cmd
+    proc = subprocess.Popen(cmd, shell = True)
     out  = proc.communicate()
     # check for error
     if not proc.returncode == 0:
@@ -90,6 +92,7 @@ def execute_command(cmd):#, msg, errmsg):
         print "#   1. If you understand, what went wrong, solve the problem and rerun the script."
         print "#   2. If you need help, contact jpi@informatik.uni-kiel.de, attach the output of the script and kindly ask for help."
         print "#"
+#        sys.exit(1)
 #        return proc.returncode
 
 ## execute_commands
@@ -167,16 +170,16 @@ def compile_simpack(modelname):
             sys.exit(1)
         # set links
         # data
-        cmd = "ln -fs ~/.metos3d/data/data"
+        cmd = "if ! [ -e data ]; then ln -s ~/.metos3d/data/data; fi"
         execute_command(cmd)
         # model
-        cmd = "ln -fs ~/.metos3d/model/model"
+        cmd = "if ! [ -e model ]; then ln -s ~/.metos3d/model/model; fi"
         execute_command(cmd)
         # simpack
-        cmd = "ln -fs ~/.metos3d/simpack"
+        cmd = "if ! [ -e simpack ]; then ln -s ~/.metos3d/simpack; fi"
         execute_command(cmd)
         # Makefile
-        cmd = "ln -fs ~/.metos3d/metos3d/Makefile"
+        cmd = "if ! [ -e Makefile ]; then ln -s ~/.metos3d/metos3d/Makefile; fi"
         execute_command(cmd)
         # make clean
         cmd = "make BGC=model/" + modelname + " clean"
@@ -184,21 +187,27 @@ def compile_simpack(modelname):
         # make
         cmd = "make BGC=model/" + modelname
         execute_command(cmd)
+        # option
+        cmd = "mkdir -p option"
+        execute_command(cmd)
+
         # copy test option file
-        cmd = "cp -n model/" + modelname + "/option/test." + modelname + ".option.txt ."
+        filepath = "option/test." + modelname + ".option.txt"
+        cmd = "if ! [ -e " + filepath + " ]; then cp model/" + modelname + "/option/test." + modelname + ".option.txt " + filepath + ";fi"
         execute_command(cmd)
         # remove links
-        cmd = "rm -f model simpack Makefile"
-        execute_command(cmd)
+#        cmd = "rm -f model simpack Makefile"
+#        cmd = "rm -f model simpack"
+#        execute_command(cmd)
         # work
         cmd = "mkdir -p work"
         execute_command(cmd)
 
-    # info
-    print "#"
-    print "#   Compiled executable: metos3d-simpack-" + modelname + ".exe"
-    #print "#   Metos3D simulation package and " + modelname + " has been successfully compiled."
-    print "#"
+#    # info
+#    print "#"
+#    print "#   Compiled executable: metos3d-simpack-" + modelname + ".exe"
+#    #print "#   Metos3D simulation package and " + modelname + " has been successfully compiled."
+#    print "#"
 
 
 
