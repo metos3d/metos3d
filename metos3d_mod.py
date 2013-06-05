@@ -199,18 +199,12 @@ def compile_simpack(modelname):
 
 # dispatch_simpack
 def dispatch_simpack(argv):
-#    print "# Compile ..."
     # no model
     if len(argv) < 3:
-#        errmsg = ["No model name given. See: ./metos3d help model"]
-#        print_error(errmsg)
-#        print_usage()
-#        print
         print_usage_simpack()
-        return "No model name given."
     # compile
-    status = compile_simpack(argv[2])
-    return status
+    else:
+        compile_simpack(argv[2])
 
 ## dispatch_update
 #def dispatch_update(argv):
@@ -297,6 +291,8 @@ def dispatch_command(argv):
         errmsg = "Unknown command: " + argv[1]
         print_error(errmsg)
 
+
+
 #
 #   PETSc
 #
@@ -309,6 +305,7 @@ def dispatch_command(argv):
 #    make PETSC_DIR=/Users/jpicau/Documents/ARBEIT/CODE/TEST/PETSc/INSTALL/petsc-3.3-p7 PETSC_ARCH=arch-darwin-c-debug test
 #    export PETSC_DIR=/Users/jpicau/Documents/ARBEIT/CODE/TEST/PETSc/INSTALL/petsc-3.3-p7
 #    export PETSC_ARCH=arch-darwin-c-debug test
+
 
 
 #
