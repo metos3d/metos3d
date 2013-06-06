@@ -29,13 +29,26 @@ import subprocess
 def print_error(msg):
     print "### ERROR: " + msg
 
+# print_execute_fail
+def print_execute_fail(cmd, code):
+    print "#"
+    print "#   Okay, this shouldn't happen ..."
+    print "#"
+    print "#   The command:", cmd
+    print "#   Returned:", code
+    print "#   We expected: 0, i.e. a success."
+    print "#"
+    print "#   What now?"
+    print "#   1. If you understand, what went wrong, solve the problem and rerun the script."
+    print "#   2. If you need help, contact jpi@informatik.uni-kiel.de, attach the output of the script and kindly ask for help."
+    print "#"
+
 # print_usage
 def print_usage():
     print "Usage:"
     print "  metos3d simpack [MODELNAME...]"
+    print "  metos3d petsc   [VERSION...]"
     print "  metos3d update"
-#    print "  metos3d update  [all | self | data | model | simpack]"
-#    print "  metos3d help    [all | self | data | model | simpack]"
 
 ########################################################################
 ### shell command execution
@@ -49,72 +62,54 @@ def execute_command(cmd):
     out  = proc.communicate()
     # check for error
     if not proc.returncode == 0:
-        print "#"
-        print "#   Okay, this shouldn't happen ..."
-        print "#"
-        print "#   The command:", cmd
-        print "#   Returned:", proc.returncode
-        print "#   We expected: 0, i.e. a success."
-        print "#"
-        print "#   What now?"
-        print "#   1. If you understand, what went wrong, solve the problem and rerun the script."
-        print "#   2. If you need help, contact jpi@informatik.uni-kiel.de, attach the output of the script and kindly ask for help."
-        print "#"
-        sys.exit(1)
+        print_execute_fail(cmd, proc.returncode)
+#        print "#"
+#        print "#   Okay, this shouldn't happen ..."
+#        print "#"
+#        print "#   The command:", cmd
+#        print "#   Returned:", proc.returncode
+#        print "#   We expected: 0, i.e. a success."
+#        print "#"
+#        print "#   What now?"
+#        print "#   1. If you understand, what went wrong, solve the problem and rerun the script."
+#        print "#   2. If you need help, contact jpi@informatik.uni-kiel.de, attach the output of the script and kindly ask for help."
+#        print "#"
+        sys.exit(proc.returncode)
 
 # execute_command_safe
 def execute_command_safe(token, cmd):
     if not os.path.exists(token):
         execute_command(cmd)
 
-########################################################################
-### update
-########################################################################
-
-## update_self
-#def update_self():
-#    print "# Selfupdate ..."
-#    # update metos3d
-#    cmd = "cd " + m3ddir + "/metos3d/; git pull; cd ../../"
-#    msg = "# Selfupdate successfully applied."
-#    errmsg = "Could not update myself."
-#    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
-#
-## update_data
-#def update_data():
-#    print "# Updating data ..."
-#    # update data
-#    cmd = "cd " + m3ddir + "/data/; git pull; cd ../../"
-#    msg = "# Data update successfully applied."
-#    errmsg = "Could not update data."
-#    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
-#
-## update_model
-#def update_model():
-#    print "# Updating model ..."
-#    # update model
-#    cmd = "cd " + m3ddir + "/model/; git pull; cd ../../"
-#    msg = "# Model update successfully applied."
-#    errmsg = "Could not update model."
-#    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
-#
-## update_simpack
-#def update_simpack():
-#    print "# Updating simpack ..."
-#    # update simpack
-#    cmd = "cd " + m3ddir + "/simpack/; git pull; cd ../../"
-#    msg = "# Simpack update successfully applied."
-#    errmsg = "Could not update simpack."
-#    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
-#
-## update_all
-#def update_all():
-#    print "# Updating all ..."
-#    update_self()
-#    update_data()
-#    update_model()
-#    update_simpack()
-#    print "# All packages successfully updated."
+# execute_petsc_configure
+def execute_petsc_configure(cmd):
+    print "### EXECUTING: " + cmd
+    # execute
+    proc = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+    out  = proc.communicate()
+    # check for error
+    if not proc.returncode == 0:
+        print_execute_fail(cmd, proc.returncode)
+#        print "#"
+#        print "#   Okay, this shouldn't happen ..."
+#        print "#"
+#        print "#   The command:", cmd
+#        print "#   Returned:", proc.returncode
+#        print "#   We expected: 0, i.e. a success."
+#        print "#"
+#        print "#   What now?"
+#        print "#   1. If you understand, what went wrong, solve the problem and rerun the script."
+#        print "#   2. If you need help, contact jpi@informatik.uni-kiel.de, attach the output of the script and kindly ask for help."
+#        print "#"
+        sys.exit(proc.returncode)
+    else:
+        for line in out[0].split("\n"):
+            match = re.search("^  PETSC_ARCH: (.+)", line)
+            if match: petscarch = match.groups()[0]
+            match = re.search("^  PETSC_DIR: (.+)", line)
+            if match: petscdir = match.groups()[0]
+    # return variables
+    return (petscarch, petscdir)
 
 ########################################################################
 ### compile
@@ -156,18 +151,39 @@ def compile_simpack(m3dprefix, modelname):
         # work
         execute_command_safe("work", "mkdir work")
 
-########################################################################
-### help
-########################################################################
+# compile petsc
+def compile_petsc(m3dprefix, petscversion):
+    # create petsc dir
+    petscprefix = m3dprefix + "/petsc"
+    execute_command_safe(petscprefix, "mkdir " + petscprefix)
+    # download petsc
+    execute_command("cd " + petscprefix + "; curl -O ftp://ftp.mcs.anl.gov/pub/petsc/release-snapshots/" + petscversion)
+    # unzip
+    execute_command("cd " + petscprefix + "; gunzip " + petscversion)
+    # untar
+    petscversion = petscversion.replace(".gz", "")
+    execute_command("cd " + petscprefix + "; tar xf " + petscversion)
+    # configure
+    petscversion = petscversion.replace(".tar", "")
+    petscversion = petscversion.replace("-lite-", "-")
+    petscversionprefix = petscprefix + "/" + petscversion
+    (petscarch, petscdir) = execute_petsc_configure("cd " + petscversionprefix + "; ./configure")
+    # make
+    print petscarch, petscdir
 
-## help_model
-#def help_model():
-#    print "# Listing available models ..."
-#    # list models
-#    cmd = "ls -al " + m3ddir + "/model/"
-#    msg = "# End of list"
-#    errmsg = "Could not show available models."
-#    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
+#
+#
+#gunzip petsc-lite-3.3-p7.tar.gz
+#tar xf petsc-lite-3.3-p7.tar or tar xf petsc-lite-3.3-p7.tar -C petsc
+#ln -fs petsc-lite-
+#cd petsc-3.3-p7/
+#./configure
+
+#    # check petsc directory
+#    if os.path.exists(m3dprefix + "/petsc"):
+#        print "PETSc path already exists"
+#    else:
+
 
 ########################################################################
 ### subcommand dispatch
@@ -186,7 +202,137 @@ def dispatch_simpack(m3dprefix, argv):
 def dispatch_update(m3dprefix, argv):
     # metos3d
     execute_command("cd " + m3dprefix + "/metos3d/; git pull")
+    # data
+    execute_command("cd " + m3dprefix + "/data/; git pull")
+    # model
+    execute_command("cd " + m3dprefix + "/model/; git pull")
+    # simpack
+    execute_command("cd " + m3dprefix + "/simpack/; git pull")
 
+# dispatch_petsc
+def dispatch_petsc(m3dprefix, argv):
+    # check PETSc variables
+    try:
+        petscdir = os.environ["PETSC_DIR"]
+        petscarch = os.environ["PETSC_ARCH"]
+        # already set
+        print_error("PETSc variables are already set: PETSC_DIR=" + petscdir + " PETSC_ARCH=" + petscarch)
+        print_error("Unset them to proceed: unset PETSC_DIR; unset PETSC_ARCH;")
+    except KeyError:
+        # no version
+        if len(argv) < 3:
+            execute_command("curl -sl ftp://ftp.mcs.anl.gov/pub/petsc/release-snapshots/ | grep 'petsc-lite-3.3-' | sort");
+        else:
+            compile_petsc(m3dprefix, argv[2])
+
+########################################################################
+### main dispatch
+########################################################################
+
+# dispatch_command
+def dispatch_command(m3dprefix, argv):
+    # simpack
+    if argv[1] == "simpack":
+        dispatch_simpack(m3dprefix, argv)
+    # update
+    elif argv[1] == "update":
+        dispatch_update(m3dprefix, argv)
+    # petsc
+    elif argv[1] == "petsc":
+        dispatch_petsc(m3dprefix, argv)
+    # unknown
+    else:
+        print_error("Unknown command: " + argv[1])
+
+
+
+
+
+
+
+
+
+#
+#   PETSc
+#
+
+#PETSc:
+#    PETSC_ARCH: arch-darwin-c-debug
+#    PETSC_DIR: /Users/jpicau/.metos3d/petsc/petsc-3.3-p7
+#    Clanguage: C
+#    Scalar type: real
+#    Precision: double
+#    Memory alignment: 16
+#    shared libraries: disabled
+#    dynamic loading: disabled
+#xxx=========================================================================xxx
+#    Configure stage complete. Now build PETSc libraries with (cmake build):
+#        make PETSC_DIR=/Users/jpicau/.metos3d/petsc/petsc-3.3-p7 PETSC_ARCH=arch-darwin-c-debug all
+#    or (experimental with python):
+#        PETSC_DIR=/Users/jpicau/.metos3d/petsc/petsc-3.3-p7 PETSC_ARCH=arch-darwin-c-debug ./config/builder.py
+#xxx=========================================================================xxx
+
+#proc = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+#out  = proc.communicate()
+## check for error
+#if not proc.returncode == 0:
+#
+#>>> for line in out[0].split("\n"):
+#...     match = re.search("^  PETSC_ARCH: (.+)", line)
+#...     if match: petscarch = match.groups()[0]
+#...     match = re.search("^  PETSC_DIR: (.+)", line)
+#...     if match: petscdir = match.groups()[0]
+#...
+#>>> print petscarch
+#arch-darwin-c-debug
+#>>> print petscdir
+#/Users/jpicau/.metos3d/petsc/petsc-3.3-p7
+
+#make PETSC_DIR=~/.metos3d/petsc/petsc PETSC_ARCH=arch-darwin-c-debug all
+#make PETSC_DIR=/Users/jpicau/Documents/ARBEIT/CODE/TEST/PETSc/INSTALL/petsc-3.3-p7 PETSC_ARCH=arch-darwin-c-debug test
+#export PETSC_DIR=/Users/jpicau/Documents/ARBEIT/CODE/TEST/PETSc/INSTALL/petsc-3.3-p7
+#export PETSC_ARCH=arch-darwin-c-debug
+
+
+
+#
+#   DUMP
+#
+
+########################################################################
+### help
+########################################################################
+
+## help_model
+#def help_model():
+#    print "# Listing available models ..."
+#    # list models
+#    cmd = "ls -al " + m3ddir + "/model/"
+#    msg = "# End of list"
+#    errmsg = "Could not show available models."
+#    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
+
+#export PETSC_DIR=/gfs/work-sh1/sunip194/CODE/petsc/petsc-3.3-p5
+#export PETSC_ARCH=arch-linux2-c-opt
+
+## print_usage_simpack
+#def print_usage_simpack():
+#    execute_command("ls ~/.metos3d/model/model");
+
+## print_usage_compile
+#def print_usage_compile():
+#    print "Usage:"
+#    print "  ./metos3d compile [MODELNAME...]"
+#
+## print_usage_update
+#def print_usage_update():
+#    print "Usage:"
+#    print "  ./metos3d update [all | self | data | model | simpack]"
+#
+## print_usage_help
+#def print_usage_help():
+#    print "Usage:"
+#    print "  ./metos3d help [all | self | data | model | simpack]"
 
 #    # no subcommand
 #    if len(argv) < 3:
@@ -250,108 +396,53 @@ def dispatch_update(m3dprefix, argv):
 #    return status
 
 ########################################################################
-### main dispatch
+### update
 ########################################################################
 
-# dispatch_command
-def dispatch_command(m3dprefix, argv):
-    # simpack
-    if argv[1] == "simpack":
-        dispatch_simpack(m3dprefix, argv)
-    # update
-    if argv[1] == "update":
-        status = dispatch_update(m3dprefix, argv)
-#    # help
-#    if argv[1] == "help":
-#        status = dispatch_help(argv)
-    # unknown
-    else:
-        print_error("Unknown command: " + argv[1])
-
-
-
+## update_self
+#def update_self():
+#    print "# Selfupdate ..."
+#    # update metos3d
+#    cmd = "cd " + m3ddir + "/metos3d/; git pull; cd ../../"
+#    msg = "# Selfupdate successfully applied."
+#    errmsg = "Could not update myself."
+#    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 #
-#   PETSc
+## update_data
+#def update_data():
+#    print "# Updating data ..."
+#    # update data
+#    cmd = "cd " + m3ddir + "/data/; git pull; cd ../../"
+#    msg = "# Data update successfully applied."
+#    errmsg = "Could not update data."
+#    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 #
-
-#check PETSc variables
-
-#curl -O ftp://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.3-p7.tar.gz
-#gunzip petsc-lite-3.3-p7.tar.gz
-#tar xf petsc-lite-3.3-p7.tar or tar xf petsc-lite-3.3-p7.tar -C petsc
-#ln -fs petsc-lite-
-#cd petsc-3.3-p7/
-#./configure
-
-#PETSc:
-#    PETSC_ARCH: arch-darwin-c-debug
-#    PETSC_DIR: /Users/jpicau/.metos3d/petsc/petsc-3.3-p7
-#    Clanguage: C
-#    Scalar type: real
-#    Precision: double
-#    Memory alignment: 16
-#    shared libraries: disabled
-#    dynamic loading: disabled
-#xxx=========================================================================xxx
-#    Configure stage complete. Now build PETSc libraries with (cmake build):
-#        make PETSC_DIR=/Users/jpicau/.metos3d/petsc/petsc-3.3-p7 PETSC_ARCH=arch-darwin-c-debug all
-#    or (experimental with python):
-#        PETSC_DIR=/Users/jpicau/.metos3d/petsc/petsc-3.3-p7 PETSC_ARCH=arch-darwin-c-debug ./config/builder.py
-#xxx=========================================================================xxx
-
-#proc = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-#out  = proc.communicate()
-## check for error
-#if not proc.returncode == 0:
+## update_model
+#def update_model():
+#    print "# Updating model ..."
+#    # update model
+#    cmd = "cd " + m3ddir + "/model/; git pull; cd ../../"
+#    msg = "# Model update successfully applied."
+#    errmsg = "Could not update model."
+#    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 #
-#>>> for line in out[0].split("\n"):
-#...     match = re.search("^  PETSC_ARCH: (.+)", line)
-#...     if match: petscarch = match.groups()[0]
-#...     match = re.search("^  PETSC_DIR: (.+)", line)
-#...     if match: petscdir = match.groups()[0]
-#...
-#>>> print petscarch
-#arch-darwin-c-debug
-#>>> print petscdir
-#/Users/jpicau/.metos3d/petsc/petsc-3.3-p7
-
-#make PETSC_DIR=~/.metos3d/petsc/petsc PETSC_ARCH=arch-darwin-c-debug all
-#make PETSC_DIR=/Users/jpicau/Documents/ARBEIT/CODE/TEST/PETSc/INSTALL/petsc-3.3-p7 PETSC_ARCH=arch-darwin-c-debug test
-#export PETSC_DIR=/Users/jpicau/Documents/ARBEIT/CODE/TEST/PETSc/INSTALL/petsc-3.3-p7
-#export PETSC_ARCH=arch-darwin-c-debug
-
-
-
+## update_simpack
+#def update_simpack():
+#    print "# Updating simpack ..."
+#    # update simpack
+#    cmd = "cd " + m3ddir + "/simpack/; git pull; cd ../../"
+#    msg = "# Simpack update successfully applied."
+#    errmsg = "Could not update simpack."
+#    if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 #
-#   DUMP
-#
-
-#    print "# DEBUG: Status:", status
-
-#export PETSC_DIR=/gfs/work-sh1/sunip194/CODE/petsc/petsc-3.3-p5
-#export PETSC_ARCH=arch-linux2-c-opt
-
-## print_usage_simpack
-#def print_usage_simpack():
-#    execute_command("ls ~/.metos3d/model/model");
-
-## print_usage_compile
-#def print_usage_compile():
-#    print "Usage:"
-#    print "  ./metos3d compile [MODELNAME...]"
-#
-## print_usage_update
-#def print_usage_update():
-#    print "Usage:"
-#    print "  ./metos3d update [all | self | data | model | simpack]"
-#
-## print_usage_help
-#def print_usage_help():
-#    print "Usage:"
-#    print "  ./metos3d help [all | self | data | model | simpack]"
-
-
-
+## update_all
+#def update_all():
+#    print "# Updating all ..."
+#    update_self()
+#    update_data()
+#    update_model()
+#    update_simpack()
+#    print "# All packages successfully updated."
 
 
 
