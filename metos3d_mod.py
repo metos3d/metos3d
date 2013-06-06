@@ -42,7 +42,7 @@ def print_usage():
 ########################################################################
 
 # execute_command
-def execute_command(cmd):#, msg, errmsg):
+def execute_command(cmd):
     print "### EXECUTING: " + cmd
     # execute
     proc = subprocess.Popen(cmd, shell = True)
@@ -61,6 +61,11 @@ def execute_command(cmd):#, msg, errmsg):
         print "#   2. If you need help, contact jpi@informatik.uni-kiel.de, attach the output of the script and kindly ask for help."
         print "#"
         sys.exit(1)
+
+# execute_command_safe
+def execute_command_safe(token, cmd):
+    if not os.path.exists(token):
+        execute_command(cmd)
 
 ########################################################################
 ### update
@@ -116,8 +121,8 @@ def execute_command(cmd):#, msg, errmsg):
 ########################################################################
 
 # compile_simpack
-def compile_simpack(prefix, modelname):
-    modeldir = prefix + "/.metos3d/model/model/" + modelname
+def compile_simpack(m3dprefix, modelname):
+    modeldir = m3dprefix + "/model/model/" + modelname
     # no model dir
     if not os.path.exists(modeldir):
         print_error("Model directory '" + modeldir + "' does not exist.")
@@ -132,32 +137,24 @@ def compile_simpack(prefix, modelname):
             sys.exit(1)
         # create links
         # data
-        cmd = "if ! [ -e data ]; then ln -s ~/.metos3d/data/data; fi"
-        execute_command(cmd)
+        execute_command_safe("data", "ln -s " + m3dprefix + "/data/data")
         # model
-        cmd = "if ! [ -e model ]; then ln -s ~/.metos3d/model/model; fi"
-        execute_command(cmd)
+        execute_command_safe("model", "ln -s " + m3dprefix + "/model/model")
         # simpack
-        cmd = "if ! [ -e simpack ]; then ln -s ~/.metos3d/simpack; fi"
-        execute_command(cmd)
+        execute_command_safe("simpack", "ln -s " + m3dprefix + "/simpack")
         # Makefile
-        cmd = "if ! [ -e Makefile ]; then ln -s ~/.metos3d/metos3d/Makefile; fi"
-        execute_command(cmd)
+        execute_command_safe("Makefile", "ln -s " + m3dprefix + "/metos3d/Makefile")
         # make clean
         execute_command("make BGC=model/" + modelname + " clean")
         # make
         execute_command("make BGC=model/" + modelname)
         # option
-        cmd = "mkdir -p option"
-        execute_command(cmd)
-
+        execute_command_safe("option", "mkdir option")
         # copy test option file
         filepath = "option/test." + modelname + ".option.txt"
-        cmd = "if ! [ -e " + filepath + " ]; then cp model/" + modelname + "/option/test." + modelname + ".option.txt " + filepath + ";fi"
-        execute_command(cmd)
+        execute_command_safe(filepath, "cp model/" + modelname + "/option/test." + modelname + ".option.txt " + filepath)
         # work
-        cmd = "mkdir -p work"
-        execute_command(cmd)
+        execute_command_safe("work", "mkdir work")
 
 ########################################################################
 ### help
@@ -177,13 +174,13 @@ def compile_simpack(prefix, modelname):
 ########################################################################
 
 # dispatch_simpack
-def dispatch_simpack(prefix, argv):
+def dispatch_simpack(m3dprefix, argv):
     # no model
     if len(argv) < 3:
-        execute_command("ls " + prefix + "/.metos3d/model/model");
+        execute_command("ls " + m3dprefix + "/model/model");
     # compile
     else:
-        compile_simpack(prefix, argv[2])
+        compile_simpack(m3dprefix, argv[2])
 
 ## dispatch_update
 #def dispatch_update(argv):
@@ -254,10 +251,10 @@ def dispatch_simpack(prefix, argv):
 ########################################################################
 
 # dispatch_command
-def dispatch_command(prefix, argv):
+def dispatch_command(m3dprefix, argv):
     # simpack
     if argv[1] == "simpack":
-        dispatch_simpack(prefix, argv)
+        dispatch_simpack(m3dprefix, argv)
 #    # update
 #    if argv[1] == "update":
 #        status = dispatch_update(argv)
@@ -330,30 +327,6 @@ def dispatch_command(prefix, argv):
 
 #export PETSC_DIR=/gfs/work-sh1/sunip194/CODE/petsc/petsc-3.3-p5
 #export PETSC_ARCH=arch-linux2-c-opt
-
-#    # info
-#    print "#"
-#    print "#   Compiled executable: metos3d-simpack-" + modelname + ".exe"
-#    #print "#   Metos3D simulation package and " + modelname + " has been successfully compiled."
-#    print "#"
-
-
-
-## compile_model
-#def compile_model(modelname):
-#    print "# MODELNAME:", modelname
-#    modeldir = m3ddir + "/model/" + modelname
-#    # no model dir
-#    if not os.path.exists(modeldir):
-#        print_error("Model directory does not exist: " + modeldir)
-#        compile_model_show()
-#        return "not compiled"
-#    # compile model
-#    else:
-#        cmd = "cd " + m3ddir + "/simpack/; cd ../../"
-#        msg = "# Successfully compiled " + modelname + " model."
-#        errmsg = "Could not compile " + modelname + " model."
-#        if not execute_command(cmd, msg, errmsg) == 0: sys.exit(0)
 
 ## print_usage_simpack
 #def print_usage_simpack():

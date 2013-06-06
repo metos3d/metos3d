@@ -25,4 +25,4 @@ if __name__ == "__main__":
     if len(sys.argv) == 1:
         m3d.print_usage()
     else:
-        m3d.dispatch_command(os.path.expanduser("~"), sys.argv)
+        m3d.dispatch_command(os.path.expanduser("~/.metos3d"), sys.argv)
