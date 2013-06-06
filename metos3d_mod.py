@@ -33,7 +33,7 @@ def print_error(msg):
 def print_usage():
     print "Usage:"
     print "  metos3d simpack [MODELNAME...]"
-#    print "  metos3d update"
+    print "  metos3d update"
 #    print "  metos3d update  [all | self | data | model | simpack]"
 #    print "  metos3d help    [all | self | data | model | simpack]"
 
@@ -182,9 +182,12 @@ def dispatch_simpack(m3dprefix, argv):
     else:
         compile_simpack(m3dprefix, argv[2])
 
-## dispatch_update
-#def dispatch_update(argv):
-#    print "# Update ..."
+# dispatch_update
+def dispatch_update(m3dprefix, argv):
+    # metos3d
+    execute_command("cd " + m3dprefix + "/metos3d/; git pull")
+
+
 #    # no subcommand
 #    if len(argv) < 3:
 #        errmsg = "No subcommand given."
@@ -255,9 +258,9 @@ def dispatch_command(m3dprefix, argv):
     # simpack
     if argv[1] == "simpack":
         dispatch_simpack(m3dprefix, argv)
-#    # update
-#    if argv[1] == "update":
-#        status = dispatch_update(argv)
+    # update
+    if argv[1] == "update":
+        status = dispatch_update(m3dprefix, argv)
 #    # help
 #    if argv[1] == "help":
 #        status = dispatch_help(argv)
