@@ -278,7 +278,7 @@ def dispatch_command(prefix, argv):
 
 #curl -O ftp://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.3-p7.tar.gz
 #gunzip petsc-lite-3.3-p7.tar.gz
-#tar xf petsc-lite-3.3-p7.tar
+#tar xf petsc-lite-3.3-p7.tar or tar xf petsc-lite-3.3-p7.tar -C petsc
 #ln -fs petsc-lite-
 #cd petsc-3.3-p7/
 #./configure
