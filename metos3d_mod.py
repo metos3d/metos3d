@@ -17,6 +17,7 @@
 #
 
 # import used modules
+import re
 import os
 import sys
 import subprocess
