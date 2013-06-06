@@ -170,21 +170,15 @@ def compile_petsc(m3dprefix, petscversion):
     petscversionprefix = petscprefix + "/" + petscversion
     (petscarch, petscdir) = execute_petsc_configure("cd " + petscversionprefix + "; ./configure")
     # make
-    print petscarch, petscdir
-
-#
-#
-#gunzip petsc-lite-3.3-p7.tar.gz
-#tar xf petsc-lite-3.3-p7.tar or tar xf petsc-lite-3.3-p7.tar -C petsc
-#ln -fs petsc-lite-
-#cd petsc-3.3-p7/
-#./configure
-
-#    # check petsc directory
-#    if os.path.exists(m3dprefix + "/petsc"):
-#        print "PETSc path already exists"
-#    else:
-
+    execute_command("cd " + petscversionprefix + "; make PETSC_DIR=" + petscdir + " PETSC_ARCH=" + petscarch + " all")
+    # info
+    print "#"
+    print "#   Now, add the PETSc variables permanently to your shel environment."
+    print "#"
+    print "#   Or just copy the following lines and pasten them into your shel:"
+    print "#"
+    print "export PETSC_DIR=" + petscdir
+    print "export PETSC_ARCH=" + petscarch
 
 ########################################################################
 ### subcommand dispatch
