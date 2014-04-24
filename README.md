@@ -1,3 +1,3 @@
-Metos3D Installer System
+#### Metos3D Installer System
 
-http://metos3d.github.com/metos3d/
+To install Metos3D please visit: http://metos3d.github.com/metos3d/
