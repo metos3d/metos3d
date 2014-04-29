@@ -122,11 +122,11 @@ def compile_simpack(m3dprefix, modelname):
         execute_command("make BGC=model/" + modelname + " clean")
         # make
         execute_command("make BGC=model/" + modelname)
-        # option
-        execute_command_safe("option", "mkdir option")
-        # copy test option file
-        filepath = "option/test." + modelname + ".option.txt"
-        execute_command_safe(filepath, "cp model/" + modelname + "/option/test." + modelname + ".option.txt " + filepath)
+#        # option
+#        execute_command_safe("option", "mkdir option")
+#        # copy test option file
+#        filepath = "option/test." + modelname + ".option.txt"
+#        execute_command_safe(filepath, "cp model/" + modelname + "/option/test." + modelname + ".option.txt " + filepath)
         # work
         execute_command_safe("work", "mkdir work")
 
