@@ -122,11 +122,6 @@ def compile_simpack(m3dprefix, modelname):
         execute_command("make BGC=model/" + modelname + " clean")
         # make
         execute_command("make BGC=model/" + modelname)
-#        # option
-#        execute_command_safe("option", "mkdir option")
-#        # copy test option file
-#        filepath = "option/test." + modelname + ".option.txt"
-#        execute_command_safe(filepath, "cp model/" + modelname + "/option/test." + modelname + ".option.txt " + filepath)
         # work
         execute_command_safe("work", "mkdir work")
 
@@ -173,13 +168,13 @@ def dispatch_simpack(m3dprefix, argv):
 # dispatch_update
 def dispatch_update(m3dprefix, argv):
     # metos3d
-    execute_command("cd " + m3dprefix + "/metos3d/; git pull")
+    execute_command("cd " + m3dprefix + "/metos3d/; git checkout master; git pull")
     # data
-    execute_command("cd " + m3dprefix + "/data/; git pull")
+    execute_command("cd " + m3dprefix + "/data/; git checkout master; git pull")
     # model
-    execute_command("cd " + m3dprefix + "/model/; git pull")
+    execute_command("cd " + m3dprefix + "/model/; git checkout master; git pull")
     # simpack
-    execute_command("cd " + m3dprefix + "/simpack/; git pull")
+    execute_command("cd " + m3dprefix + "/simpack/; git checkout master; git pull")
 
 # dispatch_petsc
 def dispatch_petsc(m3dprefix, argv):
