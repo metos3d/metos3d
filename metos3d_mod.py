@@ -17,7 +17,6 @@
 #
 
 # import used modules
-import re
 import os
 import sys
 import subprocess
@@ -61,7 +60,7 @@ def print_usage():
 
 # execute_command
 def execute_command(cmd):
-    print_info("Executing: " + cmd)
+#    print_info("Executing: " + cmd)
     # execute
     proc = subprocess.Popen(cmd, shell = True)
     out  = proc.communicate()
@@ -130,7 +129,7 @@ def compile_simpack(m3dprefix, modelname):
 def dispatch_simpack(m3dprefix, argv):
     # no model
     if len(argv) < 3:
-        print_info("Listing all available models.")
+#        print_info("Listing all available models.")
         execute_command("ls " + m3dprefix + "/model/model");
     # compile
     else:
@@ -139,9 +138,11 @@ def dispatch_simpack(m3dprefix, argv):
 # dispatch_update
 def dispatch_update(m3dprefix, argv):
     # metos3d
-    execute_command("cd " + m3dprefix + "/metos3d/; git checkout master; git pull")
+    print_info("Updating 'metos3d' repository ...")
+    execute_command("cd " + m3dprefix + "/metos3d/; git checkout -q master; git pull -q")
     # data
-    execute_command("cd " + m3dprefix + "/data/; git checkout master; git pull")
+    print_info("Updating 'data' repository ...")
+    execute_command("cd " + m3dprefix + "/data/; git checkout -q master; git pull -q")
     # model
     execute_command("cd " + m3dprefix + "/model/; git checkout master; git pull")
     # simpack
