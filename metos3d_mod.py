@@ -26,30 +26,34 @@ import subprocess
 ### output
 ########################################################################
 
+# print_info
+def print_info(msg):
+    print "### INFO ### " + msg
+
 # print_error
 def print_error(msg):
-    print "### ERROR: " + msg
+    print "### ERROR ### " + msg
 
 # print_execute_fail
 def print_execute_fail(cmd, code):
-    print "#"
-    print "#   Okay, this shouldn't happen ..."
-    print "#"
-    print "#   The command:", cmd
-    print "#   Returned:", code
-    print "#   We expected: 0, i.e. a success."
-    print "#"
-    print "#   What now?"
-    print "#   1. If you understand, what went wrong, solve the problem and rerun the script."
-    print "#   2. If you need help, contact jpi@informatik.uni-kiel.de, attach the output of the script and kindly ask for help."
-    print "#"
+    print "### ERROR ###"
+    print "### ERROR ###   Okay, this shouldn't happen ..."
+    print "### ERROR ###"
+    print "### ERROR ###   The command:", cmd
+    print "### ERROR ###   Returned:", code
+    print "### ERROR ###   We expected: 0, i.e. a success."
+    print "### ERROR ###"
+    print "### ERROR ###   What now?"
+    print "### ERROR ###   1. If you understand, what went wrong, solve the problem and rerun the script."
+    print "### ERROR ###   2. If you need help, contact jpi@informatik.uni-kiel.de, attach the output of the script and kindly ask for help."
+    print "### ERROR ###"
 
 # print_usage
 def print_usage():
     print "Usage:"
     print "  metos3d simpack [MODELNAME...]"
-    print "  metos3d petsc   [VERSION...]"
     print "  metos3d update"
+    print "  metos3d help"
 
 ########################################################################
 ### shell command execution
@@ -57,7 +61,7 @@ def print_usage():
 
 # execute_command
 def execute_command(cmd):
-    print "### EXECUTING: " + cmd
+    print_info("Executing: " + cmd)
     # execute
     proc = subprocess.Popen(cmd, shell = True)
     out  = proc.communicate()
@@ -66,29 +70,22 @@ def execute_command(cmd):
         print_execute_fail(cmd, proc.returncode)
         sys.exit(proc.returncode)
 
-# execute_command_safe
-def execute_command_safe(token, cmd):
-    if not os.path.exists(token):
-        execute_command(cmd)
-
-# execute_petsc_configure
-def execute_petsc_configure(cmd):
-    print "### EXECUTING: " + cmd
+# execute_command_pipe
+def execute_command_pipe(cmd):
     # execute
-    proc = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-    out  = proc.communicate()
+    proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, shell = True)
+    out = proc.communicate()
     # check for error
     if not proc.returncode == 0:
         print_execute_fail(cmd, proc.returncode)
         sys.exit(proc.returncode)
-    else:
-        for line in out[0].split("\n"):
-            match = re.search("^  PETSC_ARCH: (.+)", line)
-            if match: petscarch = match.groups()[0]
-            match = re.search("^  PETSC_DIR: (.+)", line)
-            if match: petscdir = match.groups()[0]
-    # return variables
-    return (petscarch, petscdir)
+    # return output
+    return out
+
+# execute_command_safe
+def execute_command_safe(token, cmd):
+    if not os.path.exists(token):
+        execute_command(cmd)
 
 ########################################################################
 ### compile
@@ -125,33 +122,6 @@ def compile_simpack(m3dprefix, modelname):
         # work
         execute_command_safe("work", "mkdir work")
 
-# compile petsc
-def compile_petsc(m3dprefix, petscversion):
-    # create petsc dir
-    petscprefix = m3dprefix + "/petsc"
-    execute_command_safe(petscprefix, "mkdir " + petscprefix)
-    # download petsc
-    execute_command("cd " + petscprefix + "; curl -O ftp://ftp.mcs.anl.gov/pub/petsc/release-snapshots/" + petscversion)
-    # unzip
-    execute_command("cd " + petscprefix + "; gunzip " + petscversion)
-    # untar
-    petscversion = petscversion.replace(".gz", "")
-    execute_command("cd " + petscprefix + "; tar xf " + petscversion)
-    # configure
-    petscversion = petscversion.replace(".tar", "")
-    petscversion = petscversion.replace("-lite-", "-")
-    petscversionprefix = petscprefix + "/" + petscversion
-    (petscarch, petscdir) = execute_petsc_configure("cd " + petscversionprefix + "; ./configure")
-    # make
-    execute_command("cd " + petscversionprefix + "; make PETSC_DIR=" + petscdir + " PETSC_ARCH=" + petscarch + " all")
-    # info
-    print "#"
-    print "#   Now, add the PETSc variables permanently to your shell environment."
-    print "#   Or just copy the following lines and paste them into your shell:"
-    print "#"
-    print "export PETSC_DIR=" + petscdir
-    print "export PETSC_ARCH=" + petscarch
-
 ########################################################################
 ### subcommand dispatch
 ########################################################################
@@ -160,6 +130,7 @@ def compile_petsc(m3dprefix, petscversion):
 def dispatch_simpack(m3dprefix, argv):
     # no model
     if len(argv) < 3:
+        print_info("Listing all available models.")
         execute_command("ls " + m3dprefix + "/model/model");
     # compile
     else:
@@ -176,21 +147,22 @@ def dispatch_update(m3dprefix, argv):
     # simpack
     execute_command("cd " + m3dprefix + "/simpack/; git checkout master; git pull")
 
-# dispatch_petsc
-def dispatch_petsc(m3dprefix, argv):
-    # check PETSc variables
-    try:
-        petscdir = os.environ["PETSC_DIR"]
-        petscarch = os.environ["PETSC_ARCH"]
-        # already set
-        print_error("PETSc variables are already set: PETSC_DIR=" + petscdir + " PETSC_ARCH=" + petscarch)
-        print_error("Unset them to proceed: unset PETSC_DIR; unset PETSC_ARCH;")
-    except KeyError:
-        # no version
-        if len(argv) < 3:
-            execute_command("curl -sl ftp://ftp.mcs.anl.gov/pub/petsc/release-snapshots/ | grep 'petsc-lite-3.3-' | sort");
-        else:
-            compile_petsc(m3dprefix, argv[2])
+# dispatch_help
+def dispatch_help(m3dprefix, argv):
+    print "Info:"
+    print "  Your are running the following versions of Metos3D"
+    # data
+    cmd = "cd " + m3dprefix + "/data/; git describe"
+    out = execute_command_pipe(cmd)
+    print "    data     %-20s (### EXECUTED: %s)" % (out[0].rstrip(), cmd)
+    # model
+    cmd = "cd " + m3dprefix + "/model/; git describe"
+    out = execute_command_pipe(cmd)
+    print "    model    %-20s (### EXECUTED: %s)" % (out[0].rstrip(), cmd)
+    # simpack
+    cmd = "cd " + m3dprefix + "/simpack/; git describe"
+    out = execute_command_pipe(cmd)
+    print "    simpack  %-20s (### EXECUTED: %s)" % (out[0].rstrip(), cmd)
 
 ########################################################################
 ### main dispatch
@@ -204,9 +176,9 @@ def dispatch_command(m3dprefix, argv):
     # update
     elif argv[1] == "update":
         dispatch_update(m3dprefix, argv)
-    # petsc
-    elif argv[1] == "petsc":
-        dispatch_petsc(m3dprefix, argv)
+    # help
+    elif argv[1] == "help":
+        dispatch_help(m3dprefix, argv)
     # unknown
     else:
         print_error("Unknown command: " + argv[1])
