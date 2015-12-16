@@ -21,17 +21,20 @@ import os
 import sys
 import subprocess
 
+# debug
+debug = False
+
 ########################################################################
 ### output
 ########################################################################
 
-# print_info
-def print_info(msg):
-    print "### INFO ### " + msg
+# print_debug
+def print_debug(msg):
+    print("### DEBUG ### " + msg)
 
 # print_error
 def print_error(msg):
-    print "### ERROR ### " + msg
+    print("### ERROR ### " + msg)
 
 # print_execute_fail
 def print_execute_fail(cmd, code):
@@ -49,10 +52,28 @@ def print_execute_fail(cmd, code):
 
 # print_usage
 def print_usage():
-    print "Usage:"
-    print "  metos3d simpack [MODELNAME...]"
-    print "  metos3d update"
-    print "  metos3d help"
+    print("Usage:")
+    print("  metos3d simpack [MODELNAME...] [-v]")
+    print("  metos3d update [-v]")
+    print("  metos3d info [-v]")
+    print("  metos3d help")
+#    print("Usage:")
+#    print("  metos3d [-v] simpack [MODELNAME...]")
+#    print("  metos3d [-v] update")
+#    print("  metos3d help")
+
+# print_petsc
+def print_petsc():
+    print("PETSc:")
+    print("  Metos3D ...")
+#    print("  metos3d [-v] update")
+#    print("  metos3d help")
+
+# print_help
+def print_help():
+    print("Help:")
+    print("  PETSc:")
+    print("  Models:")
 
 ########################################################################
 ### shell command execution
@@ -60,7 +81,7 @@ def print_usage():
 
 # execute_command
 def execute_command(cmd):
-#    print_info("Executing: " + cmd)
+    print_debug("Executing: " + cmd)
     # execute
     proc = subprocess.Popen(cmd, shell = True)
     out  = proc.communicate()
@@ -72,14 +93,14 @@ def execute_command(cmd):
 # execute_command_pipe
 def execute_command_pipe(cmd):
     # execute
-    proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, shell = True)
-    out = proc.communicate()
+    proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell = True)
+    [out, err] = proc.communicate()
     # check for error
     if not proc.returncode == 0:
         print_execute_fail(cmd, proc.returncode)
         sys.exit(proc.returncode)
-    # return output
-    return out
+    # stdout and stderr
+    return [out, err]
 
 # execute_command_safe
 def execute_command_safe(token, cmd):
@@ -103,7 +124,7 @@ def compile_simpack(m3dprefix, modelname):
             petscdir = os.environ["PETSC_DIR"]
             petscarch = os.environ["PETSC_ARCH"]
         except KeyError:
-            print_error("PETSc variables are not set.")
+            print_error("PETSc variables are not set. See 'metos3d help' for more.")
             sys.exit(1)
         # create links
         # data
@@ -127,6 +148,11 @@ def compile_simpack(m3dprefix, modelname):
 
 # dispatch_simpack
 def dispatch_simpack(m3dprefix, argv):
+    
+    print argv
+    argv.remove("-v")
+    print argv
+    
     # no model
     if len(argv) < 3:
 #        print_info("Listing all available models.")
@@ -138,20 +164,28 @@ def dispatch_simpack(m3dprefix, argv):
 # dispatch_update
 def dispatch_update(m3dprefix, argv):
     # metos3d
-    print_info("Updating 'metos3d' repository ...")
+#    print_info("Updating 'metos3d' repository ...")
     execute_command("cd " + m3dprefix + "/metos3d/; git checkout -q master; git pull -q")
     # data
-    print_info("Updating 'data' repository ...")
+#    print_info("Updating 'data' repository ...")
     execute_command("cd " + m3dprefix + "/data/; git checkout -q master; git pull -q")
     # model
-    execute_command("cd " + m3dprefix + "/model/; git checkout master; git pull")
+#    execute_command("cd " + m3dprefix + "/model/; git checkout master; git pull")
+    [out, err] = execute_command_pipe("cd " + m3dprefix + "/model/; git checkout -q master; git pull -q")
+#    print "out:", out
+#    print "err:", err
     # simpack
-    execute_command("cd " + m3dprefix + "/simpack/; git checkout master; git pull")
+#    execute_command("cd " + m3dprefix + "/simpack/; git checkout master; git pull")
 
 # dispatch_help
 def dispatch_help(m3dprefix, argv):
+    print_help()
     print "Info:"
-    print "  Your are running the following versions of Metos3D"
+    print "  Currently, your are running the following versions of Metos3D repositories:"
+    # metos3d
+    cmd = "cd " + m3dprefix + "/metos3d/; git describe"
+    out = execute_command_pipe(cmd)
+    print "    metos3d  %-20s (### EXECUTED: %s)" % (out[0].rstrip(), cmd)
     # data
     cmd = "cd " + m3dprefix + "/data/; git describe"
     out = execute_command_pipe(cmd)
@@ -171,6 +205,14 @@ def dispatch_help(m3dprefix, argv):
 
 # dispatch_command
 def dispatch_command(m3dprefix, argv):
+    # debug
+    global debug
+    if "-v" in argv:
+        debug  = True
+        argv.remove("-v")
+    
+    print debug
+    
     # simpack
     if argv[1] == "simpack":
         dispatch_simpack(m3dprefix, argv)
@@ -184,6 +226,7 @@ def dispatch_command(m3dprefix, argv):
     else:
         print_error("Unknown command: " + argv[1])
 
+#sys.exit(proc.returncode)
 
 
 
