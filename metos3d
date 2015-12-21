@@ -22,8 +22,7 @@ import sys
 import metos3d_mod as m3d
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        m3d.print_usage()
-    else:
-        m3dprefix = os.path.expanduser("~/.metos3d")
-        m3d.dispatch_command(m3dprefix, sys.argv)
+    # determine path prefix
+    m3dprefix = os.path.expanduser("~/.metos3d")
+    # dispatch command
+    m3d.dispatch_command(m3dprefix, sys.argv)

@@ -30,7 +30,10 @@ debug = False
 
 # print_debug
 def print_debug(msg):
-    print("### DEBUG ### " + msg)
+    # prepare debug variable and print if set
+    global debug
+    if debug:
+        print("### DEBUG ### " + msg)
 
 # print_error
 def print_error(msg):
@@ -53,27 +56,16 @@ def print_execute_fail(cmd, code):
 # print_usage
 def print_usage():
     print("Usage:")
-    print("  metos3d simpack [MODELNAME...] [-v]")
-    print("  metos3d update [-v]")
-    print("  metos3d info [-v]")
+    print("  metos3d [-v] simpack [MODELNAME...]")
+    print("  metos3d [-v] update")
+    print("  metos3d [-v] info")
     print("  metos3d help")
-#    print("Usage:")
-#    print("  metos3d [-v] simpack [MODELNAME...]")
-#    print("  metos3d [-v] update")
-#    print("  metos3d help")
-
-# print_petsc
-def print_petsc():
-    print("PETSc:")
-    print("  Metos3D ...")
-#    print("  metos3d [-v] update")
-#    print("  metos3d help")
 
 # print_help
 def print_help():
     print("Help:")
-    print("  PETSc:")
-    print("  Models:")
+    print("  Compiling and linking a model:")
+    print("  PETSc variables:")
 
 ########################################################################
 ### shell command execution
@@ -81,7 +73,6 @@ def print_help():
 
 # execute_command
 def execute_command(cmd):
-    print_debug("Executing: " + cmd)
     # execute
     proc = subprocess.Popen(cmd, shell = True)
     out  = proc.communicate()
@@ -148,15 +139,16 @@ def compile_simpack(m3dprefix, modelname):
 
 # dispatch_simpack
 def dispatch_simpack(m3dprefix, argv):
-    
-    print argv
-    argv.remove("-v")
-    print argv
-    
-    # no model
+    # no model name provided
     if len(argv) < 3:
-#        print_info("Listing all available models.")
-        execute_command("ls " + m3dprefix + "/model/model");
+        # print info and assemble command
+        print("Listing avaible models from the 'model' repository ...")
+        cmd = "ls %s/model/model" % m3dprefix
+        # debug
+        global debug
+        if debug: print_debug("Executing: " + cmd)
+        # list models
+        execute_command(cmd);
     # compile
     else:
         compile_simpack(m3dprefix, argv[2])
@@ -164,40 +156,61 @@ def dispatch_simpack(m3dprefix, argv):
 # dispatch_update
 def dispatch_update(m3dprefix, argv):
     # metos3d
-#    print_info("Updating 'metos3d' repository ...")
-    execute_command("cd " + m3dprefix + "/metos3d/; git checkout -q master; git pull -q")
+    dispatch_update_repository(m3dprefix, "metos3d")
     # data
-#    print_info("Updating 'data' repository ...")
-    execute_command("cd " + m3dprefix + "/data/; git checkout -q master; git pull -q")
+    dispatch_update_repository(m3dprefix, "data")
     # model
-#    execute_command("cd " + m3dprefix + "/model/; git checkout master; git pull")
-    [out, err] = execute_command_pipe("cd " + m3dprefix + "/model/; git checkout -q master; git pull -q")
-#    print "out:", out
-#    print "err:", err
+    dispatch_update_repository(m3dprefix, "model")
     # simpack
-#    execute_command("cd " + m3dprefix + "/simpack/; git checkout master; git pull")
+    dispatch_update_repository(m3dprefix, "simpack")
+
+# dispatch_update_repository(m3dprefix, repository)
+def dispatch_update_repository(m3dprefix, repository):
+    # print information
+    print("Updating '%s' repository ...") % repository
+    # debug
+    global debug
+    if debug:
+        # prepare a more verbose git command and execute verbosely
+        cmd = "cd %s/%s/; git checkout master; git pull" % (m3dprefix, repository)
+        print_debug("Executing: " + cmd)
+        execute_command(cmd)
+    else:
+        # prepare a quiet git command and execute quietly
+        cmd = "cd %s/%s/; git checkout -q master; git pull -q" % (m3dprefix, repository)
+        out = execute_command_pipe(cmd)
+
+# dispatch_info
+def dispatch_info(m3dprefix, argv):
+    # provide information about the repository versions
+    print("Your are using the following versions of the Metos3D repositories:")
+    # metos3d
+    dispatch_info_repository(m3dprefix, "metos3d")
+    # data
+    dispatch_info_repository(m3dprefix, "data")
+    # model
+    dispatch_info_repository(m3dprefix, "model")
+    # simpack
+    dispatch_info_repository(m3dprefix, "simpack")
+
+# dispatch_info_repository
+def dispatch_info_repository(m3dprefix, repository):
+    # prepare command, execute and provide information
+    cmd = "cd %s/%s/; git describe --always" % (m3dprefix, repository)
+    out = execute_command_pipe(cmd)
+    print("  %-10s%-20s") % (repository, out[0].rstrip()),
+    # debug
+    global debug
+    if debug:
+        # yes, print shell command additionally
+        print_debug("Executing: " + cmd)
+    else:
+        # no, just end line
+        print("")
 
 # dispatch_help
 def dispatch_help(m3dprefix, argv):
     print_help()
-    print "Info:"
-    print "  Currently, your are running the following versions of Metos3D repositories:"
-    # metos3d
-    cmd = "cd " + m3dprefix + "/metos3d/; git describe"
-    out = execute_command_pipe(cmd)
-    print "    metos3d  %-20s (### EXECUTED: %s)" % (out[0].rstrip(), cmd)
-    # data
-    cmd = "cd " + m3dprefix + "/data/; git describe"
-    out = execute_command_pipe(cmd)
-    print "    data     %-20s (### EXECUTED: %s)" % (out[0].rstrip(), cmd)
-    # model
-    cmd = "cd " + m3dprefix + "/model/; git describe"
-    out = execute_command_pipe(cmd)
-    print "    model    %-20s (### EXECUTED: %s)" % (out[0].rstrip(), cmd)
-    # simpack
-    cmd = "cd " + m3dprefix + "/simpack/; git describe"
-    out = execute_command_pipe(cmd)
-    print "    simpack  %-20s (### EXECUTED: %s)" % (out[0].rstrip(), cmd)
 
 ########################################################################
 ### main dispatch
@@ -205,28 +218,46 @@ def dispatch_help(m3dprefix, argv):
 
 # dispatch_command
 def dispatch_command(m3dprefix, argv):
-    # debug
+    # no arguments?
+    # print usage and exit with code 1
+    if len(sys.argv) == 1:
+        print_usage()
+        sys.exit(1)
+    
+    # should debug information be provided?
+    # use global variable
     global debug
     if "-v" in argv:
-        debug  = True
+        # turn on debugging
+        debug = True
+        # remove '-v' from the argument list
         argv.remove("-v")
-    
-    print debug
-    
+
+    # command provided?
+    if len(argv) == 1:
+        # no, print error message and exit with code 1
+        print_error("Missing a command.")
+        sys.exit(1)
+
     # simpack
     if argv[1] == "simpack":
         dispatch_simpack(m3dprefix, argv)
     # update
     elif argv[1] == "update":
         dispatch_update(m3dprefix, argv)
+    # info
+    elif argv[1] == "info":
+        dispatch_info(m3dprefix, argv)
     # help
     elif argv[1] == "help":
         dispatch_help(m3dprefix, argv)
     # unknown
     else:
-        print_error("Unknown command: " + argv[1])
+        print_error("Unknown option or command: " + argv[1])
 
-#sys.exit(proc.returncode)
+
+
+
 
 
 
