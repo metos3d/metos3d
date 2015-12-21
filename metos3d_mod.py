@@ -166,19 +166,22 @@ def dispatch_update(m3dprefix, argv):
 
 # dispatch_update_repository(m3dprefix, repository)
 def dispatch_update_repository(m3dprefix, repository):
-    # print information
-    print("Updating '%s' repository ...") % repository
     # debug
     global debug
     if debug:
+        # print information
+        print("Updating '%s' repository ...") % repository
         # prepare a more verbose git command and execute verbosely
         cmd = "cd %s/%s/; git checkout master; git pull" % (m3dprefix, repository)
         print_debug("Executing: " + cmd)
         execute_command(cmd)
     else:
+        # print information
+        print("Updating '%s' repository ...") % repository,
         # prepare a quiet git command and execute quietly
         cmd = "cd %s/%s/; git checkout -q master; git pull -q" % (m3dprefix, repository)
         out = execute_command_pipe(cmd)
+        print(" done")
 
 # dispatch_info
 def dispatch_info(m3dprefix, argv):
