@@ -138,16 +138,22 @@ def compile_simpack(m3dprefix, modelname):
 
 # compile_simpack_link
 def compile_simpack_link(linkname, linkpath):
-    # check link
+    # print info
+    print("Creating link '" + linkname + "' ...")
+    # link exists?
     if not os.path.exists(linkname):
         # no, create link
-        print_debug("Creating link '" + linkname + "' ...")
         cmd = "ln -s " + linkpath
         # debug
         global debug
-        if debug: print_debug("Executing: " + cmd)
-        # create link
-        execute_command(cmd)
+        if debug:
+            # verbosely
+            print_debug("Executing: " + cmd)
+            execute_command(cmd)
+        else:
+            # quietly
+            out = execute_command_pipe(cmd)
+
 
 ########################################################################
 ### subcommand dispatch
