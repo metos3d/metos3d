@@ -142,7 +142,7 @@ def compile_simpack_link(linkname, linkpath):
     if not os.path.exists(linkname):
         # no, create link
         print_debug("Creating link '" + linkname + "' ...")
-        cmd = "ln -s " + m3dprefix + "/data/data"
+        cmd = "ln -s " + linkpath
         # debug
         global debug
         if debug: print_debug("Executing: " + cmd)
