@@ -93,10 +93,10 @@ def execute_command_pipe(cmd):
     # stdout and stderr
     return [out, err]
 
-# execute_command_safe
-def execute_command_safe(token, cmd):
-    if not os.path.exists(token):
-        execute_command(cmd)
+## execute_command_safe
+#def execute_command_safe(token, cmd):
+#    if not os.path.exists(token):
+#        execute_command(cmd)
 
 ########################################################################
 ### compile
@@ -104,10 +104,12 @@ def execute_command_safe(token, cmd):
 
 # compile_simpack
 def compile_simpack(m3dprefix, modelname):
+    # assemble model path
     modeldir = m3dprefix + "/model/model/" + modelname
     # no model dir
     if not os.path.exists(modeldir):
         print_error("Model directory '" + modeldir + "' does not exist.")
+        sys.exit(1)
     # compile model
     else:
         # check PETSc variables
@@ -119,19 +121,33 @@ def compile_simpack(m3dprefix, modelname):
             sys.exit(1)
         # create links
         # data
-        execute_command_safe("data", "ln -s " + m3dprefix + "/data/data")
+        compile_simpack_link("data", m3dprefix + "/data/data")
+#        execute_command_safe("data", "ln -s " + m3dprefix + "/data/data")
         # model
-        execute_command_safe("model", "ln -s " + m3dprefix + "/model/model")
-        # simpack
-        execute_command_safe("simpack", "ln -s " + m3dprefix + "/simpack")
-        # Makefile
-        execute_command_safe("Makefile", "ln -s " + m3dprefix + "/metos3d/Makefile")
-        # make clean
-        execute_command("make BGC=model/" + modelname + " clean")
-        # make
-        execute_command("make BGC=model/" + modelname)
-        # work
-        execute_command_safe("work", "mkdir work")
+#        execute_command_safe("model", "ln -s " + m3dprefix + "/model/model")
+#        # simpack
+#        execute_command_safe("simpack", "ln -s " + m3dprefix + "/simpack")
+#        # Makefile
+#        execute_command_safe("Makefile", "ln -s " + m3dprefix + "/metos3d/Makefile")
+#        # make clean
+#        execute_command("make BGC=model/" + modelname + " clean")
+#        # make
+#        execute_command("make BGC=model/" + modelname)
+#        # work
+#        execute_command_safe("work", "mkdir work")
+
+# compile_simpack_link
+def compile_simpack_link(linkname, linkpath):
+    # check link
+    if not os.path.exists(linkname):
+        # no, create link
+        print_debug("Creating link '" + linkname + "' ...")
+        cmd = "ln -s " + m3dprefix + "/data/data"
+        # debug
+        global debug
+        if debug: print_debug("Executing: " + cmd)
+        # create link
+        execute_command(cmd)
 
 ########################################################################
 ### subcommand dispatch
@@ -148,7 +164,7 @@ def dispatch_simpack(m3dprefix, argv):
         global debug
         if debug: print_debug("Executing: " + cmd)
         # list models
-        execute_command(cmd);
+        execute_command(cmd)
     # compile
     else:
         compile_simpack(m3dprefix, argv[2])
