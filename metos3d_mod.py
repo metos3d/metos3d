@@ -128,6 +128,13 @@ def compile_simpack(m3dprefix, modelname):
         compile_simpack_link("simpack", m3dprefix + "/simpack")
         # Makefile
         compile_simpack_link("Makefile", m3dprefix + "/metos3d/Makefile")
+        # make directory
+        # work
+        compile_simpack_mkdir("work")
+        # make
+        # make clean
+
+        # make BGC
 
 
 #        execute_command_safe("data", "ln -s " + m3dprefix + "/data/data")
@@ -143,6 +150,27 @@ def compile_simpack(m3dprefix, modelname):
 #        execute_command("make BGC=model/" + modelname)
 #        # work
 #        execute_command_safe("work", "mkdir work")
+
+# compile_simpack_mkdir
+def compile_simpack_mkdir(dirname):
+    # directory exists?
+    if not os.path.exists(dirname):
+        # no, make dir
+        # print info
+        print("Creating directory '" + dirname + "' ...")
+        # assemble command
+        cmd = "mkdir " + dirname
+        # debug
+        global debug
+        if debug:
+            # verbosely
+            print_debug("Executing: " + cmd)
+            execute_command(cmd)
+        else:
+            # quietly
+            out = execute_command_pipe(cmd)
+    else:
+        print_debug("Directory '" + dirname + "' already exists.")
 
 # compile_simpack_link
 def compile_simpack_link(linkname, linkpath):
