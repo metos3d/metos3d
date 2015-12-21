@@ -122,6 +122,14 @@ def compile_simpack(m3dprefix, modelname):
         # create links
         # data
         compile_simpack_link("data", m3dprefix + "/data/data")
+        # model
+        compile_simpack_link("model", m3dprefix + "/model/model")
+        # simpack
+        compile_simpack_link("simpack", m3dprefix + "/simpack")
+        # Makefile
+        compile_simpack_link("Makefile", m3dprefix + "/metos3d/Makefile")
+
+
 #        execute_command_safe("data", "ln -s " + m3dprefix + "/data/data")
         # model
 #        execute_command_safe("model", "ln -s " + m3dprefix + "/model/model")
@@ -140,9 +148,10 @@ def compile_simpack(m3dprefix, modelname):
 def compile_simpack_link(linkname, linkpath):
     # link exists?
     if not os.path.exists(linkname):
+        # no, create link
         # print info
         print("Creating link '" + linkname + "' ...")
-        # no, create link
+        # assemble command
         cmd = "ln -s " + linkpath
         # debug
         global debug
