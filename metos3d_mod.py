@@ -138,10 +138,10 @@ def compile_simpack(m3dprefix, modelname):
 
 # compile_simpack_link
 def compile_simpack_link(linkname, linkpath):
-    # print info
-    print("Creating link '" + linkname + "' ...")
     # link exists?
     if not os.path.exists(linkname):
+        # print info
+        print("Creating link '" + linkname + "' ...")
         # no, create link
         cmd = "ln -s " + linkpath
         # debug
