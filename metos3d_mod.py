@@ -153,7 +153,8 @@ def compile_simpack_link(linkname, linkpath):
         else:
             # quietly
             out = execute_command_pipe(cmd)
-
+    else:
+        print_debug("Link '" + linkname + "' already exists.")
 
 ########################################################################
 ### subcommand dispatch
