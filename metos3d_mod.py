@@ -194,9 +194,16 @@ def dispatch_simpack(m3dprefix, argv):
         # no, list models
         # print info
         print("Listing avaible models from the 'model' repository ...")
-        # assemble command and execute
+        # assemble command
         cmd = "ls " + m3dprefix + "/model/model"
-        execute_command_debug(cmd)
+        # debug?
+        global debug
+        if debug:
+            # yes, execute and print command
+            execute_command_debug(cmd)
+        else:
+            # no, just execute
+            execute_command(cmd)
     else:
         # yes, compile model
         compile_simpack(m3dprefix, argv[2])
