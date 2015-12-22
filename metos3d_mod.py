@@ -150,20 +150,10 @@ def compile_simpack_make(modelname):
     # assemble command and execute
     cmd = "make BGC=model/" + modelname + " clean"
     execute_command_debug(cmd)
-
     # make
     # assemble command and execute
     cmd = "make BGC=model/" + modelname
     execute_command_debug(cmd)
-#    # debug
-#    global debug
-#    if debug:
-#        # verbosely
-#        print_debug("Executing: " + cmd)
-#        execute_command(cmd)
-#    else:
-#        # quietly
-#        out = execute_command_pipe(cmd)
 
 # compile_simpack_mkdir
 def compile_simpack_mkdir(dirname):
@@ -172,17 +162,9 @@ def compile_simpack_mkdir(dirname):
         # no, make dir
         # print info
         print("Creating directory '" + dirname + "' ...")
-        # assemble command
+        # assemble command and execute
         cmd = "mkdir " + dirname
-        # debug?
-        global debug
-        if debug:
-            # yes, print command and verbosely
-            print_debug("Executing: " + cmd)
-            execute_command(cmd)
-        else:
-            # no, execute quietly
-            out = execute_command_pipe(cmd)
+        execute_command_debug(cmd)
     else:
         # yes, print info if debug
         print_debug("Directory '" + dirname + "' already exists.")
@@ -194,17 +176,9 @@ def compile_simpack_link(linkname, linkpath):
         # no, create link
         # print info
         print("Creating link '" + linkname + "' ...")
-        # assemble command
+        # assemble command and execute
         cmd = "ln -s " + linkpath
-        # debug?
-        global debug
-        if debug:
-            # yes, print command and execute verbosely
-            print_debug("Executing: " + cmd)
-            execute_command(cmd)
-        else:
-            # no, execute quietly
-            out = execute_command_pipe(cmd)
+        execute_command_debug(cmd)
     else:
         # yes, print info if debug
         print_debug("Link '" + linkname + "' already exists.")
@@ -220,15 +194,9 @@ def dispatch_simpack(m3dprefix, argv):
         # no, list models
         # print info
         print("Listing avaible models from the 'model' repository ...")
-        # assemble command
-        cmd = "ls %s/model/model" % m3dprefix
-        # debug?
-        global debug
-        if debug:
-            # yes, print command
-            print_debug("Executing: " + cmd)
-        # list models
-        execute_command(cmd)
+        # assemble command and execute
+        cmd = "ls " + m3dprefix + "/model/model"
+        execute_command_debug(cmd)
     else:
         # yes, compile model
         compile_simpack(m3dprefix, argv[2])
@@ -247,18 +215,10 @@ def dispatch_update(m3dprefix, argv):
 # dispatch_update_repository(m3dprefix, repository)
 def dispatch_update_repository(m3dprefix, repository):
     # print information
-    print("Updating '%s' repository ...") % repository
-    # debug?
-    global debug
-    if debug:
-        # yes, prepare a more verbose git command and execute verbosely
-        cmd = "cd %s/%s/; git checkout master; git pull" % (m3dprefix, repository)
-        print_debug("Executing: " + cmd)
-        execute_command(cmd)
-    else:
-        # no, prepare a quiet git command and execute quietly
-        cmd = "cd %s/%s/; git checkout -q master; git pull -q" % (m3dprefix, repository)
-        out = execute_command_pipe(cmd)
+    print("Updating '" + repository + "' repository ...")
+    # assemble command and execute
+    cmd = "cd " + m3dprefix + "/" + repository + "/; git checkout master; git pull"
+    execute_command_debug(cmd)
 
 # dispatch_info
 def dispatch_info(m3dprefix, argv):
@@ -276,7 +236,7 @@ def dispatch_info(m3dprefix, argv):
 # dispatch_info_repository
 def dispatch_info_repository(m3dprefix, repository):
     # prepare command, execute and provide information
-    cmd = "cd %s/%s/; git describe --always" % (m3dprefix, repository)
+    cmd = "cd " + m3dprefix + "/" + repository + "/; git describe --always"
     out = execute_command_pipe(cmd)
     print("  %-10s%-20s") % (repository, out[0].rstrip()),
     # debug?
