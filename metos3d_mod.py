@@ -30,9 +30,10 @@ debug = False
 
 # print_debug
 def print_debug(msg):
-    # prepare debug variable and print if set
+    # debug?
     global debug
     if debug:
+        # yes, print message
         print("### DEBUG ### " + msg)
 
 # print_error
@@ -93,6 +94,18 @@ def execute_command_pipe(cmd):
     # stdout and stderr
     return [out, err]
 
+# execute_command_debug:
+def execute_command_debug(cmd):
+    # debug?
+    global debug
+    if debug:
+        # yes, print command and execute verbosely
+        print_debug("Executing: " + cmd)
+        execute_command(cmd)
+    else:
+        # no, execute quietly
+        out = execute_command_pipe(cmd)
+
 ########################################################################
 ### compile
 ########################################################################
@@ -129,47 +142,28 @@ def compile_simpack(m3dprefix, modelname):
         # make BGC
         compile_simpack_make(modelname)
 
-
-#        execute_command_safe("data", "ln -s " + m3dprefix + "/data/data")
-        # model
-#        execute_command_safe("model", "ln -s " + m3dprefix + "/model/model")
-#        # simpack
-#        execute_command_safe("simpack", "ln -s " + m3dprefix + "/simpack")
-#        # Makefile
-#        execute_command_safe("Makefile", "ln -s " + m3dprefix + "/metos3d/Makefile")
-#        # make clean
-#        execute_command("make BGC=model/" + modelname + " clean")
-#        # make
-#        execute_command("make BGC=model/" + modelname)
-#        # work
-#        execute_command_safe("work", "mkdir work")
-
 # compile_simpack_make
 def compile_simpack_make(modelname):
     # print info
     print("Compiling '" + modelname + "' model ...")
-    # assemble command
+    # make clean
+    # assemble command and execute
     cmd = "make BGC=model/" + modelname + " clean"
-    # debug
-    global debug
-    if debug:
-        # verbosely
-        print_debug("Executing: " + cmd)
-        execute_command(cmd)
-    else:
-        # quietly
-        out = execute_command_pipe(cmd)
+    execute_command_debug(cmd)
 
-    # assemble command
+    # make
+    # assemble command and execute
     cmd = "make BGC=model/" + modelname
-    # debug
-    if debug:
-        # verbosely
-        print_debug("Executing: " + cmd)
-        execute_command(cmd)
-    else:
-        # quietly
-        out = execute_command_pipe(cmd)
+    execute_command_debug(cmd)
+#    # debug
+#    global debug
+#    if debug:
+#        # verbosely
+#        print_debug("Executing: " + cmd)
+#        execute_command(cmd)
+#    else:
+#        # quietly
+#        out = execute_command_pipe(cmd)
 
 # compile_simpack_mkdir
 def compile_simpack_mkdir(dirname):
@@ -180,16 +174,17 @@ def compile_simpack_mkdir(dirname):
         print("Creating directory '" + dirname + "' ...")
         # assemble command
         cmd = "mkdir " + dirname
-        # debug
+        # debug?
         global debug
         if debug:
-            # verbosely
+            # yes, print command and verbosely
             print_debug("Executing: " + cmd)
             execute_command(cmd)
         else:
-            # quietly
+            # no, execute quietly
             out = execute_command_pipe(cmd)
     else:
+        # yes, print info if debug
         print_debug("Directory '" + dirname + "' already exists.")
 
 # compile_simpack_link
@@ -201,16 +196,17 @@ def compile_simpack_link(linkname, linkpath):
         print("Creating link '" + linkname + "' ...")
         # assemble command
         cmd = "ln -s " + linkpath
-        # debug
+        # debug?
         global debug
         if debug:
-            # verbosely
+            # yes, print command and execute verbosely
             print_debug("Executing: " + cmd)
             execute_command(cmd)
         else:
-            # quietly
+            # no, execute quietly
             out = execute_command_pipe(cmd)
     else:
+        # yes, print info if debug
         print_debug("Link '" + linkname + "' already exists.")
 
 ########################################################################
@@ -219,18 +215,22 @@ def compile_simpack_link(linkname, linkpath):
 
 # dispatch_simpack
 def dispatch_simpack(m3dprefix, argv):
-    # no model name provided
+    # model name provided?
     if len(argv) < 3:
-        # print info and assemble command
+        # no, list models
+        # print info
         print("Listing avaible models from the 'model' repository ...")
+        # assemble command
         cmd = "ls %s/model/model" % m3dprefix
-        # debug
+        # debug?
         global debug
-        if debug: print_debug("Executing: " + cmd)
+        if debug:
+            # yes, print command
+            print_debug("Executing: " + cmd)
         # list models
         execute_command(cmd)
-    # compile
     else:
+        # yes, compile model
         compile_simpack(m3dprefix, argv[2])
 
 # dispatch_update
@@ -248,15 +248,15 @@ def dispatch_update(m3dprefix, argv):
 def dispatch_update_repository(m3dprefix, repository):
     # print information
     print("Updating '%s' repository ...") % repository
-    # debug
+    # debug?
     global debug
     if debug:
-        # prepare a more verbose git command and execute verbosely
+        # yes, prepare a more verbose git command and execute verbosely
         cmd = "cd %s/%s/; git checkout master; git pull" % (m3dprefix, repository)
         print_debug("Executing: " + cmd)
         execute_command(cmd)
     else:
-        # prepare a quiet git command and execute quietly
+        # no, prepare a quiet git command and execute quietly
         cmd = "cd %s/%s/; git checkout -q master; git pull -q" % (m3dprefix, repository)
         out = execute_command_pipe(cmd)
 
@@ -279,7 +279,7 @@ def dispatch_info_repository(m3dprefix, repository):
     cmd = "cd %s/%s/; git describe --always" % (m3dprefix, repository)
     out = execute_command_pipe(cmd)
     print("  %-10s%-20s") % (repository, out[0].rstrip()),
-    # debug
+    # debug?
     global debug
     if debug:
         # yes, print shell command additionally
