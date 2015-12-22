@@ -93,11 +93,6 @@ def execute_command_pipe(cmd):
     # stdout and stderr
     return [out, err]
 
-## execute_command_safe
-#def execute_command_safe(token, cmd):
-#    if not os.path.exists(token):
-#        execute_command(cmd)
-
 ########################################################################
 ### compile
 ########################################################################
@@ -131,10 +126,8 @@ def compile_simpack(m3dprefix, modelname):
         # make directory
         # work
         compile_simpack_mkdir("work")
-        # make
-        # make clean
-
         # make BGC
+        compile_simpack_make(modelname)
 
 
 #        execute_command_safe("data", "ln -s " + m3dprefix + "/data/data")
@@ -150,6 +143,33 @@ def compile_simpack(m3dprefix, modelname):
 #        execute_command("make BGC=model/" + modelname)
 #        # work
 #        execute_command_safe("work", "mkdir work")
+
+# compile_simpack_make
+def compile_simpack_make(modelname):
+    # print info
+    print("Compiling '" + modelname + "' model ...")
+    # assemble command
+    cmd = "make BGC=model/" + modelname + " clean"
+    # debug
+    global debug
+    if debug:
+        # verbosely
+        print_debug("Executing: " + cmd)
+        execute_command(cmd)
+    else:
+        # quietly
+        out = execute_command_pipe(cmd)
+
+    # assemble command
+    cmd = "make BGC=model/" + modelname
+    # debug
+    if debug:
+        # verbosely
+        print_debug("Executing: " + cmd)
+        execute_command(cmd)
+    else:
+        # quietly
+        out = execute_command_pipe(cmd)
 
 # compile_simpack_mkdir
 def compile_simpack_mkdir(dirname):
