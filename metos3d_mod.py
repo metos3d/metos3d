@@ -64,9 +64,47 @@ def print_usage():
 
 # print_help
 def print_help():
-    print("Help:")
-    print("  Compiling and linking a model:")
-    print("  PETSc variables:")
+#    print("Help:")
+#    print("")
+    print("PETSc variables:")
+#    print("  Metos3D is based on the Portable, Extensible Toolkit for Scientific Computation [PETSc, http://www.mcs.anl.gov/petsc/].")
+    print("  Metos3D is based on the Portable, Extensible Toolkit for Scientific Computation (PETSc).")
+    print("")
+    print("  \"PETSc, pronounced PET-see (the S is silent), is a suite of data structures and routines")
+    print("  for the scalable (parallel) solution of scientific applications modeled by partial")
+    print("  differential equations. It supports MPI, and GPUs through CUDA or OpenCL, as well as")
+    print("  hybrid MPI-GPU parallelism.\" [http://www.mcs.anl.gov/petsc/] (Jan 4, 2016)")
+    print("")
+    print("  ")
+    print("")
+#    print("  Consequently, you need to install PETSc ")
+#    print("  ")
+#petscdir = os.environ["PETSC_DIR"]
+#    petscarch = os.environ["PETSC_ARCH"]
+
+#    print("")
+#    print("")
+#    print("  \"PETSc, pronounced PET-see (the S is silent), is a suite of data structures and")
+#    print("  routines for the scalable (parallel) solution of scientific applications modeled by partial differential equations. It supports MPI, and GPUs through CUDA or OpenCL, as well as hybrid MPI-GPU parallelism. ")
+#    print("  http://www.mcs.anl.gov/petsc/")
+#    print("  Portable, Extensible Toolkit for Scientific Computation (PETSc), http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.3-p7.tar.gz, http://metos3d.github.io/metos3d/")
+    print("  Refer to http://metos3d.github.io/metos3d/")
+    print("")
+    print("")
+    print("")
+    print("")
+    print("Compiling and linking a model:")
+    print("  Makefile is adapted to the PETSc ... directory/intall stucture")
+    print("  pre-processor macros, -DBGC, BGCINIT, BGCFINAL")
+    print("  used underscore, Fortran compile, if using other compilers, your compiler works differently")
+    print("  uses two underscore for example, you can change the routine names for linking here")
+    print("")
+    print("")
+    print("Versions:")
+    print("  ")
+#    print("")
+#    print("")
+#    print("")
 
 ########################################################################
 ### shell command execution
