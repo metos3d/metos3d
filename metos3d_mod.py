@@ -60,13 +60,6 @@ def print_usage():
     print("  metos3d [-v] simpack [MODELNAME...]")
     print("  metos3d [-v] update")
     print("  metos3d [-v] info")
-    print("  metos3d help")
-
-# print_help
-def print_help():
-    print("Help:")
-    print("  Compiling and linking a model:")
-    print("  PETSc variables:")
 
 ########################################################################
 ### shell command execution
@@ -125,7 +118,7 @@ def compile_simpack(m3dprefix, modelname):
             petscdir = os.environ["PETSC_DIR"]
             petscarch = os.environ["PETSC_ARCH"]
         except KeyError:
-            print_error("PETSc variables are not set. See 'metos3d help' for more.")
+            print_error("PETSc variables are not set.")
             sys.exit(1)
         # create links
         # data
@@ -255,10 +248,6 @@ def dispatch_info_repository(m3dprefix, repository):
         # no, just end line
         print("")
 
-# dispatch_help
-def dispatch_help(m3dprefix, argv):
-    print_help()
-
 ########################################################################
 ### main dispatch
 ########################################################################
@@ -295,9 +284,6 @@ def dispatch_command(m3dprefix, argv):
     # info
     elif argv[1] == "info":
         dispatch_info(m3dprefix, argv)
-    # help
-    elif argv[1] == "help":
-        dispatch_help(m3dprefix, argv)
     # unknown
     else:
         print_error("Unknown option or command: " + argv[1])
