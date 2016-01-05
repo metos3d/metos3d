@@ -16,6 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+v0.3.5
+- added 'COPYRIGHT.txt' file
+
 v0.3.3
 - added 'CHANGELOG.txt' file to 'metos3d' repository
 - 'metos3d' script executes quietly by default now, must use '-v' switch to see invoked commands
