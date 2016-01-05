@@ -60,70 +60,6 @@ def print_usage():
     print("  metos3d [-v] simpack [MODELNAME...]")
     print("  metos3d [-v] update")
     print("  metos3d [-v] info")
-    print("  metos3d help")
-
-# print_help
-def print_help():
-    print('''
-PETSc variables:
-  Metos3D is based on the Portable, Extensible Toolkit for Scientific Computation (PETSc).
-
-  \"PETSc, pronounced PET-see (the S is silent), is a suite of data structures and routines
-  for the scalable (parallel) solution of scientific applications modeled by partial
-  differential equations. It supports MPI, and GPUs through CUDA or OpenCL, as well as
-  hybrid MPI-GPU parallelism.\" [http://www.mcs.anl.gov/petsc/] (Jan 4, 2016)
-
-  Consequently, you will need to provide access to the PETSc libraries to run Metos3D.
-
-  Consequently, you will need to download and compile PETSc to run Metos3D. Please visit
-  the Metos3D home page [http://metos3d.github.io/metos3d/] and see which PETSc version is
-  currently required.
-  
-  Once compiled, you provide access to the PETSc libraries using two environment variables
-  named PETSC_DIR and PETSC_ARCH.
-'''[1:-1])
-    
-#    print("PETSc variables:")
-#    print("  Metos3D is based on the Portable, Extensible Toolkit for Scientific Computation (PETSc).")
-#    print("")
-#    print("  \"PETSc, pronounced PET-see (the S is silent), is a suite of data structures and routines")
-#    print("  for the scalable (parallel) solution of scientific applications modeled by partial")
-#    print("  differential equations. It supports MPI, and GPUs through CUDA or OpenCL, as well as")
-#    print("  hybrid MPI-GPU parallelism.\" [http://www.mcs.anl.gov/petsc/] (Jan 4, 2016)")
-#    print("")
-#    print("  Consequently, you will need to download and compile PETSc to run Metos3D. Please refer to the Metos3D home page")
-#    print("  [http://metos3d.github.io/metos3d/] to see which PETSc version is required. You provide an")
-#    print("  access to the libraries")
-#    print("  through the environment variables named PETSC_DIR and PETSC_ARCH.")
-#    print("  Consequently, you need to install PETSc ")
-#    print("  ")
-#petscdir = os.environ["PETSC_DIR"]
-#    petscarch = os.environ["PETSC_ARCH"]
-
-#    print("")
-#    print("")
-#    print("  \"PETSc, pronounced PET-see (the S is silent), is a suite of data structures and")
-#    print("  routines for the scalable (parallel) solution of scientific applications modeled by partial differential equations. It supports MPI, and GPUs through CUDA or OpenCL, as well as hybrid MPI-GPU parallelism. ")
-#    print("  http://www.mcs.anl.gov/petsc/")
-#    print("  Portable, Extensible Toolkit for Scientific Computation (PETSc), http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.3-p7.tar.gz, http://metos3d.github.io/metos3d/")
-#    print("  Refer to http://metos3d.github.io/metos3d/")
-#    print("")
-#    print("")
-#    print("")
-    print("")
-    print("Compiling and linking a model:")
-#    print("  Once your compile environment is set up ...")
-#    print("  Makefile is adapted to the PETSc ... directory/intall stucture")
-#    print("  pre-processor macros, -DBGC, BGCINIT, BGCFINAL")
-#    print("  used underscore, Fortran compile, if using other compilers, your compiler works differently")
-#    print("  uses two underscore for example, you can change the routine names for linking here")
-#    print("")
-    print("")
-    print("Versions:")
-    print("  ")
-#    print("")
-#    print("")
-#    print("")
 
 ########################################################################
 ### shell command execution
@@ -182,7 +118,7 @@ def compile_simpack(m3dprefix, modelname):
             petscdir = os.environ["PETSC_DIR"]
             petscarch = os.environ["PETSC_ARCH"]
         except KeyError:
-            print_error("PETSc variables are not set. See 'metos3d help' for more.")
+            print_error("PETSc variables are not set.")
             sys.exit(1)
         # create links
         # data
@@ -312,10 +248,6 @@ def dispatch_info_repository(m3dprefix, repository):
         # no, just end line
         print("")
 
-# dispatch_help
-def dispatch_help(m3dprefix, argv):
-    print_help()
-
 ########################################################################
 ### main dispatch
 ########################################################################
@@ -352,9 +284,6 @@ def dispatch_command(m3dprefix, argv):
     # info
     elif argv[1] == "info":
         dispatch_info(m3dprefix, argv)
-    # help
-    elif argv[1] == "help":
-        dispatch_help(m3dprefix, argv)
     # unknown
     else:
         print_error("Unknown option or command: " + argv[1])
