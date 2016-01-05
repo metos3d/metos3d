@@ -64,19 +64,37 @@ def print_usage():
 
 # print_help
 def print_help():
-#    print("Help:")
+    print('''
+PETSc variables:
+  Metos3D is based on the Portable, Extensible Toolkit for Scientific Computation (PETSc).
+
+  \"PETSc, pronounced PET-see (the S is silent), is a suite of data structures and routines
+  for the scalable (parallel) solution of scientific applications modeled by partial
+  differential equations. It supports MPI, and GPUs through CUDA or OpenCL, as well as
+  hybrid MPI-GPU parallelism.\" [http://www.mcs.anl.gov/petsc/] (Jan 4, 2016)
+
+  Consequently, you will need to provide access to the PETSc libraries to run Metos3D.
+
+  Consequently, you will need to download and compile PETSc to run Metos3D. Please visit
+  the Metos3D home page [http://metos3d.github.io/metos3d/] and see which PETSc version is
+  currently required.
+  
+  Once compiled, you provide access to the PETSc libraries using two environment variables
+  named PETSC_DIR and PETSC_ARCH.
+'''[1:-1])
+    
+#    print("PETSc variables:")
+#    print("  Metos3D is based on the Portable, Extensible Toolkit for Scientific Computation (PETSc).")
 #    print("")
-    print("PETSc variables:")
-#    print("  Metos3D is based on the Portable, Extensible Toolkit for Scientific Computation [PETSc, http://www.mcs.anl.gov/petsc/].")
-    print("  Metos3D is based on the Portable, Extensible Toolkit for Scientific Computation (PETSc).")
-    print("")
-    print("  \"PETSc, pronounced PET-see (the S is silent), is a suite of data structures and routines")
-    print("  for the scalable (parallel) solution of scientific applications modeled by partial")
-    print("  differential equations. It supports MPI, and GPUs through CUDA or OpenCL, as well as")
-    print("  hybrid MPI-GPU parallelism.\" [http://www.mcs.anl.gov/petsc/] (Jan 4, 2016)")
-    print("")
-    print("  ")
-    print("")
+#    print("  \"PETSc, pronounced PET-see (the S is silent), is a suite of data structures and routines")
+#    print("  for the scalable (parallel) solution of scientific applications modeled by partial")
+#    print("  differential equations. It supports MPI, and GPUs through CUDA or OpenCL, as well as")
+#    print("  hybrid MPI-GPU parallelism.\" [http://www.mcs.anl.gov/petsc/] (Jan 4, 2016)")
+#    print("")
+#    print("  Consequently, you will need to download and compile PETSc to run Metos3D. Please refer to the Metos3D home page")
+#    print("  [http://metos3d.github.io/metos3d/] to see which PETSc version is required. You provide an")
+#    print("  access to the libraries")
+#    print("  through the environment variables named PETSC_DIR and PETSC_ARCH.")
 #    print("  Consequently, you need to install PETSc ")
 #    print("  ")
 #petscdir = os.environ["PETSC_DIR"]
@@ -88,17 +106,18 @@ def print_help():
 #    print("  routines for the scalable (parallel) solution of scientific applications modeled by partial differential equations. It supports MPI, and GPUs through CUDA or OpenCL, as well as hybrid MPI-GPU parallelism. ")
 #    print("  http://www.mcs.anl.gov/petsc/")
 #    print("  Portable, Extensible Toolkit for Scientific Computation (PETSc), http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.3-p7.tar.gz, http://metos3d.github.io/metos3d/")
-    print("  Refer to http://metos3d.github.io/metos3d/")
-    print("")
-    print("")
-    print("")
+#    print("  Refer to http://metos3d.github.io/metos3d/")
+#    print("")
+#    print("")
+#    print("")
     print("")
     print("Compiling and linking a model:")
-    print("  Makefile is adapted to the PETSc ... directory/intall stucture")
-    print("  pre-processor macros, -DBGC, BGCINIT, BGCFINAL")
-    print("  used underscore, Fortran compile, if using other compilers, your compiler works differently")
-    print("  uses two underscore for example, you can change the routine names for linking here")
-    print("")
+#    print("  Once your compile environment is set up ...")
+#    print("  Makefile is adapted to the PETSc ... directory/intall stucture")
+#    print("  pre-processor macros, -DBGC, BGCINIT, BGCFINAL")
+#    print("  used underscore, Fortran compile, if using other compilers, your compiler works differently")
+#    print("  uses two underscore for example, you can change the routine names for linking here")
+#    print("")
     print("")
     print("Versions:")
     print("  ")
