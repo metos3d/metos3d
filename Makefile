@@ -43,8 +43,8 @@ CFLAGS = -DBGC=metos3dbgc_ -DBGCINIT=metos3dbgcinit_ -DBGCFINAL=metos3dbgcfinal_
 FFLAGS = 
 CLEANFILES = $(M3DOBJSBGC) $(M3DOBJSC) $(PROGRAM)
 
-include $(PETSC_DIR)/conf/variables
-include $(PETSC_DIR)/conf/rules
+include $(PETSC_DIR)/lib/petsc/conf/variables
+include $(PETSC_DIR)/lib/petsc/conf/rules
 
 $(PROGRAM): $(M3DOBJSBGC) $(M3DOBJSC) chkopts
 	-$(CLINKER) -o $@ $(M3DOBJSBGC) $(M3DOBJSC) $(PETSC_LIB)
