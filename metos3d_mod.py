@@ -57,9 +57,20 @@ def print_execute_fail(cmd, code):
 # print_usage
 def print_usage():
     print("Usage:")
-    print("  metos3d [-v] simpack [MODELNAME...]")
+    print("  metos3d [-v] simpack [model-name]")
+    print("  metos3d [-v] matrix [exp|imp] [count] [factor] [file-format-in] [file-format-out]")
     print("  metos3d [-v] update")
     print("  metos3d [-v] info")
+
+# print_usage_matrix
+def print_usage_matrix():
+    print("Usage:")
+    print("  metos3d [-v] matrix [exp|imp] [count] [factor] [file-format-in] [file-format-out]")
+    print("Example:")
+    print("  # create 4dt matrices")
+    print("  cd data/TMM/2.8/Transport/Matrix5_4/")
+    print("  metos3d matrix exp 12 4 1dt/Ae_%02d.petsc 4dt/Ae_%02d.petsc")
+    print("  metos3d matrix imp 12 4 1dt/Ai_%02d.petsc 4dt/Ai_%02d.petsc")
 
 ########################################################################
 ### shell command execution
@@ -177,6 +188,74 @@ def compile_simpack_link(linkname, linkpath):
         print_debug("Link '" + linkname + "' already exists.")
 
 ########################################################################
+### convert matrix
+########################################################################
+
+# convert_matrix
+def convert_matrix(matrixtype, factor, filepathin, filepathout):
+    # check modules
+    try:
+        import numpy as np
+        from scipy.sparse import csr_matrix, eye
+    except:
+        print_error("No scipy module available. See: https://www.scipy.org/")
+        sys.exit(1)
+    # read file, first 16 bytes only
+    [id, nrow, ncol, nnz] = np.fromfile(filepathin, dtype = '>i4', count = 4)
+    # construct the petsc aij data type
+    petscaij = '4>i4, %d>i4, %d>i4, %d>f8' % (nrow, nnz, nnz)
+#    print petscaij
+    # read whole file
+    [header, nnzrow, indices, data], = np.fromfile(filepathin, dtype = petscaij)
+    # create index set for scipy csr matrix format
+    indptr = np.insert(np.cumsum(nnzrow), 0, 0)
+    # create matrix
+    A = csr_matrix((data, indices, indptr), shape=(nrow, ncol))
+    # set factor
+    m = factor
+    # check matrix type
+    if matrixtype == 'exp':
+        # create identity
+        I = eye(nrow, format = 'csr')
+        # compute coarser time step
+        Am = I + m * (A - I)
+#        print Am.shape
+#        print Am.dtype
+
+    elif matrixtype == 'imp':
+        # compute coarser time step
+        Am = A**m
+    # prepare for storage, assume the structure has changed, not the shape
+#    header[3] = Am.nnz
+#    nnzrow = Am.indptr[1:] - Am.indptr[0:-1]
+#    testtype = '4>i4'
+#testtype = '4>i4, %d>i4' % nrow
+#petscaij = '4>i4, %d>i4, %d>i4, %d>f8' % (nrow, nnz, nnz)
+#    Amarray = np.array([[1],[2],[3],[4]], dtype = '4>i4')
+#    Amarray = np.array((1,2,3,4), dtype = '4>i4')
+
+#    Amarray = np.array([header, nnzrow, Am.indices, Am.data], dtype = petscaij)
+#    print Amarray.shape
+#    print Amarray.dtype
+#    print Am.toarray().shape
+#    print Am.toarray().dtype
+
+#    AA = np.fromfile(filepathin, dtype = petscaij)
+#    print AA.shape
+#    print AA.dtype
+
+#aa = np.array(1, dtype='4>i4')
+#print aa.shape
+#print aa.dtype
+#print aa
+
+    # store matrix
+#    AA.tofile(filepathout)
+#    Amarray.tofile(filepathout)
+#    Am.data.tofile(filepathout)
+#    Am.toarray().tofile(filepathout)
+
+########################################################################
 ### subcommand dispatch
 ########################################################################
 
@@ -200,6 +279,74 @@ def dispatch_simpack(m3dprefix, argv):
     else:
         # yes, compile model
         compile_simpack(m3dprefix, argv[2])
+
+# dispatch_mat
+def dispatch_matrix(m3dprefix, argv):
+    # check matrix type
+    try:
+        matrixtype = argv[2]
+        # check if type is know
+        if not (matrixtype == 'exp' or matrixtype == 'imp'):
+            print_error("Matrix type '%s' unknown." % matrixtype)
+            print_usage_matrix()
+            sys.exit(1)
+    except IndexError:
+        print_error("No matrix type provided.")
+        print_usage_matrix()
+        sys.exit(1)
+    # check count
+    try:
+        matrixcount = int(argv[3])
+        # check if positive
+        if matrixcount < 1:
+            print_error("Matrix count '%s' is not positive." % argv[3])
+            print_usage_matrix()
+            sys.exit(1)
+    except IndexError:
+        print_error("No matrix count provided.")
+        print_usage_matrix()
+        sys.exit(1)
+    except ValueError:
+        print_error("Matrix count '%s' is not an integer." % argv[3])
+        print_usage_matrix()
+        sys.exit(1)
+    # check factor
+    try:
+        factor = int(argv[4])
+        # check if positive
+        if factor < 1:
+            print_error("Factor '%s' is not positive." % argv[4])
+            print_usage_matrix()
+            sys.exit(1)
+    except IndexError:
+        print_error("No factor provided.")
+        print_usage_matrix()
+        sys.exit(1)
+    except ValueError:
+        print_error("Factor count '%s' is not an integer." % argv[4])
+        print_usage_matrix()
+        sys.exit(1)
+    # check input file format
+    try:
+        fileformatin = argv[5]
+    except:
+        print_error("No input file format provided.")
+        print_usage_matrix()
+        sys.exit(1)
+    # check output file format
+    try:
+        fileformatout = argv[6]
+    except:
+        print_error("No output file format provided.")
+        print_usage_matrix()
+        sys.exit(1)
+    # convert matrices
+    for imat in range(matrixcount):
+        # construct file paths
+        filepathin = fileformatin % imat
+        filepathout = fileformatout % imat
+        # convert matrix
+        convert_matrix(matrixtype, factor, filepathin, filepathout)
 
 # dispatch_update
 def dispatch_update(m3dprefix, argv):
@@ -278,6 +425,9 @@ def dispatch_command(m3dprefix, argv):
     # simpack
     if argv[1] == "simpack":
         dispatch_simpack(m3dprefix, argv)
+    # mat
+    elif argv[1] == "matrix":
+        dispatch_matrix(m3dprefix, argv)
     # update
     elif argv[1] == "update":
         dispatch_update(m3dprefix, argv)
