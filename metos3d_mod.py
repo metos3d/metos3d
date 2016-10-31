@@ -69,6 +69,7 @@ def print_usage_matrix():
     print("Example:")
     print("  # create 4dt matrices")
     print("  cd data/TMM/2.8/Transport/Matrix5_4/")
+    print("  mkdir 4dt")
     print("  metos3d matrix exp 12 4 1dt/Ae_%02d.petsc 4dt/Ae_%02d.petsc")
     print("  metos3d matrix imp 12 4 1dt/Ai_%02d.petsc 4dt/Ai_%02d.petsc")
 
@@ -193,6 +194,7 @@ def compile_simpack_link(linkname, linkpath):
 
 # convert_matrix
 def convert_matrix(matrixtype, factor, filepathin, filepathout):
+    print("Converting ... '%s' to '%s'" % (filepathin, filepathout))
     # check modules
     try:
         import numpy as np
@@ -204,9 +206,10 @@ def convert_matrix(matrixtype, factor, filepathin, filepathout):
     [id, nrow, ncol, nnz] = np.fromfile(filepathin, dtype = '>i4', count = 4)
     # construct the petsc aij data type
     petscaij = '4>i4, %d>i4, %d>i4, %d>f8' % (nrow, nnz, nnz)
-#    print petscaij
     # read whole file
-    [header, nnzrow, indices, data], = np.fromfile(filepathin, dtype = petscaij)
+    matrixarray = np.fromfile(filepathin, dtype = petscaij)
+    # get members of data type
+    [header, nnzrow, indices, data] = matrixarray[0]
     # create index set for scipy csr matrix format
     indptr = np.insert(np.cumsum(nnzrow), 0, 0)
     # create matrix
@@ -219,41 +222,13 @@ def convert_matrix(matrixtype, factor, filepathin, filepathout):
         I = eye(nrow, format = 'csr')
         # compute coarser time step
         Am = I + m * (A - I)
-#        print Am.shape
-#        print Am.dtype
-
     elif matrixtype == 'imp':
         # compute coarser time step
         Am = A**m
-    # prepare for storage, assume the structure has changed, not the shape
-#    header[3] = Am.nnz
-#    nnzrow = Am.indptr[1:] - Am.indptr[0:-1]
-#    testtype = '4>i4'
-#testtype = '4>i4, %d>i4' % nrow
-#petscaij = '4>i4, %d>i4, %d>i4, %d>f8' % (nrow, nnz, nnz)
-#    Amarray = np.array([[1],[2],[3],[4]], dtype = '4>i4')
-#    Amarray = np.array((1,2,3,4), dtype = '4>i4')
-
-#    Amarray = np.array([header, nnzrow, Am.indices, Am.data], dtype = petscaij)
-#    print Amarray.shape
-#    print Amarray.dtype
-#    print Am.toarray().shape
-#    print Am.toarray().dtype
-
-#    AA = np.fromfile(filepathin, dtype = petscaij)
-#    print AA.shape
-#    print AA.dtype
-
-#aa = np.array(1, dtype='4>i4')
-#print aa.shape
-#print aa.dtype
-#print aa
-
+    # prepare for storage, note: we assume the structure did not change
+    matrixarray[0][3] = Am.data
     # store matrix
-#    AA.tofile(filepathout)
-#    Amarray.tofile(filepathout)
-#    Am.data.tofile(filepathout)
-#    Am.toarray().tofile(filepathout)
+    matrixarray.tofile(filepathout)
 
 ########################################################################
 ### subcommand dispatch
