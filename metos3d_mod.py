@@ -194,7 +194,7 @@ def compile_simpack_link(linkname, linkpath):
 
 # convert_matrix
 def convert_matrix(matrixtype, factor, filepathin, filepathout):
-    print("Converting ... '%s' to '%s'" % (filepathin, filepathout))
+    print("Converting ... '%s' to '%s', type: '%s', factor: %d" % (filepathin, filepathout, matrixtype, factor))
     # check modules
     try:
         import numpy as np
@@ -205,11 +205,11 @@ def convert_matrix(matrixtype, factor, filepathin, filepathout):
     # read file, first 16 bytes only
     [id, nrow, ncol, nnz] = np.fromfile(filepathin, dtype = '>i4', count = 4)
     # construct the petsc aij data type
-    petscaij = '4>i4, %d>i4, %d>i4, %d>f8' % (nrow, nnz, nnz)
+    petscaij = '>i4, >i4, >i4, >i4, %d>i4, %d>i4, %d>f8' % (nrow, nnz, nnz)
     # read whole file
     matrixarray = np.fromfile(filepathin, dtype = petscaij)
     # get members of data type
-    [header, nnzrow, indices, data] = matrixarray[0]
+    [id, nrow, ncol, nnz, nnzrow, indices, data] = matrixarray[0]
     # create index set for scipy csr matrix format
     indptr = np.insert(np.cumsum(nnzrow), 0, 0)
     # create matrix
@@ -226,7 +226,8 @@ def convert_matrix(matrixtype, factor, filepathin, filepathout):
         # compute coarser time step
         Am = A**m
     # prepare for storage, note: we assume the structure did not change
-    matrixarray[0][3] = Am.data
+    matrixarray[0][5] = Am.indices
+    matrixarray[0][6] = Am.data
     # store matrix
     matrixarray.tofile(filepathout)
 
