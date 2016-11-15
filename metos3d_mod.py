@@ -42,17 +42,17 @@ def print_error(msg):
 
 # print_execute_fail
 def print_execute_fail(cmd, code):
-    print "### ERROR ###"
-    print "### ERROR ###   Okay, this shouldn't happen ..."
-    print "### ERROR ###"
-    print "### ERROR ###   The command:", cmd
-    print "### ERROR ###   Returned:", code
-    print "### ERROR ###   We expected: 0, i.e. a success."
-    print "### ERROR ###"
-    print "### ERROR ###   What now?"
-    print "### ERROR ###   1. If you understand, what went wrong, solve the problem and rerun the script."
-    print "### ERROR ###   2. If you need help, contact jpi@informatik.uni-kiel.de, attach the output of the script and kindly ask for help."
-    print "### ERROR ###"
+    print("### ERROR ###")
+    print("### ERROR ###   Okay, this shouldn't happen ...")
+    print("### ERROR ###")
+    print("### ERROR ###   The command:", cmd)
+    print("### ERROR ###   Returned:", code)
+    print("### ERROR ###   We expected: 0, i.e. a success.")
+    print("### ERROR ###")
+    print("### ERROR ###   What now?")
+    print("### ERROR ###   1. If you understand, what went wrong, solve the problem and rerun the script.")
+    print("### ERROR ###   2. If you need help, contact jpi@informatik.uni-kiel.de, attach the output of the script and kindly ask for help.")
+    print("### ERROR ###")
 
 # print_usage
 def print_usage():
@@ -360,16 +360,15 @@ def dispatch_info(m3dprefix, argv):
 def dispatch_info_repository(m3dprefix, repository):
     # prepare command, execute and provide information
     cmd = "cd " + m3dprefix + "/" + repository + "/; git describe --always"
-    out = execute_command_pipe(cmd)
-    print("  %-10s%-20s") % (repository, out[0].rstrip()),
     # debug?
     global debug
     if debug:
         # yes, print shell command additionally
         print_debug("Executing: " + cmd)
-    else:
-        # no, just end line
-        print("")
+    # execute
+    out = execute_command_pipe(cmd)
+    out = out[0].decode('utf-8').rstrip()
+    print("  %-10s%-20s" % (repository, out))
 
 ########################################################################
 ### main dispatch
