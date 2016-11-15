@@ -16,6 +16,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+v0.4.2
+- made script python3 compatible
+
+v0.4.1
+- corrected storage of matrix indices
+
+v0.4.0
+- added 'matrix' command
+
 v0.3.5
 - added 'COPYRIGHT.txt' file
 

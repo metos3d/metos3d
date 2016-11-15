@@ -42,24 +42,36 @@ def print_error(msg):
 
 # print_execute_fail
 def print_execute_fail(cmd, code):
-    print "### ERROR ###"
-    print "### ERROR ###   Okay, this shouldn't happen ..."
-    print "### ERROR ###"
-    print "### ERROR ###   The command:", cmd
-    print "### ERROR ###   Returned:", code
-    print "### ERROR ###   We expected: 0, i.e. a success."
-    print "### ERROR ###"
-    print "### ERROR ###   What now?"
-    print "### ERROR ###   1. If you understand, what went wrong, solve the problem and rerun the script."
-    print "### ERROR ###   2. If you need help, contact jpi@informatik.uni-kiel.de, attach the output of the script and kindly ask for help."
-    print "### ERROR ###"
+    print("### ERROR ###")
+    print("### ERROR ###   Okay, this shouldn't happen ...")
+    print("### ERROR ###")
+    print("### ERROR ###   The command:", cmd)
+    print("### ERROR ###   Returned:", code)
+    print("### ERROR ###   We expected: 0, i.e. a success.")
+    print("### ERROR ###")
+    print("### ERROR ###   What now?")
+    print("### ERROR ###   1. If you understand, what went wrong, solve the problem and rerun the script.")
+    print("### ERROR ###   2. If you need help, contact jpi@informatik.uni-kiel.de, attach the output of the script and kindly ask for help.")
+    print("### ERROR ###")
 
 # print_usage
 def print_usage():
     print("Usage:")
-    print("  metos3d [-v] simpack [MODELNAME...]")
+    print("  metos3d [-v] simpack [model-name]")
+    print("  metos3d [-v] matrix [exp|imp] [count] [factor] [file-format-in] [file-format-out]")
     print("  metos3d [-v] update")
     print("  metos3d [-v] info")
+
+# print_usage_matrix
+def print_usage_matrix():
+    print("Usage:")
+    print("  metos3d [-v] matrix [exp|imp] [count] [factor] [file-format-in] [file-format-out]")
+    print("Example:")
+    print("  # create 4dt matrices")
+    print("  cd data/TMM/2.8/Transport/Matrix5_4/")
+    print("  mkdir 4dt")
+    print("  metos3d matrix exp 12 4 1dt/Ae_%02d.petsc 4dt/Ae_%02d.petsc")
+    print("  metos3d matrix imp 12 4 1dt/Ai_%02d.petsc 4dt/Ai_%02d.petsc")
 
 ########################################################################
 ### shell command execution
@@ -177,6 +189,49 @@ def compile_simpack_link(linkname, linkpath):
         print_debug("Link '" + linkname + "' already exists.")
 
 ########################################################################
+### convert matrix
+########################################################################
+
+# convert_matrix
+def convert_matrix(matrixtype, factor, filepathin, filepathout):
+    print("Converting ... '%s' to '%s', type: '%s', factor: %d" % (filepathin, filepathout, matrixtype, factor))
+    # check modules
+    try:
+        import numpy as np
+        from scipy.sparse import csr_matrix, eye
+    except:
+        print_error("No scipy module available. See: https://www.scipy.org/")
+        sys.exit(1)
+    # read file, first 16 bytes only
+    [id, nrow, ncol, nnz] = np.fromfile(filepathin, dtype = '>i4', count = 4)
+    # construct the petsc aij data type
+    petscaij = '>i4, >i4, >i4, >i4, %d>i4, %d>i4, %d>f8' % (nrow, nnz, nnz)
+    # read whole file
+    matrixarray = np.fromfile(filepathin, dtype = petscaij)
+    # get members of data type
+    [id, nrow, ncol, nnz, nnzrow, indices, data] = matrixarray[0]
+    # create index set for scipy csr matrix format
+    indptr = np.insert(np.cumsum(nnzrow), 0, 0)
+    # create matrix
+    A = csr_matrix((data, indices, indptr), shape=(nrow, ncol))
+    # set factor
+    m = factor
+    # check matrix type
+    if matrixtype == 'exp':
+        # create identity
+        I = eye(nrow, format = 'csr')
+        # compute coarser time step
+        Am = I + m * (A - I)
+    elif matrixtype == 'imp':
+        # compute coarser time step
+        Am = A**m
+    # prepare for storage, note: we assume the structure did not change
+    matrixarray[0][5] = Am.indices
+    matrixarray[0][6] = Am.data
+    # store matrix
+    matrixarray.tofile(filepathout)
+
+########################################################################
 ### subcommand dispatch
 ########################################################################
 
@@ -200,6 +255,74 @@ def dispatch_simpack(m3dprefix, argv):
     else:
         # yes, compile model
         compile_simpack(m3dprefix, argv[2])
+
+# dispatch_mat
+def dispatch_matrix(m3dprefix, argv):
+    # check matrix type
+    try:
+        matrixtype = argv[2]
+        # check if type is know
+        if not (matrixtype == 'exp' or matrixtype == 'imp'):
+            print_error("Matrix type '%s' unknown." % matrixtype)
+            print_usage_matrix()
+            sys.exit(1)
+    except IndexError:
+        print_error("No matrix type provided.")
+        print_usage_matrix()
+        sys.exit(1)
+    # check count
+    try:
+        matrixcount = int(argv[3])
+        # check if positive
+        if matrixcount < 1:
+            print_error("Matrix count '%s' is not positive." % argv[3])
+            print_usage_matrix()
+            sys.exit(1)
+    except IndexError:
+        print_error("No matrix count provided.")
+        print_usage_matrix()
+        sys.exit(1)
+    except ValueError:
+        print_error("Matrix count '%s' is not an integer." % argv[3])
+        print_usage_matrix()
+        sys.exit(1)
+    # check factor
+    try:
+        factor = int(argv[4])
+        # check if positive
+        if factor < 1:
+            print_error("Factor '%s' is not positive." % argv[4])
+            print_usage_matrix()
+            sys.exit(1)
+    except IndexError:
+        print_error("No factor provided.")
+        print_usage_matrix()
+        sys.exit(1)
+    except ValueError:
+        print_error("Factor count '%s' is not an integer." % argv[4])
+        print_usage_matrix()
+        sys.exit(1)
+    # check input file format
+    try:
+        fileformatin = argv[5]
+    except:
+        print_error("No input file format provided.")
+        print_usage_matrix()
+        sys.exit(1)
+    # check output file format
+    try:
+        fileformatout = argv[6]
+    except:
+        print_error("No output file format provided.")
+        print_usage_matrix()
+        sys.exit(1)
+    # convert matrices
+    for imat in range(matrixcount):
+        # construct file paths
+        filepathin = fileformatin % imat
+        filepathout = fileformatout % imat
+        # convert matrix
+        convert_matrix(matrixtype, factor, filepathin, filepathout)
 
 # dispatch_update
 def dispatch_update(m3dprefix, argv):
@@ -237,16 +360,15 @@ def dispatch_info(m3dprefix, argv):
 def dispatch_info_repository(m3dprefix, repository):
     # prepare command, execute and provide information
     cmd = "cd " + m3dprefix + "/" + repository + "/; git describe --always"
-    out = execute_command_pipe(cmd)
-    print("  %-10s%-20s") % (repository, out[0].rstrip()),
     # debug?
     global debug
     if debug:
         # yes, print shell command additionally
         print_debug("Executing: " + cmd)
-    else:
-        # no, just end line
-        print("")
+    # execute
+    out = execute_command_pipe(cmd)
+    out = out[0].decode('utf-8').rstrip()
+    print("  %-10s%-20s" % (repository, out))
 
 ########################################################################
 ### main dispatch
@@ -278,6 +400,9 @@ def dispatch_command(m3dprefix, argv):
     # simpack
     if argv[1] == "simpack":
         dispatch_simpack(m3dprefix, argv)
+    # mat
+    elif argv[1] == "matrix":
+        dispatch_matrix(m3dprefix, argv)
     # update
     elif argv[1] == "update":
         dispatch_update(m3dprefix, argv)
