@@ -340,7 +340,7 @@ def dispatch_update_repository(m3dprefix, repository):
     # print information
     print("Updating '" + repository + "' repository ...")
     # assemble command and execute
-    cmd = "cd " + m3dprefix + "/" + repository + "/; git checkout master; git pull"
+    cmd = "cd " + m3dprefix + "/" + repository + "/; git checkout master; git pull --tag"
     execute_command_debug(cmd)
 
 # dispatch_info
