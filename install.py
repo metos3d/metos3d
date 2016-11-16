@@ -36,8 +36,8 @@ def execute_command(cmd):
         print("### ERROR ###")
         print("### ERROR ###   Okay, this shouldn't happen ...")
         print("### ERROR ###")
-        print("### ERROR ###   The command:", cmd)
-        print("### ERROR ###   Returned:", proc.returncode)
+        print("### ERROR ###   The command: {}".format(cmd))
+        print("### ERROR ###   Returned: {}".format(proc.returncode))
         print("### ERROR ###   We expected: 0, i.e. a success.")
         print("### ERROR ###")
         print("### ERROR ###   What now?")
@@ -50,11 +50,17 @@ def execute_command(cmd):
 ### interaction with user
 ########################################################################
 
-# question
-def question(ask, answer):
-    while True:
-        input = raw_input(ask)
-        if input in answer: return input
+# get_user_input
+def get_user_input(question, default_answer):
+    # workaround for different python versions
+    try:
+        # python 2
+        answer = raw_input(question) or default_answer
+    except NameError:
+        # python 3
+        answer = input(question) or default_answer
+    # return
+    return answer
 
 ########################################################################
 ### subroutines
@@ -62,67 +68,70 @@ def question(ask, answer):
 
 # create_installation_directory
 def create_installation_directory(m3dprefix):
-    # ask
-    proceed = question("Create installation directory '" + m3dprefix + "'? [1. Yes | 2. Skip | 3. Quit]: ", ["1", "2", "3"])
-    if proceed == "3": sys.exit(0)
-    if proceed == "2":
-        print("#")
-        print("#   Skipped.")
-        print("#")
-        print("")
+    # question and default answer
+    question = "Create installation directory '" + m3dprefix + "'? [yes]/no \n>>> "
+    default_answer = "yes"
+    # ask user
+    answer = get_user_input(question, default_answer)
+    # proceed accordingly
+    if answer != "yes":
         return
-    # create install folder
-    print("#")
-    print("#   Creating installation directory '" + m3dprefix + "'.")
-    cmd = "mkdir " + m3dprefix
-    execute_command(cmd)
-    print("#   Directory '" + m3dprefix + "' successfully created.")
-    print("#")
+    else:
+        # create install folder
+        print("#")
+        print("#   Creating installation directory '" + m3dprefix + "'.")
+        cmd = "mkdir " + m3dprefix
+        execute_command(cmd)
+        print("#   Directory '" + m3dprefix + "' successfully created.")
+        print("#")
 
 # clone_repository
 def clone_repository(m3dprefix, name):
-    # ask
-    proceed = question("Clone '" + name + "' repository into '" + m3dprefix + "'? [1. Yes | 2. Skip | 3. Quit]: ", ["1", "2", "3"])
-    if proceed == "3": sys.exit(0)
-    if proceed == "2":
-        print("#")
-        print("#   Skipped.")
-        print("#")
+    # question and default answer
+    question = "Clone '" + name + "' repository into '" + m3dprefix + "'? [yes]/no \n>>> "
+    default_answer = "yes"
+    # ask user
+    answer = get_user_input(question, default_answer)
+    # proceed accordingly
+    if answer != "yes":
         return
-    # clone
-    print("#")
-    print("#   Cloning git repository '" + name + "'.")
-    cmd = "cd " + m3dprefix + "; git clone https://github.com/metos3d/" + name + ".git"
-    execute_command(cmd)
-    print("#   Repository '" + name + "' successfully cloned.")
-    print("#")
+    else:
+        # clone
+        print("#")
+        print("#   Cloning git repository '" + name + "'.")
+        cmd = "cd " + m3dprefix + "; git clone https://github.com/metos3d/" + name + ".git"
+        execute_command(cmd)
+        print("#   Repository '" + name + "' successfully cloned.")
+        print("#")
 
 # clone_repository_data
 def clone_repository_data(m3dprefix):
+    # repository
     name = "data"
-    # ask
-    proceed = question("Clone '" + name + "' repository into '" + m3dprefix + "'? [1. Yes | 2. Skip | 3. Quit]: ", ["1", "2", "3"])
-    if proceed == "3": sys.exit(0)
-    if proceed == "2":
-        print("#")
-        print("#   Skipped.")
-        print("#")
+    # question and default answer
+    question = "Clone '" + name + "' repository into '" + m3dprefix + "'? [yes]/no \n>>> "
+    default_answer = "yes"
+    # ask user
+    answer = get_user_input(question, default_answer)
+    # proceed accordingly
+    if answer != "yes":
         return
-    # clone
-    print("#")
-    print("#   Cloning git repository '" + name + "'.")
-    cmd = "cd " + m3dprefix + "; git clone https://github.com/metos3d/" + name + ".git"
-    execute_command(cmd)
-    print("#   Repository '" + name + "' successfully cloned.")
-    print("#")
-    # extract data
-    print("#")
-    print("#   Extracting data.")
-    execute_command("cd " + m3dprefix + "/data/data; gunzip -c TMM.tar.gz > TMM.tar")
-    execute_command("cd " + m3dprefix + "/data/data; tar xf TMM.tar")
-    execute_command("cd " + m3dprefix + "/data/data; rm -f TMM.tar")
-    print("#   Data successfully extracted.")
-    print("#")
+    else:
+        # clone
+        print("#")
+        print("#   Cloning git repository '" + name + "'.")
+        cmd = "cd " + m3dprefix + "; git clone https://github.com/metos3d/" + name + ".git"
+        execute_command(cmd)
+        print("#   Repository '" + name + "' successfully cloned.")
+        print("#")
+        # extract data
+        print("#")
+        print("#   Extracting data.")
+        execute_command("cd " + m3dprefix + "/data/data; gunzip -c TMM.tar.gz > TMM.tar")
+        execute_command("cd " + m3dprefix + "/data/data; tar xf TMM.tar")
+        execute_command("cd " + m3dprefix + "/data/data; rm -f TMM.tar")
+        print("#   Data successfully extracted.")
+        print("#")
 
 ########################################################################
 ### main
@@ -131,7 +140,7 @@ def clone_repository_data(m3dprefix):
 # main
 if __name__ == "__main__":
     # m3dprefix
-    m3dprefix = os.path.expanduser("~/metos3d")
+    m3dprefix = os.path.expanduser("~/.metos3d")
     # say hello
     print("#")
     print("#   Metos3D: Marine Ecosystem Toolkit for Optimization and Simulation in 3-D")
@@ -144,17 +153,17 @@ if __name__ == "__main__":
     print("#     3. Set 'PATH' environment variable.")
     print("#")
     # explain procedure
-    print("#   The script stops after every (intermediate) step and asks for permission to proceed.")
-    print("#   For a full installation from scratch respond each time by entering a '1' for 'Yes'.")
-    print("#")
+#    print("#   The script stops after every (intermediate) step and asks for permission to proceed.")
+#    print("#   For a full installation from scratch respond each time by entering a '1' for 'Yes'.")
+#    print("#")
     print("")
     ###
-    ### 1. Create installation directory '~/metos3d'.
+    ### 1. Create installation directory '~/.metos3d'.
     ###
     # directory
     create_installation_directory(m3dprefix)
     ###
-    ### 2. Clone the 'metos3d', 'simpack', 'model' and 'data' git repositories into '~/metos3d'.
+    ### 2. Clone the 'metos3d', 'simpack', 'model' and 'data' git repositories into '~/.metos3d'.
     ###
     # repositories
     clone_repository(m3dprefix, "metos3d")
