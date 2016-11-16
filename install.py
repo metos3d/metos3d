@@ -152,11 +152,6 @@ if __name__ == "__main__":
     print("#     2. Clone the 'metos3d', 'simpack', 'model' and 'data' git repositories into '" + m3dprefix + "'.")
     print("#     3. Set 'PATH' environment variable.")
     print("#")
-    # explain procedure
-#    print("#   The script stops after every (intermediate) step and asks for permission to proceed.")
-#    print("#   For a full installation from scratch respond each time by entering a '1' for 'Yes'.")
-#    print("#")
-    print("")
     ###
     ### 1. Create installation directory '~/.metos3d'.
     ###
@@ -171,7 +166,6 @@ if __name__ == "__main__":
     clone_repository(m3dprefix, "model")
     clone_repository_data(m3dprefix)
     # success
-    print("")
     print("#")
     print("#   Now, add '" + m3dprefix + "/metos3d' permanently to the search path of your shell.")
     print("#   This means, include")
