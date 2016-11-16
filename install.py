@@ -27,7 +27,7 @@ import subprocess
 
 # execute_command
 def execute_command(cmd):
-    print "#     Executing: " + cmd
+    print("#     Executing: " + cmd)
     proc = subprocess.Popen(cmd, shell = True)
     out = proc.communicate()
     # check for error
