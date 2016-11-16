@@ -16,6 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+v0.4.3
+- updated README and CHANGELOG
+
 v0.4.2
 - made script python3 compatible
 
