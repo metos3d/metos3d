@@ -16,6 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+v0.5.0
+- PETSc 3.7 compatibility
+
 v0.4.3
 - updated README and CHANGELOG
 
