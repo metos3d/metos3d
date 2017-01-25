@@ -346,7 +346,10 @@ def dispatch_update_repository(m3dprefix, repository):
 # dispatch_info
 def dispatch_info(m3dprefix, argv):
     # provide information about the repository versions
-    print("Your are using the following versions of the Metos3D repositories:")
+    print("Your are using the following tags and branches of the Metos3D repositories:")
+    print("")
+    print("  %-10s%-20s%s" % ("name", "tag", "branch"))
+    print("  %-10s%-20s%s" % ("----", "---", "------"))
     # metos3d
     dispatch_info_repository(m3dprefix, "metos3d")
     # data
@@ -355,10 +358,12 @@ def dispatch_info(m3dprefix, argv):
     dispatch_info_repository(m3dprefix, "model")
     # simpack
     dispatch_info_repository(m3dprefix, "simpack")
+    print("")
 
 # dispatch_info_repository
 def dispatch_info_repository(m3dprefix, repository):
     # prepare command, execute and provide information
+    # tags
     cmd = "cd " + m3dprefix + "/" + repository + "/; git describe --always"
     # debug?
     global debug
@@ -366,9 +371,19 @@ def dispatch_info_repository(m3dprefix, repository):
         # yes, print shell command additionally
         print_debug("Executing: " + cmd)
     # execute
-    out = execute_command_pipe(cmd)
-    out = out[0].decode('utf-8').rstrip()
-    print("  %-10s%-20s" % (repository, out))
+    outtag = execute_command_pipe(cmd)
+    outtag = outtag[0].decode('utf-8').rstrip()
+    # branches
+    cmd = "cd " + m3dprefix + "/" + repository + "/; git symbolic-ref --short HEAD"
+    # debug?
+    if debug:
+        # yes, print shell command additionally
+        print_debug("Executing: " + cmd)
+    # execute
+    outbranch = execute_command_pipe(cmd)
+    outbranch = outbranch[0].decode('utf-8').rstrip()
+    # repo info
+    print("  %-10s%-20s%s" % (repository, outtag, outbranch))
 
 ########################################################################
 ### main dispatch
