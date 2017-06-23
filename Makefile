@@ -31,8 +31,11 @@ M3DOBJSC = \
 
 # BGC model name
 BGCMODELNAME = $(notdir $(BGC:%/=%))
-BGCMODELFILE = model.o
-M3DOBJSBGC = $(addprefix $(BGC)/, $(BGCMODELFILE))
+BGCMODELOBJ = model.o
+# if a model Makefile.in exists, use it
+# Makefile.in must declare object files in the BGCMODELOBJ variable
+-include $(BGC)/Makefile.in
+M3DOBJSBGC = $(addprefix $(BGC)/, $(BGCMODELOBJ))
 
 # executable name
 PROGRAMBASE = metos3d-simpack-
