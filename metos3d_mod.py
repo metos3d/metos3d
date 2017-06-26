@@ -352,12 +352,12 @@ def dispatch_info(m3dprefix, argv):
     print("  %-10s%-20s%s" % ("----", "---", "------"))
     # metos3d
     dispatch_info_repository(m3dprefix, "metos3d")
-    # data
-    dispatch_info_repository(m3dprefix, "data")
-    # model
-    dispatch_info_repository(m3dprefix, "model")
     # simpack
     dispatch_info_repository(m3dprefix, "simpack")
+    # model
+    dispatch_info_repository(m3dprefix, "model")
+    # data
+    dispatch_info_repository(m3dprefix, "data")
     print("")
 
 # dispatch_info_repository
