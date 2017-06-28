@@ -42,7 +42,7 @@ PROGRAMBASE = metos3d-simpack-
 PROGRAM = ${PROGRAMBASE}${BGCMODELNAME}.exe
 
 ALL: $(PROGRAM)
-CFLAGS = -DBGC=metos3dbgc_ -DBGCINIT=metos3dbgcinit_ -DBGCFINAL=metos3dbgcfinal_
+CFLAGS = -DBGCINIT=metos3dbgcinit_ -DBGCBEGIN=metos3dbgcbegin_ -DBGC=metos3dbgc_  -DBGCEND=metos3dbgcend_ -DBGCFINAL=metos3dbgcfinal_
 FFLAGS = 
 CLEANFILES = $(M3DOBJSBGC) $(M3DOBJSC) $(PROGRAM)
 
@@ -51,3 +51,6 @@ include $(PETSC_DIR)/lib/petsc/conf/rules
 
 $(PROGRAM): $(M3DOBJSBGC) $(M3DOBJSC) chkopts
 	-$(CLINKER) -o $@ $(M3DOBJSBGC) $(M3DOBJSC) $(PETSC_LIB)
+
+
+
