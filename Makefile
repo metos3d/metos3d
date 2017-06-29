@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# object files
+# M3D object files
 M3DOBJSC = \
 	simpack/src/metos3d_debug.o \
 	simpack/src/metos3d_util.o \
@@ -32,19 +32,32 @@ M3DOBJSC = \
 # BGC model name
 BGCMODELNAME = $(notdir $(BGC:%/=%))
 BGCMODELOBJ = model.o
+
+# compiler flags
+CFLAGS = -DBGC=metos3dbgc_
+FFLAGS =
+
 # if a model Makefile.in exists, use it
-# Makefile.in must declare object files in the BGCMODELOBJ variable
+# variables that can be overwritten:
+#
+#   BGCMODELOBJ     own BCG object file
+#   CFLAGS          own C compiler flags
+#   FFLAGS          own Fortran compiler flags
+#
 -include $(BGC)/Makefile.in
+
+# BGC object files
 M3DOBJSBGC = $(addprefix $(BGC)/, $(BGCMODELOBJ))
 
 # executable name
 PROGRAMBASE = metos3d-simpack-
 PROGRAM = ${PROGRAMBASE}${BGCMODELNAME}.exe
 
-ALL: $(PROGRAM)
-CFLAGS = -DBGCINIT=metos3dbgcinit_ -DBGCBEGIN=metos3dbgcbegin_ -DBGC=metos3dbgc_  -DBGCEND=metos3dbgcend_ -DBGCFINAL=metos3dbgcfinal_
-FFLAGS = 
+# files to clean
 CLEANFILES = $(M3DOBJSBGC) $(M3DOBJSC) $(PROGRAM)
+
+# targets
+ALL: $(PROGRAM)
 
 include $(PETSC_DIR)/lib/petsc/conf/variables
 include $(PETSC_DIR)/lib/petsc/conf/rules
