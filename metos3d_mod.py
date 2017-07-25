@@ -81,7 +81,7 @@ def print_usage_matrix():
 def execute_command(cmd):
     # execute
     proc = subprocess.Popen(cmd, shell = True)
-    out  = proc.communicate()
+    out, err  = proc.communicate()
     # check for error
     if not proc.returncode == 0:
         print_execute_fail(cmd, proc.returncode)
@@ -91,13 +91,20 @@ def execute_command(cmd):
 def execute_command_pipe(cmd):
     # execute
     proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell = True)
-    [out, err] = proc.communicate()
-    # check for error
+    out, err = proc.communicate()
+    # check for return code
     if not proc.returncode == 0:
         print_execute_fail(cmd, proc.returncode)
         sys.exit(proc.returncode)
+    # check for stderr
+    if not err == '':
+        print_error("")
+        print_error("Command execution failed: " + cmd)
+        print_error("")
+        print(err)
+        sys.exit(1)
     # stdout and stderr
-    return [out, err]
+    return out, err
 
 # execute_command_debug:
 def execute_command_debug(cmd):
@@ -109,7 +116,7 @@ def execute_command_debug(cmd):
         execute_command(cmd)
     else:
         # no, execute quietly
-        out = execute_command_pipe(cmd)
+        out, err = execute_command_pipe(cmd)
 
 ########################################################################
 ### compile
@@ -127,41 +134,44 @@ def compile_simpack(m3dprefix, argv):
         sys.exit(1)
     # compile model
     else:
-        # check PETSc variables
-        try:
-            petscdir = os.environ["PETSC_DIR"]
-            petscarch = os.environ["PETSC_ARCH"]
-        except KeyError:
-            print_error("PETSc variables are not set.")
-            sys.exit(1)
-        # create links
-        # data
-        compile_simpack_link("data", m3dprefix + "/data/data")
-        # model
-        compile_simpack_link("model", m3dprefix + "/model/model")
-        # simpack
-        compile_simpack_link("simpack", m3dprefix + "/simpack")
-        # Makefile
-        compile_simpack_link("Makefile", m3dprefix + "/metos3d/Makefile")
-        # make directory
-        # work
-        compile_simpack_mkdir("work")
-        # make BGC
-        compile_simpack_make(modelname, argv)
+        # make clean, if desired
+        if len(argv) == 4:
+            if argv[3] == "clean":
+                # print info
+                print("Cleaning '" + modelname + "' model ...")
+                # assemble command and execute
+                cmd = "make BGC=model/" + modelname + " clean"
+                execute_command_debug(cmd)
+            else:
+                print_error("Unknown command: " + argv[3])
+                sys.exit(1)
+        else:
+            # check PETSc variables
+            try:
+                petscdir = os.environ["PETSC_DIR"]
+                petscarch = os.environ["PETSC_ARCH"]
+            except KeyError:
+                print_error("PETSc variables are not set.")
+                sys.exit(1)
+            # create links
+            # data
+            compile_simpack_link("data", m3dprefix + "/data/data")
+            # model
+            compile_simpack_link("model", m3dprefix + "/model/model")
+            # simpack
+            compile_simpack_link("simpack", m3dprefix + "/simpack")
+            # Makefile
+            compile_simpack_link("Makefile", m3dprefix + "/metos3d/Makefile")
+            # make directory
+            # work
+            compile_simpack_mkdir("work")
+            # make BGC
+            compile_simpack_make(modelname, argv)
 
 # compile_simpack_make
 def compile_simpack_make(modelname, argv):
     # print info
     print("Compiling '" + modelname + "' model ...")
-    # make clean, if desired
-    if len(argv) == 4:
-        if argv[3] == "clean":
-            # assemble command and execute
-            cmd = "make BGC=model/" + modelname + " clean"
-            execute_command_debug(cmd)
-        else:
-            print_error("Unknown command: " + argv[3])
-            sys.exit(1)
     # make
     # assemble command and execute
     cmd = "make BGC=model/" + modelname
@@ -378,8 +388,8 @@ def dispatch_info_repository(m3dprefix, repository):
         # yes, print shell command additionally
         print_debug("Executing: " + cmd)
     # execute
-    outtag = execute_command_pipe(cmd)
-    outtag = outtag[0].decode('utf-8').rstrip()
+    outtag, err = execute_command_pipe(cmd)
+    outtag = outtag.decode('utf-8').rstrip()
     # branches
     cmd = "cd " + m3dprefix + "/" + repository + "/; git symbolic-ref --short HEAD"
     # debug?
@@ -387,8 +397,8 @@ def dispatch_info_repository(m3dprefix, repository):
         # yes, print shell command additionally
         print_debug("Executing: " + cmd)
     # execute
-    outbranch = execute_command_pipe(cmd)
-    outbranch = outbranch[0].decode('utf-8').rstrip()
+    outbranch, err = execute_command_pipe(cmd)
+    outbranch = outbranch.decode('utf-8').rstrip()
     # repo info
     print("  %-10s%-20s%s" % (repository, outtag, outbranch))
 
