@@ -57,7 +57,7 @@ def print_execute_fail(cmd, code):
 # print_usage
 def print_usage():
     print("Usage:")
-    print("  metos3d [-v] simpack [model-name]")
+    print("  metos3d [-v] simpack [model-name] [clean]")
     print("  metos3d [-v] matrix [exp|imp] [count] [factor] [file-format-in] [file-format-out]")
     print("  metos3d [-v] update")
     print("  metos3d [-v] info")
@@ -116,7 +116,9 @@ def execute_command_debug(cmd):
 ########################################################################
 
 # compile_simpack
-def compile_simpack(m3dprefix, modelname):
+def compile_simpack(m3dprefix, argv):
+    # get model name
+    modelname = argv[2]
     # assemble model path
     modeldir = m3dprefix + "/model/model/" + modelname
     # no model dir
@@ -145,16 +147,21 @@ def compile_simpack(m3dprefix, modelname):
         # work
         compile_simpack_mkdir("work")
         # make BGC
-        compile_simpack_make(modelname)
+        compile_simpack_make(modelname, argv)
 
 # compile_simpack_make
-def compile_simpack_make(modelname):
+def compile_simpack_make(modelname, argv):
     # print info
     print("Compiling '" + modelname + "' model ...")
-    # make clean
-    # assemble command and execute
-    cmd = "make BGC=model/" + modelname + " clean"
-    execute_command_debug(cmd)
+    # make clean, if desired
+    if len(argv) == 4:
+        if argv[3] == "clean":
+            # assemble command and execute
+            cmd = "make BGC=model/" + modelname + " clean"
+            execute_command_debug(cmd)
+        else:
+            print_error("Unknown command: " + argv[3])
+            sys.exit(1)
     # make
     # assemble command and execute
     cmd = "make BGC=model/" + modelname
@@ -254,7 +261,7 @@ def dispatch_simpack(m3dprefix, argv):
             execute_command(cmd)
     else:
         # yes, compile model
-        compile_simpack(m3dprefix, argv[2])
+        compile_simpack(m3dprefix, argv)
 
 # dispatch_mat
 def dispatch_matrix(m3dprefix, argv):

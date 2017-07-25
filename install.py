@@ -177,7 +177,7 @@ if __name__ == "__main__":
     print("#")
     print("#   $> metos3d")
     print("#   Usage:")
-    print("#     metos3d [-v] simpack [model-name]")
+    print("#     metos3d [-v] simpack [model-name] [clean]")
     print("#     metos3d [-v] matrix [exp|imp] [count] [factor] [file-format-in] [file-format-out]")
     print("#     metos3d [-v] update")
     print("#     metos3d [-v] info")
