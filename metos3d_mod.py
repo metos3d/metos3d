@@ -92,6 +92,8 @@ def execute_command_pipe(cmd):
     # execute
     proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell = True)
     out, err = proc.communicate()
+    out = out.decode('utf-8')
+    err = err.decode('utf-8')
     # check for return code
     if not proc.returncode == 0:
         print_execute_fail(cmd, proc.returncode)
