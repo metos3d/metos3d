@@ -92,8 +92,11 @@ def execute_command_pipe(cmd):
     # execute
     proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell = True)
     out, err = proc.communicate()
-    out = out.decode('utf-8')
-    err = err.decode('utf-8')
+    try:
+        out = out.decode('utf-8')
+        err = err.decode('utf-8')
+    except AttributeError:
+        pass
     # check for return code
     if not proc.returncode == 0:
         print_execute_fail(cmd, proc.returncode)
@@ -391,7 +394,7 @@ def dispatch_info_repository(m3dprefix, repository):
         print_debug("Executing: " + cmd)
     # execute
     outtag, err = execute_command_pipe(cmd)
-    outtag = outtag.decode('utf-8').rstrip()
+    outtag = outtag.rstrip()
     # branches
     cmd = "cd " + m3dprefix + "/" + repository + "/; git symbolic-ref --short HEAD"
     # debug?
@@ -400,7 +403,7 @@ def dispatch_info_repository(m3dprefix, repository):
         print_debug("Executing: " + cmd)
     # execute
     outbranch, err = execute_command_pipe(cmd)
-    outbranch = outbranch.decode('utf-8').rstrip()
+    outbranch = outbranch.rstrip()
     # repo info
     print("  %-10s%-20s%s" % (repository, outtag, outbranch))
 
