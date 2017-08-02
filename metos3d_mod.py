@@ -46,7 +46,7 @@ def print_execute_fail(cmd, code):
     print("### ERROR ###   Okay, this shouldn't happen ...")
     print("### ERROR ###")
     print("### ERROR ###   The command: {}".format(cmd))
-    print("### ERROR ###   Returned: {}".format(§code))
+    print("### ERROR ###   Returned: {}".format(code))
     print("### ERROR ###   We expected: 0, i.e. a success.")
     print("### ERROR ###")
     print("### ERROR ###   What now?")
