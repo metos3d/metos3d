@@ -46,7 +46,7 @@ def print_execute_fail(cmd, code):
     print("### ERROR ###   Okay, this shouldn't happen ...")
     print("### ERROR ###")
     print("### ERROR ###   The command: {}".format(cmd))
-    print("### ERROR ###   Returned: {}".format(proc.returncode))
+    print("### ERROR ###   Returned: {}".format(§code))
     print("### ERROR ###   We expected: 0, i.e. a success.")
     print("### ERROR ###")
     print("### ERROR ###   What now?")
@@ -129,6 +129,13 @@ def execute_command_debug(cmd):
 
 # compile_simpack
 def compile_simpack(m3dprefix, argv):
+    # check PETSc variables
+    try:
+        petscdir = os.environ["PETSC_DIR"]
+        petscarch = os.environ["PETSC_ARCH"]
+    except KeyError:
+        print_error("PETSc variables are not set.")
+        sys.exit(1)
     # get model name
     modelname = argv[2]
     # assemble model path
@@ -137,8 +144,16 @@ def compile_simpack(m3dprefix, argv):
     if not os.path.exists(modeldir):
         print_error("Model directory '" + modeldir + "' does not exist.")
         sys.exit(1)
-    # compile model
     else:
+        # create links
+        # data
+        compile_simpack_link("data", m3dprefix + "/data/data")
+        # model
+        compile_simpack_link("model", m3dprefix + "/model/model")
+        # simpack
+        compile_simpack_link("simpack", m3dprefix + "/simpack")
+        # Makefile
+        compile_simpack_link("Makefile", m3dprefix + "/metos3d/Makefile")
         # make clean, if desired
         if len(argv) == 4:
             if argv[3] == "clean":
@@ -151,25 +166,9 @@ def compile_simpack(m3dprefix, argv):
                 print_error("Unknown command: " + argv[3])
                 sys.exit(1)
         else:
-            # check PETSc variables
-            try:
-                petscdir = os.environ["PETSC_DIR"]
-                petscarch = os.environ["PETSC_ARCH"]
-            except KeyError:
-                print_error("PETSc variables are not set.")
-                sys.exit(1)
-            # create links
-            # data
-            compile_simpack_link("data", m3dprefix + "/data/data")
-            # model
-            compile_simpack_link("model", m3dprefix + "/model/model")
-            # simpack
-            compile_simpack_link("simpack", m3dprefix + "/simpack")
-            # Makefile
-            compile_simpack_link("Makefile", m3dprefix + "/metos3d/Makefile")
-            # make directory
-            # work
+            # make work directory
             compile_simpack_mkdir("work")
+            # compile simpack and BGC model
             # make BGC
             compile_simpack_make(modelname, argv)
 
