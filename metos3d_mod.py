@@ -103,11 +103,11 @@ def execute_command_pipe(cmd):
         sys.exit(proc.returncode)
     # check for stderr
     if not err == '':
-        print_error("")
-        print_error("Command execution failed: " + cmd)
-        print_error("")
+#        print_error("")
+#        print_error("Command execution failed: " + cmd)
+#        print_error("")
         print(err)
-        sys.exit(1)
+#        sys.exit(1)
     # stdout and stderr
     return out, err
 
@@ -361,7 +361,8 @@ def dispatch_update_repository(m3dprefix, repository):
     # print information
     print("Updating '" + repository + "' repository ...")
     # assemble command and execute
-    cmd = "cd " + m3dprefix + "/" + repository + "/; git checkout master; git pull --tag"
+#    cmd = "cd " + m3dprefix + "/" + repository + "/; git checkout master; git pull --tag"
+    cmd = "cd " + m3dprefix + "/" + repository + "/; git pull --tag"
     execute_command_debug(cmd)
 
 # dispatch_info
