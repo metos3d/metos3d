@@ -3,6 +3,7 @@
 import os
 import sys
 import re
+import yaml
 
 import matplotlib
 matplotlib.rc("font", **{"family" : "sans-serif"})
@@ -10,123 +11,122 @@ matplotlib.rcParams.update({'font.size': 14})
 #matplotlib.rc("text", usetex = True)
 matplotlib.use("PDF")
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages as pdfpages
 
-#
-#   create_hamocc_figures
-#
-def create_hamocc_figures(filepath, tracer_name_unit, tracer_data, diag_name_unit, diag_data):
-    print("Creating tracer and diagnostic figures ... " + filepath)
-    # loop over tracers
-    for (name, unit) in tracer_name_unit:
-        # plot
-#        print(name)
-#        print(unit)
-#        print(tracer_data[name])
-        plt.figure()
-        plt.plot(tracer_data[name], 'k')
-        plt.title("%s" % name)
-        plt.xlabel("model years")
-        plt.ylabel("[%s]" % unit)
-#        ax = p.axes
-#        ax.title()
-        # write to file
-        plt.savefig("%s%s.pdf" % (filepath, name), bbox_inches = "tight")
-        plt.close()
-    # loop over diag
-    for (name, unit) in diag_name_unit:
-        # plot
-#        print(name)
-#        print(unit)
-#        print(diag_data[name])
-        plt.figure()
-        plt.plot(diag_data[name], 'k')
-        plt.title("%s" % name)
-        plt.xlabel("model years")
-        plt.ylabel("[%s]" % unit)
-#        ax = p.axes
-#        ax.title()
-        # write to file
-        plt.savefig("%s%s.pdf" % (filepath, name), bbox_inches = "tight")
-        plt.close()
-
-
-#
-#   read_hamocc_tracer_and_diag_data
-#
-def read_hamocc_tracer_and_diag_data(outfile, tracer, diag):
-    print("Reading tracer and diagnostic data ... " + outfile)
-    # init
-    tracer_data = {}
-    for name in tracer:
-        tracer_data[name] = []
-    diag_data = {}
-    for name in diag:
-        diag_data[name] = []
-    # read file, parse and store
-    f = open(outfile, "r")
-    for line in f:
-#        print(line)
-        # match tracer
-        for name in tracer:
-#            print(name)
-            tracer_match = re.search("^.+ \d+ Tracer: \d+, %s\s+, total:\s+([+-]\d+.\d+e[+-]\d+)" % name, line)
-#            print(tracer_match)
-            if tracer_match:
-                tracer_data[name].append(float(tracer_match.groups()[0]))
-        # match diagnostic variable
-        for name in diag:
-#            print(name)
-            diag_match = re.search("^.+ \d+ Diagnostics: \d+, %s\s+, total:\s+([+-]\d+.\d+e[+-]\d+)" % name, line)
-#            print(diag_match)
-            if diag_match:
-                diag_data[name].append(float(diag_match.groups()[0]))
-    # close file
-    f.close()
-    # return results
-    return tracer_data, diag_data
 
 #
 #   read_conf_file
 #
 def read_conf_file(conf_file):
     print("Reading configuration file ... " + conf_file)
-    # read file, parse and store
+    # open conf file
     f = open(conf_file, "r")
-    # output file
-    # tracer names
-    # tracer units
-    outfile     = f.readline().strip()
-    tracer      = f.readline().strip().split(",")
-    tracer_unit = f.readline().strip().split(",")
-    diag        = f.readline().strip().split(",")
-    diag_unit   = f.readline().strip().split(",")
+    # parse yaml file
+    conf = yaml.load(f)
+    # get list of variables
+    conf_list = []
+    try:
+        var_list = conf["Name, Scale, Unit, Description"]
+        # loop over list
+        for var in var_list:
+            # split
+            name, scale, unit, description = var.split(",", 3)
+            # strip and convert
+            name = name.strip()
+            scale = float(scale.strip())
+            unit = unit.strip()
+            description = description.strip()
+            # append to conf list
+            conf_list.append({"name": name, "scale": scale, "unit": unit, "description": description})
+    except KeyError:
+        print("### ERROR ### Did not find the 'Name, Scale, Unit, Description' key.")
+        sys.exit(1)
     # return results
-    return outfile, tracer, tracer_unit, diag, diag_unit
+    return conf_list
+
+#
+#   read_output_file
+#
+def read_output_file(conf_list, text_in_file):
+    print("Reading output file ... " + text_in_file)
+    # init
+    figure_data = {}
+    var_name = []
+    for conf in conf_list:
+        name = conf["name"]
+        figure_data[name] = []
+        var_name.append(name)
+    # read file, parse and store
+    f = open(text_in_file, "r")
+    for line in f:
+#        print(line)
+        # match variable
+        for name in var_name:
+#            print(name)
+            var_match = re.search("^.+ \d+ .+: \d+, %s\s+, total:\s+([+-]\d+.\d+e[+-]\d+)" % name, line)
+#            print(var_match)
+            if var_match:
+                figure_data[name].append(float(var_match.groups()[0]))
+    # close file
+    f.close()
+    return figure_data
+
+#
+#   create_figures
+#
+def create_figures(conf_list, figure_data, pdf_out_file):
+    print("Creating figures ... " + pdf_out_file)
+    # create one pdf document with all figures
+    pdf_pages = pdfpages(pdf_out_file)
+    # loop over variables
+    for conf in conf_list:
+        # debug
+        print(conf)
+        # name, unit, data
+        name = conf["name"]
+        data = figure_data[name]
+        unit = conf["unit"]
+        # plot
+        fig = plt.figure()
+        plt.plot(data, 'k')
+        plt.title("%s" % name)
+        plt.xlabel("model years")
+        plt.ylabel("[%s]" % unit)
+        # store
+        pdf_pages.savefig(fig)
+        # close figure
+        plt.close()
+    # close pdf doc
+    pdf_pages.close()
 
 #
 #   main
 #
 if __name__ == "__main__":
     # no arguments?
-    if len(sys.argv) <= 1:
+    if len(sys.argv) <= 3:
         # print usage and exit with code 1
-        print("usage: %s [conf-file...]" % sys.argv[0])
+        print("usage: %s [conf-file] [text-in-file] [pdf-out-file]" % sys.argv[0])
         sys.exit(1)
-    
-    # read configuration file
+    # conf file
     conf_file = sys.argv[1]
-    outfile, tracer, tracer_unit, diag, diag_unit = read_conf_file(conf_file)
-#    print(outfile, tracer, tracer_unit, diag, diag_unit)
-
-    # read and parse output file
-    filepath = os.path.dirname(conf_file) + "/" + outfile
-    tracer_data, diag_data = read_hamocc_tracer_and_diag_data(filepath, tracer, diag)
-#    print(tracer_data, diag_data)
-
+    # text in file
+    text_in_file = sys.argv[2]
+    # pdf out file
+    pdf_out_file = sys.argv[3]
+    # debug
+    print(conf_file)
+    print(text_in_file)
+    print(pdf_out_file)
+    # read conf file
+    conf_list = read_conf_file(conf_file)
+    # debug
+#    print(conf_list)
+    # read output file
+    figure_data = read_output_file(conf_list, text_in_file)
+    # debug
+#    print(figure_data)
     # create figures
-    filepath = os.path.dirname(conf_file) + "/work/"
-    tracer_name_unit = zip(tracer, tracer_unit)
-    diag_name_unit = zip(diag, diag_unit)
-    create_hamocc_figures(filepath, tracer_name_unit, tracer_data, diag_name_unit, diag_data)
+    create_figures(conf_list, figure_data, pdf_out_file)
 
 
