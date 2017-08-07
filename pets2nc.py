@@ -58,7 +58,7 @@ def read_conf_file(conf_file):
 #
 #   write_netcdf_file
 #
-def write_netcdf_file(grid_file, conf_list, petsc_data, out_netcdf_file):
+def write_netcdf_file(vardim, grid_file, conf_list, petsc_data, out_netcdf_file):
     print("Writing NetCDF file ... " + out_netcdf_file)
 
     # open grid file
@@ -69,11 +69,21 @@ def write_netcdf_file(grid_file, conf_list, petsc_data, out_netcdf_file):
     except KeyError:
         print("### ERROR ### No 'grid_mask' variable found.")
         sys.exit(1)
-    # numpy masked array
-    grid_mask = grid_mask_variable[0,:,:,:]
-    # get sizes, we expect  (y, x)
-    nz, ny, nx = grid_mask.shape
-    print("Grid mask dimensions ... ", "nz:", nz, "ny:", ny, "nx:", nx)
+
+    # get sizes, we expect  (..., y, x)
+    if vardim == "2d":
+        # numpy masked array
+        grid_mask = grid_mask_variable[0,0,:,:]
+        ny, nx = grid_mask.shape
+        print("Grid mask 2D ... ", "ny:", ny, "nx:", nx)
+    elif vardim == "3d":
+        # numpy masked array
+        grid_mask = grid_mask_variable[0,:,:,:]
+        nz, ny, nx = grid_mask.shape
+        print("Grid mask 3D ... ", "nz:", nz, "ny:", ny, "nx:", nx)
+    else:
+        print("### ERROR ### Unknown dimension: " + dim)
+        sys.exit(1)
 
     # create netcdf file
     out_file = nc4.Dataset(out_netcdf_file, "w", format = "NETCDF4")
@@ -81,15 +91,17 @@ def write_netcdf_file(grid_file, conf_list, petsc_data, out_netcdf_file):
     out_file.set_fill_on()
     # create global attributes
     out_file.description = "Metos3D tracer file for 2.8125 degree, 15 layers MITgcm resolution"
-    out_file.history = "created with: %s %s %s %s" % (sys.argv[0], sys.argv[1], sys.argv[2], sys.argv[3])
+    out_file.history = "created with:" + " %s"*len(sys.argv) % tuple(sys.argv)
 
     # copy dimensions from grid file
     for dimname, dim in grid_nc4.dimensions.items():
+#        print(dimname)
         out_file.createDimension(dimname, len(dim))
         out_file.sync()
 
     # copy variables
     for varname, ncvar in grid_nc4.variables.items():
+#        print(varname)
         if varname in ["time", "depth", "lat", "lon"]:
             var = out_file.createVariable(varname, ncvar.dtype, ncvar.dimensions, zlib = True, fill_value = -9.e+33)
             attdict = ncvar.__dict__
@@ -97,17 +109,32 @@ def write_netcdf_file(grid_file, conf_list, petsc_data, out_netcdf_file):
             var[:] = ncvar[:]
             out_file.sync()
 
+    print(vardim)
     # create variables
-    work_array = grid_mask.reshape(nz, ny*nx).transpose().flatten()
-    for var_list in conf_list:
-        print(var_list)
-        var = out_file.createVariable(var_list["name"], "f8", ("time", "depth", "lat", "lon", ), zlib = True, fill_value = -9.e+33)
-        var.unit = var_list["unit"]
-        var.description = var_list["description"]
-        # transform from 1d to 3d
-        work_array[~work_array.mask] = petsc_data[var_list["name"]] * var_list["scale"]
-        var[0,:,:,:] = work_array.reshape(ny*nx, nz).transpose().reshape(nz, ny, nx)
-    
+    if vardim == "2d":
+        # 2d
+        work_array = grid_mask.flatten()
+        for var_list in conf_list:
+            print(var_list)
+            var = out_file.createVariable(var_list["name"], "f8", ("time", "lat", "lon", ), zlib = True, fill_value = -9.e+33)
+            var.unit = var_list["unit"]
+            var.description = var_list["description"]
+            # transform from 1d to 2d
+            work_array[~work_array.mask] = petsc_data[var_list["name"]] * var_list["scale"]
+            var[0,:,:] = work_array.reshape(ny, nx)
+
+    elif vardim == "3d":
+        # 3d
+        work_array = grid_mask.reshape(nz, ny*nx).transpose().flatten()
+        for var_list in conf_list:
+            print(var_list)
+            var = out_file.createVariable(var_list["name"], "f8", ("time", "depth", "lat", "lon", ), zlib = True, fill_value = -9.e+33)
+            var.unit = var_list["unit"]
+            var.description = var_list["description"]
+            # transform from 1d to 3d
+            work_array[~work_array.mask] = petsc_data[var_list["name"]] * var_list["scale"]
+            var[0,:,:,:] = work_array.reshape(ny*nx, nz).transpose().reshape(nz, ny, nx)    
+
     # close file
     out_file.close()
 
@@ -131,16 +158,18 @@ def get_data_from_petsc_file(conf_list):
 #
 if __name__ == "__main__":
     # no arguments?
-    if len(sys.argv) <= 3:
+    if len(sys.argv) <= 4:
         # print usage and exit with code 1
-        print("usage: %s [grid-netcdf-file] [conf-yaml-file] [out-netcdf-file]" % sys.argv[0])
+        print("usage: %s [2d|3d] [grid-netcdf-file] [conf-yaml-file] [out-netcdf-file]" % sys.argv[0])
         sys.exit(1)
+    # dim
+    vardim = sys.argv[1]
     # grid file
-    grid_file = sys.argv[1]
+    grid_file = sys.argv[2]
     # conf yaml file
-    conf_yaml_file = sys.argv[2]
+    conf_yaml_file = sys.argv[3]
     # out netcdf file
-    out_netcdf_file = sys.argv[3]
+    out_netcdf_file = sys.argv[4]
     # debug
 #    print(conf_yaml_file, out_netcdf_file)
     # read conf file
@@ -152,6 +181,6 @@ if __name__ == "__main__":
     # debug
 #    print(petsc_data)
     # write netcdf file
-    write_netcdf_file(grid_file, conf_list, petsc_data, out_netcdf_file)
+    write_netcdf_file(vardim, grid_file, conf_list, petsc_data, out_netcdf_file)
 
 
