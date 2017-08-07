@@ -67,6 +67,7 @@ def read_output_file(conf_list, text_in_file):
 #            print(var_match)
             if var_match:
                 figure_data[name].append(float(var_match.groups()[0]))
+                break
     # close file
     f.close()
     return figure_data
