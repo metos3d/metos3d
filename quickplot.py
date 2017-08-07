@@ -3,6 +3,7 @@
 import os
 import sys
 import re
+import numpy as np
 import yaml
 
 import matplotlib
@@ -85,7 +86,7 @@ def create_figures(conf_list, figure_data, pdf_out_file):
         print(conf)
         # name, unit, data
         name = conf["name"]
-        data = figure_data[name] * conf["scale"]
+        data = np.array(figure_data[name]) * conf["scale"]
         unit = conf["unit"]
         # plot
         fig = plt.figure()
