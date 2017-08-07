@@ -85,7 +85,7 @@ def create_figures(conf_list, figure_data, pdf_out_file):
         print(conf)
         # name, unit, data
         name = conf["name"]
-        data = figure_data[name]
+        data = figure_data[name] * conf["scale"]
         unit = conf["unit"]
         # plot
         fig = plt.figure()

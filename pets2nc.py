@@ -105,7 +105,7 @@ def write_netcdf_file(grid_file, conf_list, petsc_data, out_netcdf_file):
         var.unit = var_list["unit"]
         var.description = var_list["description"]
         # transform from 1d to 3d
-        work_array[~work_array.mask] = petsc_data[var_list["name"]]
+        work_array[~work_array.mask] = petsc_data[var_list["name"]] * var_list["scale"]
         var[0,:,:,:] = work_array.reshape(ny*nx, nz).transpose().reshape(nz, ny, nx)
     
     # close file
