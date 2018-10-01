@@ -61,10 +61,6 @@ def info(ctx):
     print("# info:   ", ctx.obj)
     print("# verbose:", ctx.obj.verbose)
     pass
-    
-    config_file_path = os.path.expanduser("~/.metos3d")
-    cmd = "cat " + config_file_path
-    os.system(cmd)
 
 # init command
 # env, petsc
