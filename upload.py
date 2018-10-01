@@ -16,9 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-git co -b 1.0-dev
-git push --set-upstream origin 1.0-dev
-
 import os
 import sys
 
@@ -26,11 +23,12 @@ if __name__ == "__main__":
     '''
         Create an official Metos3D distribution on PyPI and Anaconda.
         
-        The following packages must be installed:
+        The following packages must be installed and set:
         $>
             pip install twine
             conda install conda-build
             conda install anaconda-client
+            conda config --set anaconda_upload yes
             
         Working branch must not be named as tags are and upload stream must be set up:
         $>
@@ -44,8 +42,15 @@ if __name__ == "__main__":
             3. git tag everything, comment and annotation is version number
             4. git push to github repo
             
-        
+            5. setup as pypi package
+            6. upload to pypi
+            
+            7. use conda-skeleton to create recipe
+            8. build and upload conda package
+            
+            9. clean up
         '''
+    
     if len(sys.argv[:]) < 2:
         print("usage: python {0} [version]".format(sys.argv[0]))
         print("example:")
@@ -80,14 +85,28 @@ if __name__ == "__main__":
     print("Pushing ................. " + cmd)
     os.system(cmd)
 
-#    cmd = "python setup.py sdist"
-#    print("Creating distribution ... " + cmd)
-#    os.system(cmd)
+    cmd = "python setup.py sdist"
+    print("Creating distribution ... " + cmd)
+    os.system(cmd)
 
-#cmd = "twine upload dist/metos3d-{0}.tar.gz".format(version)
-#print("Uploading to PyPI ....... " + cmd)
-#os.system(cmd)
+    cmd = "twine upload dist/metos3d-{0}.tar.gz".format(version)
+    print("Uploading to PyPI ....... " + cmd)
+    os.system(cmd)
+
+    cmd = "cd conda-recipe/; conda-skeleton pypi metos3d"
+    print("Creating recipe ......... " + cmd)
+    os.system(cmd)
+
+    cmd = "cd conda-recipe/; conda-build metos3d"
+    print("Building and uploading .. " + cmd)
+    os.system(cmd)
+
+    cmd = "rm -fr dist/"
+    print("Cleaning up ............. " + cmd)
+    os.system(cmd)
+
+    cmd = "rm -fr metos3d.egg-info/"
+    print("Cleaning up ............. " + cmd)
+    os.system(cmd)
 
 
-
-#conda config --set anaconda_upload yes
