@@ -53,9 +53,10 @@ if __name__ == "__main__":
 
 #git push --set-upstream origin refs/heads/1.0.4:refs/heads/1.0.4
 #git push --follow-tags --set-upstream origin refs/heads/1.0.4:refs/heads/1.0.4
-#cmd = "git push --follow-tags"
-#    print("Pushing ................. " + cmd)
-#    os.system(cmd)
+
+    cmd = "git push --follow-tags"
+    print("Pushing ................. " + cmd)
+    os.system(cmd)
 
 #    cmd = "python setup.py sdist"
 #    print("Creating distribution ... " + cmd)
