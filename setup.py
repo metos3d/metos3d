@@ -31,7 +31,7 @@ setup(name                          = metos3dpy.__title__,
       author                        = metos3dpy.__author__,
       author_email                  = metos3dpy.__email__,
       license                       = metos3dpy.__license__,
-      packages                      = ["metos3d"],
+      packages                      = ["metos3dpy"],
       entry_points                  = {
         "console_scripts": ["metos3d=metos3dpy.metos3d:metos3d"],
       },

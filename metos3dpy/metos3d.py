@@ -38,9 +38,6 @@ def metos3d(ctx, verbose):
         Sources:
         https://github.com/metos3d
         
-        Documentation:
-        https://metos3d.github.io
-        
         \b
         Scientific article:
         [Piwonski and Slawig, 2016]
@@ -52,3 +49,5 @@ def metos3d(ctx, verbose):
     ctx.obj.verbose = verbose
     print("# metos3d:", ctx.obj)
     print("# verbose:", ctx.obj.verbose)
+
+
