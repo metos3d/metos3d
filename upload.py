@@ -93,7 +93,11 @@ if __name__ == "__main__":
     print("Uploading to PyPI ....... " + cmd)
     os.system(cmd)
 
-    cmd = "cd conda-recipe/; conda-skeleton pypi metos3d"
+    cmd = "mkdir conda-recipe"
+    print("Creating up ............. " + cmd)
+    os.system(cmd)
+
+    cmd = "cd conda-recipe/; conda-skeleton pypi --noarch-python metos3d"
     print("Creating recipe ......... " + cmd)
     os.system(cmd)
 
@@ -101,11 +105,19 @@ if __name__ == "__main__":
     print("Building and uploading .. " + cmd)
     os.system(cmd)
 
+    cmd = "conda build purge"
+    print("Cleaning up ............. " + cmd)
+    os.system(cmd)
+
     cmd = "rm -fr dist/"
     print("Cleaning up ............. " + cmd)
     os.system(cmd)
 
     cmd = "rm -fr metos3d.egg-info/"
+    print("Cleaning up ............. " + cmd)
+    os.system(cmd)
+
+    cmd = "rm -fr conda-recipe/"
     print("Cleaning up ............. " + cmd)
     os.system(cmd)
 
