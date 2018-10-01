@@ -50,4 +50,91 @@ def metos3d(ctx, verbose):
     print("# metos3d:", ctx.obj)
     print("# verbose:", ctx.obj.verbose)
 
+# info command
+@metos3d.command()
+@click.pass_context
+def info(ctx):
+    '''
+        Show Metos3D configuration.
+        '''
+    
+    print("# info:   ", ctx.obj)
+    print("# verbose:", ctx.obj.verbose)
+    pass
+    
+    config_file_path = os.path.expanduser("~/.metos3d")
+    cmd = "cat " + config_file_path
+    os.system(cmd)
+
+# init command
+# env, petsc
+@metos3d.command()
+@click.pass_context
+def init(ctx):
+    '''
+        Initialize Metos3D environment.
+        '''
+    
+    print("# init:   ", ctx.obj)
+    print("# verbose:", ctx.obj.verbose)
+    pass
+
+# update command
+@metos3d.command()
+@click.pass_context
+def update(ctx):
+    '''
+        Update Metos3D.
+        '''
+    print("# metos3d:", ctx.obj)
+    print("# verbose:", ctx.obj.verbose)
+    pass
+
+# simpack command
+@metos3d.command()
+@click.pass_context
+def simpack(ctx):
+    '''
+        Metos3D Simulation Package.
+        '''
+    print("# metos3d:", ctx.obj)
+    print("# verbose:", ctx.obj.verbose)
+    pass
+
+# optpack command
+@metos3d.command()
+@click.pass_context
+def optpack(ctx):
+    '''
+        Metos3D Optimization Package.
+        '''
+
+    print("# metos3d:", ctx.obj)
+    print("# verbose:", ctx.obj.verbose)
+    pass
+
+# data command
+@metos3d.command()
+@click.pass_context
+def data(ctx):
+    '''
+        Metos3D Data.
+        '''
+    
+    print("# metos3d:", ctx.obj)
+    print("# verbose:", ctx.obj.verbose)
+    pass
+
+# model command
+@metos3d.command()
+@click.pass_context
+def model(ctx):
+    '''
+        Metos3D Model.
+        '''
+    
+    print("# metos3d:", ctx.obj)
+    print("# verbose:", ctx.obj.verbose)
+    pass
+
 
