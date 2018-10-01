@@ -1,0 +1,46 @@
+{% set name = "metos3d" %}
+{% set version = "1.0.4" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: ae7e68f9d8e1698b8ec027c3fcabf028cb1ae55cc71c4ab22e58a89ef9a625ae
+
+build:
+  number: 0
+  entry_points:
+    - metos3d=metos3dpy.metos3d:metos3d
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vvv "
+
+requirements:
+  host:
+    - click
+    - pip
+    - python
+    - pyyaml
+  run:
+    - click
+    - python
+    - pyyaml
+
+test:
+  imports:
+    - metos3dpy
+  commands:
+    - metos3d --help
+
+about:
+  home: https://github.com/metos3d
+  license: GPL-3.0
+  license_family: GPL3
+  license_file: 
+  summary: Marine Ecosystem Toolkit for Optimization and Simulation in 3-D
+  doc_url: 
+  dev_url: 
+
+extra:
+  recipe-maintainers:
+    - your-github-id-here
