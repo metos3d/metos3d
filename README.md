@@ -50,31 +50,6 @@ Have a look into the [Metso3D docs](https://github.com/jpicau/metos3d/blob/maste
 [Piwonski and Slawig, 2016]<br>
 [Metos3D: the Marine Ecosystem Toolkit for Optimization and Simulation in 3-D – Part 1: Simulation Package v0.3.2](https://www.geosci-model-dev.net/9/3729/2016/)
 
-## Install Metos3D
-
-> **Note:** For the time being, we only support Linux-x86_64 platforms as easy install.
-
-### Easy install
-
-Install the [Miniconda/Python3](https://conda.io/miniconda.html) distribution if you haven't done already:
-
-```sh
-curl -O https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
-# accept the license agreement ...
-# let the installer modify your PATH ...
-```
-
-Install Metos3D using the just installed `conda` command:
-
-```sh
-conda install -c jpicau metos3d
-```
-
-### Custom install
-
-Refer to [Metso3D custom install](https://github.com/jpicau/metos3d/blob/master/docs/metos3d-custom-install.md) for a detailed discussion.
-
 ## Thanks
 
 The authors would like to thank:
