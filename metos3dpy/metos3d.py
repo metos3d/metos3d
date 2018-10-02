@@ -50,6 +50,9 @@ def metos3d(ctx, verbose):
     print("# metos3d:", ctx.obj)
     print("# verbose:", ctx.obj.verbose)
 
+    print(os.getcwd())                  # current working directory
+    print(os.path.realpath(__file__))   # script directory
+
 # info command
 @metos3d.command()
 @click.pass_context
