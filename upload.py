@@ -120,10 +120,12 @@ if __name__ == "__main__":
     print("Cleaning up ............. " + cmd)
     let_user_decide(cmd)
 
+    cmd = "rm -fr conda-recipe/*"
+    print("Cleaning up ............. " + cmd)
+    let_user_decide(cmd)
+
 #    cmd = "rm -fr metos3d.egg-info/"
 #    print("Cleaning up ............. " + cmd)
 #    let_user_decide(cmd)
 
-#    cmd = "rm -fr conda-recipe/"
-#    print("Cleaning up ............. " + cmd)
-#    let_user_decide(cmd)
+

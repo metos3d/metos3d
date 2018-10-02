@@ -42,87 +42,64 @@ def metos3d(ctx, verbose):
         Scientific article:
         [Piwonski and Slawig, 2016]
         https://www.geosci-model-dev.net/9/3729/2016
-        
-        '''
-    
+    '''
     ctx.obj = Context()
     ctx.obj.verbose = verbose
-    print("# metos3d:", ctx.obj)
-    print("# verbose:", ctx.obj.verbose)
+    ctx.obj.cwd = os.getcwd()
 
-    print(os.getcwd())                  # current working directory
-    print(os.path.realpath(__file__))   # script directory
-
-# info command
+# info ###################################################################################
 @metos3d.command()
 @click.pass_context
 def info(ctx):
     '''
         Show Metos3D configuration.
-        '''
-    
-    print("# info:   ", ctx.obj)
-    print("# verbose:", ctx.obj.verbose)
-    pass
+    '''
+    metos3dpy.info.info(ctx)
 
-# init command
+# init ###################################################################################
 # env, petsc
 @metos3d.command()
 @click.pass_context
 def init(ctx):
     '''
         Initialize Metos3D environment.
-        '''
-    
-    print("# init:   ", ctx.obj)
-    print("# verbose:", ctx.obj.verbose)
-    pass
+    '''
+    metos3dpy.init.init(ctx)
 
-# simpack command
+# simpack ################################################################################
 @metos3d.command()
 @click.pass_context
 def simpack(ctx):
     '''
         Prepare simulation experiment.
-        '''
-    print("# metos3d:", ctx.obj)
-    print("# verbose:", ctx.obj.verbose)
-    pass
+    '''
+    metos3dpy.simpack.simpack(ctx)
 
-# optpack command
+# optpack ################################################################################
 @metos3d.command()
 @click.pass_context
 def optpack(ctx):
     '''
         Prepare optimization experiment.
-        '''
+    '''
+    metos3dpy.optpack.optpack(ctx)
 
-    print("# metos3d:", ctx.obj)
-    print("# verbose:", ctx.obj.verbose)
-    pass
-
-# data command
+# data ###################################################################################
 @metos3d.command()
 @click.pass_context
 def data(ctx):
     '''
         Configure Metos3D data.
-        '''
-    
-    print("# metos3d:", ctx.obj)
-    print("# verbose:", ctx.obj.verbose)
-    pass
+    '''
+    metos3dpy.data.data(ctx)
 
-# model command
+# model ##################################################################################
 @metos3d.command()
 @click.pass_context
 def model(ctx):
     '''
         Show Metos3D models.
-        '''
-    
-    print("# metos3d:", ctx.obj)
-    print("# verbose:", ctx.obj.verbose)
-    pass
+    '''
+    metos3dpy.model.model(ctx)
 
 

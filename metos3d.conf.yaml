@@ -33,3 +33,4 @@ metos3d:
     simpack:    ../
     data:       ../
     model:      ../
+    petsc:      ../
