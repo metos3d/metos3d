@@ -37,5 +37,3 @@ setup(name                          = metos3dpy.__title__,
       },
       install_requires              = ["click", "pyyaml"],
       zip_safe                      = False)
-
-
