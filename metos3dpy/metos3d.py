@@ -75,23 +75,12 @@ def init(ctx):
     print("# verbose:", ctx.obj.verbose)
     pass
 
-# update command
-@metos3d.command()
-@click.pass_context
-def update(ctx):
-    '''
-        Update Metos3D.
-        '''
-    print("# metos3d:", ctx.obj)
-    print("# verbose:", ctx.obj.verbose)
-    pass
-
 # simpack command
 @metos3d.command()
 @click.pass_context
 def simpack(ctx):
     '''
-        Metos3D Simulation Package.
+        Prepare simulation experiment.
         '''
     print("# metos3d:", ctx.obj)
     print("# verbose:", ctx.obj.verbose)
@@ -102,7 +91,7 @@ def simpack(ctx):
 @click.pass_context
 def optpack(ctx):
     '''
-        Metos3D Optimization Package.
+        Prepare optimization experiment.
         '''
 
     print("# metos3d:", ctx.obj)
@@ -114,7 +103,7 @@ def optpack(ctx):
 @click.pass_context
 def data(ctx):
     '''
-        Metos3D Data.
+        Configure Metos3D data.
         '''
     
     print("# metos3d:", ctx.obj)
@@ -126,7 +115,7 @@ def data(ctx):
 @click.pass_context
 def model(ctx):
     '''
-        Metos3D Model.
+        Show Metos3D models.
         '''
     
     print("# metos3d:", ctx.obj)
