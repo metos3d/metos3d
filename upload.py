@@ -19,6 +19,15 @@
 import os
 import sys
 
+def let_user_decide(cmd):
+    print("Proceed? (Y/n/q)")
+    answer = input()
+    if answer == "q":
+        sys.exit(1)
+    if answer == "n":
+        return
+    os.system(cmd)
+
 if __name__ == "__main__":
     '''
         Create an official Metos3D distribution on PyPI and Anaconda.
@@ -32,8 +41,8 @@ if __name__ == "__main__":
             
         Working branch must not be named as tags are and upload stream must be set up:
         $>
-            git co -b 1.0.0dev
-            git push --set-upstream origin 1.0.0dev
+            git co -b 1.0dev
+            git push --set-upstream origin 1.0dev
         
         Given a version number as comand line argument the script does the following:
         
@@ -67,58 +76,56 @@ if __name__ == "__main__":
     version = sys.argv[1]
     print("Preparing version ....... " + version)
 
-    version_file = "metos3dpy/version.py"
-    print("Writing to .............. " + version_file)
-    f = open(version_file, "w", encoding="utf-8")
-    f.write("__version__ = \"{0}\"\n".format(version))
-    f.close()
+    cmd = "cd metos3dpy/; echo '__version__ = \"{0}\"' > version.py ".format(version)
+    print("Writing version ......... " + cmd)
+    let_user_decide(cmd)
 
     cmd = "git ci -am '{0}'".format(version)
     print("Commiting ............... " + cmd)
-    os.system(cmd)
+    let_user_decide(cmd)
 
     cmd = "git tag -a -m '{0}' {0}".format(version)
     print("Tagging ................. " + cmd)
-    os.system(cmd)
+    let_user_decide(cmd)
 
     cmd = "git push --follow-tags"
     print("Pushing ................. " + cmd)
-    os.system(cmd)
+    let_user_decide(cmd)
 
     cmd = "python setup.py sdist"
     print("Creating distribution ... " + cmd)
-    os.system(cmd)
+    let_user_decide(cmd)
 
     cmd = "twine upload dist/metos3d-{0}.tar.gz".format(version)
     print("Uploading to PyPI ....... " + cmd)
-    os.system(cmd)
+    let_user_decide(cmd)
 
-    cmd = "mkdir conda-recipe"
-    print("Creating up ............. " + cmd)
-    os.system(cmd)
+    cmd = "mkdir -p conda-recipe"
+    print("Creating ................. " + cmd)
+    let_user_decide(cmd)
 
     cmd = "cd conda-recipe/; conda-skeleton pypi --noarch-python metos3d"
     print("Creating recipe ......... " + cmd)
-    os.system(cmd)
+    let_user_decide(cmd)
 
     cmd = "cd conda-recipe/; conda-build metos3d"
     print("Building and uploading .. " + cmd)
-    os.system(cmd)
+    let_user_decide(cmd)
 
     cmd = "conda build purge"
     print("Cleaning up ............. " + cmd)
-    os.system(cmd)
+    let_user_decide(cmd)
 
-    cmd = "rm -fr dist/"
+    cmd = "rm -fr dist/*"
     print("Cleaning up ............. " + cmd)
-    os.system(cmd)
+    let_user_decide(cmd)
 
-    cmd = "rm -fr metos3d.egg-info/"
-    print("Cleaning up ............. " + cmd)
-    os.system(cmd)
+#    cmd = "rm -fr metos3d.egg-info/"
+#    print("Cleaning up ............. " + cmd)
+#    let_user_decide(cmd)
 
-    cmd = "rm -fr conda-recipe/"
-    print("Cleaning up ............. " + cmd)
-    os.system(cmd)
+#    cmd = "rm -fr conda-recipe/"
+#    print("Cleaning up ............. " + cmd)
+#    let_user_decide(cmd)
 
 
