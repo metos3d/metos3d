@@ -17,7 +17,6 @@
 #
 
 from .version   import __version__
-from .info      import info
 from .config    import config
 from .simpack   import simpack
 from .optpack   import optpack

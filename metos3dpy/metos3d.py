@@ -62,15 +62,6 @@ def metos3d_config(ctx):
     '''
     metos3dpy.config(ctx)
 
-# info command ###########################################################################
-@metos3d.command("info")
-@click.pass_context
-def metos3d_info(ctx):
-    '''
-        Show Metos3D configuration.
-    '''
-    metos3dpy.info(ctx)
-
 # simpack command ########################################################################
 @metos3d.command("simpack")
 @click.pass_context
