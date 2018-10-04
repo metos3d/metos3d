@@ -25,7 +25,7 @@ import metos3dpy
 class Context():
     pass
 
-# metos3d command group
+# metos3d command group ##################################################################
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
 @click.option("-v", "--verbose", is_flag=True, help="Show invoked shell commands and their output.")
 @click.version_option(metos3dpy.__version__, "-V", "--version")
@@ -47,6 +47,19 @@ def metos3d(ctx, verbose):
     ctx.obj.verbose = verbose
     ctx.obj.cwd = os.getcwd()
 
+    print("metos3dpy/metos3d.py:", ctx)
+    print("metos3dpy/metos3d.py:", ctx.obj)
+
+# config #################################################################################
+@metos3d.command()
+@click.pass_context
+def config(ctx):
+    '''
+        Configure Metos3D environment.
+        '''
+    # env, petsc
+    metos3dpy.config.config(ctx)
+
 # info ###################################################################################
 @metos3d.command()
 @click.pass_context
@@ -55,16 +68,6 @@ def info(ctx):
         Show Metos3D configuration.
     '''
     metos3dpy.info.info(ctx)
-
-# init ###################################################################################
-# env, petsc
-@metos3d.command()
-@click.pass_context
-def init(ctx):
-    '''
-        Initialize Metos3D environment.
-    '''
-    metos3dpy.init.init(ctx)
 
 # simpack ################################################################################
 @metos3d.command()
@@ -89,7 +92,7 @@ def optpack(ctx):
 @click.pass_context
 def data(ctx):
     '''
-        Configure Metos3D data.
+        Show Metos3D data.
     '''
     metos3dpy.data.data(ctx)
 

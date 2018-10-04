@@ -18,7 +18,7 @@
 
 from . import version
 from . import info
-from . import init
+from . import config
 from . import simpack
 from . import optpack
 from . import data

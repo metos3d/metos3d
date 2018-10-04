@@ -18,5 +18,6 @@
 
 def model(ctx):
     print("metos3dpy/model.py:", ctx)
+    print("metos3dpy/model.py:", ctx.obj)
 
 

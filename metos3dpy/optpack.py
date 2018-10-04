@@ -18,5 +18,6 @@
 
 def optpack(ctx):
     print("metos3dpy/optpack.py:", ctx)
+    print("metos3dpy/optpack.py:", ctx.obj)
 
 

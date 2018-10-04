@@ -18,5 +18,6 @@
 
 def info(ctx):
     print("metos3dpy/info.py:", ctx)
+    print("metos3dpy/info.py:", ctx.obj)
 
 

@@ -18,5 +18,6 @@
 
 def simpack(ctx):
     print("metos3dpy/simpack.py:", ctx)
+    print("metos3dpy/simpack.py:", ctx.obj)
 
 

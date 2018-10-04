@@ -16,7 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-def init(ctx):
-    print("metos3dpy/init.py:", ctx)
+def config(ctx):
+    print("metos3dpy/config.py", ctx)
+    print("metos3dpy/config.py", ctx.obj)
 
 
