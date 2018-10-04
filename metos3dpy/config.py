@@ -16,8 +16,26 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from .util import check_conf
+
 def config(ctx):
+    check_conf()
+#    if is_metos3d_configured():
+#        show_configuration(ctx)
+#    else:
+#        configure_metos3d(ctx)
+
+#    check_conf()
+#    if not os.path.exists("metos3d.conf.yaml"):
+#        print("no configuration file found ...")
+
     print("metos3dpy/config.py", ctx)
     print("metos3dpy/config.py", ctx.obj)
 
-
+#def show_configuration(ctx):
+#    print("show configuration ...")
+#    pass
+#
+#def configure_metos3d(ctx):
+#    print("configure metos3d ...")
+#    pass

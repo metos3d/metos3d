@@ -20,8 +20,6 @@ from .version   import __version__
 from .config    import config
 from .simpack   import simpack
 from .optpack   import optpack
-from .data      import data
-from .model     import model
 
 __all__ = (
            "__version__",

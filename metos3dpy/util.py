@@ -16,8 +16,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-def data(ctx):
-    print("metos3dpy/data.py:", ctx)
-    print("metos3dpy/data.py:", ctx.obj)
+import os
 
+def check_conf():
+    if not os.path.exists("metos3d.conf.yaml"):
+        print("no configuration file found ...")
 
+#ctx.obj.cwd = os.getcwd()
+#ctx.obj.fqdn = socket.getfqdn()
