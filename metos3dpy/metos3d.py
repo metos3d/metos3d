@@ -17,6 +17,7 @@
 #
 
 import os
+import socket
 import click
 import yaml
 import metos3dpy
@@ -26,9 +27,10 @@ class Context():
     pass
 
 # metos3d command group ##################################################################
-@click.group(context_settings={"help_option_names": ["-h", "--help"]})
-@click.option("-v", "--verbose", is_flag=True, help="Show invoked shell commands and their output.")
+@click.group("metos3d")
+@click.help_option("-h", "--help")
 @click.version_option(metos3dpy.__version__, "-V", "--version")
+@click.option("-v", "--verbose", is_flag=True, help="Show invoked shell commands and their output.")
 @click.pass_context
 def metos3d(ctx, verbose):
     '''
@@ -46,63 +48,63 @@ def metos3d(ctx, verbose):
     ctx.obj = Context()
     ctx.obj.verbose = verbose
     ctx.obj.cwd = os.getcwd()
+    ctx.obj.fqdn = socket.getfqdn()
 
     print("metos3dpy/metos3d.py:", ctx)
     print("metos3dpy/metos3d.py:", ctx.obj)
 
-# config #################################################################################
-@metos3d.command()
+# config command #########################################################################
+@metos3d.command("config")
 @click.pass_context
-def config(ctx):
+def metos3d_config(ctx):
     '''
         Configure Metos3D environment.
-        '''
-    # env, petsc
-    metos3dpy.config.config(ctx)
+    '''
+    metos3dpy.config(ctx)
 
-# info ###################################################################################
-@metos3d.command()
+# info command ###########################################################################
+@metos3d.command("info")
 @click.pass_context
-def info(ctx):
+def metos3d_info(ctx):
     '''
         Show Metos3D configuration.
     '''
-    metos3dpy.info.info(ctx)
+    metos3dpy.info(ctx)
 
-# simpack ################################################################################
-@metos3d.command()
+# simpack command ########################################################################
+@metos3d.command("simpack")
 @click.pass_context
-def simpack(ctx):
+def metos3d_simpack(ctx):
     '''
         Prepare simulation experiment.
     '''
-    metos3dpy.simpack.simpack(ctx)
+    metos3dpy.simpack(ctx)
 
-# optpack ################################################################################
-@metos3d.command()
+# optpack command ########################################################################
+@metos3d.command("optpack")
 @click.pass_context
-def optpack(ctx):
+def metos3d_optpack(ctx):
     '''
         Prepare optimization experiment.
     '''
-    metos3dpy.optpack.optpack(ctx)
+    metos3dpy.optpack(ctx)
 
-# data ###################################################################################
-@metos3d.command()
+# data command ###########################################################################
+@metos3d.command("data")
 @click.pass_context
-def data(ctx):
+def metos3d_data(ctx):
     '''
         Show Metos3D data.
     '''
-    metos3dpy.data.data(ctx)
+    metos3dpy.data(ctx)
 
-# model ##################################################################################
-@metos3d.command()
+# model command ##########################################################################
+@metos3d.command("model")
 @click.pass_context
-def model(ctx):
+def metos3d_model(ctx):
     '''
         Show Metos3D models.
     '''
-    metos3dpy.model.model(ctx)
+    metos3dpy.model(ctx)
 
 
