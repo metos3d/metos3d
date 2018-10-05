@@ -39,7 +39,7 @@ See: [[Piwonski and Slawig, 2016]](https://www.geosci-model-dev.net/9/3729/2016/
 
 ### How do I use Metos3D?
 
-Have a look into the [Metso3D docs](docs/REAME.md), specifically the
+Have a look into the [Metso3D docs](docs/README.md), specifically the
 
 - [Metos3D cheat sheet](https://github.com/jpicau/metos3d/blob/master/docs/metos3d-cheat-sheet.md).
 - [Metos3D BGC API reference](https://github.com/jpicau/metos3d/blob/master/docs/metos3d-bgc-api-reference.md).
