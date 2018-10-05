@@ -16,21 +16,42 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from .util import check_conf
+from .util import print_format
+#from .util import check_hostname
+#from .util import check_directory
+#from .util import check_config_file
 
-def config(ctx):
-    check_conf()
+def config(obj):
+    print_format("Checking Metos3D configuration")
+#    check_hostname(obj)
+#    check_directory(ctx)
+#    check_config_file(ctx)
+    print("METOS3D CONFIG")
+
+
+def config_show(obj):
+    print_format("Show Metos3D configuration")
+    pass
+
+def config_data(obj):
+    print_format("Configure Metos3D data")
+    pass
+
+def config_model(obj):
+    print_format("Configure Metos3D model")
+    pass
+    
+#    print()
+
+#    print("Checking hostname")
+#    check_conf()
 #    if is_metos3d_configured():
 #        show_configuration(ctx)
 #    else:
 #        configure_metos3d(ctx)
 
-#    check_conf()
-#    if not os.path.exists("metos3d.conf.yaml"):
-#        print("no configuration file found ...")
-
-    print("metos3dpy/config.py", ctx)
-    print("metos3dpy/config.py", ctx.obj)
+#    print("metos3dpy/config.py", ctx)
+#    print("metos3dpy/config.py", ctx.obj)
 
 #def show_configuration(ctx):
 #    print("show configuration ...")

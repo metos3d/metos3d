@@ -16,11 +16,28 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os
+#import os
+#import sys
+#import socket
 
-def check_conf():
-    if not os.path.exists("metos3d.conf.yaml"):
-        print("no configuration file found ...")
+def print_format(message, *extr_args):
+    message = message + " "
+    print("{:.<40}".format(message), *extr_args)
 
-#ctx.obj.cwd = os.getcwd()
-#ctx.obj.fqdn = socket.getfqdn()
+#def check_hostname(ctx):
+#    fqdn = socket.getfqdn()
+#    ctx.obj.fqdn = fqdn
+#    print_format(ctx, "Checking hostname", fqdn)
+#
+#def check_directory(ctx):
+#    cwd = os.getcwd()
+#    ctx.obj.cwd = cwd
+#    print_format(ctx, "Checking directory", cwd)
+#
+#def check_config_file(ctx):
+#    file = "metos3d.conf.yaml"
+#    print_format(ctx, "Checking config file", file)
+#    if not os.path.exists(file):
+#        print("no configuration file found ...")
+#        sys.exit(1)
+

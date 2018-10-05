@@ -28,9 +28,12 @@
 #       model/              # model repository/resources
 #
 metos3d:
-    metos3d:    .
-    optpack:    ../
-    simpack:    ../
-    data:       ../
-    model:      ../
-    petsc:      ../
+    config:
+        env:
+        petsc:
+        data:
+        model:
+//    simpack:
+//    optpack:
+
+

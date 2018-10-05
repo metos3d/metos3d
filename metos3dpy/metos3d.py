@@ -46,18 +46,44 @@ def metos3d(ctx, verbose):
     ctx.obj = Context()
     ctx.obj.verbose = verbose
 
-@metos3d.command("config")
-@click.pass_context
-def metos3d_config(ctx):
-    """Show/Configure Metos3D environment."""
-    metos3dpy.config(ctx)
+    print("METOS3D")
 
+# config
+@metos3d.group("config")
+@click.help_option("-h", "--help")
+@click.pass_obj
+def metos3d_config(obj):
+    """Metos3D configuration."""
+    metos3dpy.config(obj)
+    
+    print("METOS3D CONFIG")
+
+@metos3d_config.command("show")
+@click.pass_obj
+def metos3d_config_show(obj):
+    """Show Metos3D configuration."""
+    metos3dpy.config_show(obj)
+
+@metos3d_config.command("data")
+@click.pass_obj
+def metos3d_config_data(obj):
+    """Configure Metos3D data."""
+    metos3dpy.config_data(obj)
+
+@metos3d_config.command("model")
+@click.pass_obj
+def metos3d_config_data(obj):
+    """Configure Metos3D models."""
+    metos3dpy.config_model(obj)
+
+# simpack
 @metos3d.command("simpack")
 @click.pass_context
 def metos3d_simpack(ctx):
     """Prepare simulation experiment."""
     metos3dpy.simpack(ctx)
 
+# optpack
 @metos3d.command("optpack")
 @click.pass_context
 def metos3d_optpack(ctx):
