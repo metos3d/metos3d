@@ -1,6 +1,5 @@
 .DS_Store
 *.pyc
 __pycache__
-metos3d.egg-info
 dist/
 conda-recipe/

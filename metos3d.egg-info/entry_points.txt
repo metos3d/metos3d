@@ -1,0 +1,3 @@
+[console_scripts]
+metos3d = metos3dpy.metos3d:metos3d
+
