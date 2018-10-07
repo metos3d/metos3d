@@ -8,8 +8,8 @@ Marine Ecosystem Toolkit for Optimization and Simulation in 3-D
 
 Metos3D is a collection of
 
-- simulation software ([simpack](https://github.com/metos3d/simpack/))
-- optimization software ([optpack](https://github.com/metos3d/optpack/))
+- simulation software ([simpack](simpack/README.md))
+- optimization software ([optpack](optpack/README.md))
 - chemical / biogeochemical / marine ecosystem [models](https://github.com/metos3d/model/)
 - transport and forcing [data](https://github.com/metos3d/data/)
 
@@ -39,11 +39,7 @@ See: [[Piwonski and Slawig, 2016]](https://www.geosci-model-dev.net/9/3729/2016/
 
 ### How do I use Metos3D?
 
-Have a look into the [Metso3D docs](docs/README.md), specifically the
-
-- [Metos3D cheat sheet](https://github.com/jpicau/metos3d/blob/master/docs/metos3d-cheat-sheet.md).
-- [Metos3D BGC API reference](https://github.com/jpicau/metos3d/blob/master/docs/metos3d-bgc-api-reference.md).
-- [Metos3D tutorial](https://github.com/jpicau/metos3d/blob/master/docs/metos3d-tutorial.md).
+Have a look into the [Metso3D Documentation](docs/README.md).
 
 ## Reference
 
