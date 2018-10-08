@@ -16,16 +16,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-module load intel16.0.0
-module load intelmpi16.0.0
+#PETSC_DIR  = os.path.abspath(os.getcwd())
+#PETSC_ARCH = 'arch-python-' + get_platform()
+#os.environ['PETSC_DIR']  = PETSC_DIR
+#os.environ['PETSC_ARCH'] = PETSC_ARCH
 
-export METOS3D_CC='mpiicc -cc=icc'
-export METOS3D_CXX='mpiicpc -cxx=icpc'
-export METOS3D_FC='mpiifort -fc=ifort'
-
-#
-#export PETSC_DIR
-#export PETSC_ARCH
+#export PETSC_DIR=
+#export PETSC_ARCH=arch-metos3d-
 #
 #python2 ./configure \
 #-CC=$METOS3D_CC \
@@ -37,6 +34,5 @@ export METOS3D_FC='mpiifort -fc=ifort'
 #--download-yaml=1 \
 #
 #make
-#
 
-    
+

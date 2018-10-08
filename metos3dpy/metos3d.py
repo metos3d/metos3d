@@ -54,6 +54,8 @@ def metos3d(ctx, verbose):
     print(os.path.dirname(os.path.realpath(__file__)))
     print(os.getcwd())
     print(glob.glob("*"))
+    from distutils.util import get_platform
+    print(get_platform())
 
 # config
 @metos3d.group("config")
