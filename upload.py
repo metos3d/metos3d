@@ -47,11 +47,11 @@ if __name__ == "__main__":
         Given a version number as comand line argument the script does the following:
         
             1. create version string in metos3dpy/version.py file
-            2. git commit all changes, comment is version number
-            3. git tag everything, comment and annotation is version number
-            4. git push to github repo
             
-            5. setup as pypi package
+            2. setup as pypi package
+            3. git commit all changes, comment is version number
+            4. git tag everything, comment and annotation is version number
+            5. git push to github repo
             6. upload to pypi
             
             7. use conda-skeleton to create recipe
@@ -59,7 +59,7 @@ if __name__ == "__main__":
             
             9. clean up
         '''
-    
+
     if len(sys.argv[:]) < 2:
         print("usage: python {0} [version]".format(sys.argv[0]))
         print("example:")
@@ -83,6 +83,10 @@ if __name__ == "__main__":
     print("Writing version ......... " + cmd)
     let_user_decide(cmd)
 
+    cmd = "python setup.py sdist"
+    print("Creating distribution ... " + cmd)
+    let_user_decide(cmd)
+
     cmd = "git ci -am '{0}'".format(version)
     print("Commiting ............... " + cmd)
     let_user_decide(cmd)
@@ -93,10 +97,6 @@ if __name__ == "__main__":
 
     cmd = "git push --follow-tags"
     print("Pushing ................. " + cmd)
-    let_user_decide(cmd)
-
-    cmd = "python setup.py sdist"
-    print("Creating distribution ... " + cmd)
     let_user_decide(cmd)
 
     cmd = "twine upload dist/metos3d-{0}.tar.gz".format(version)
