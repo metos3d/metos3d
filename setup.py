@@ -16,13 +16,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import metos3dpy
 
 with open("README.md", "rb") as f:
     long_description = f.read().decode("utf-8")
 
-setup(name                          = metos3dpy.__title__,
+setup(
+      name                          = metos3dpy.__title__,
       version                       = metos3dpy.__version__,
       description                   = metos3dpy.__summary__,
       long_description              = long_description,
@@ -31,11 +32,15 @@ setup(name                          = metos3dpy.__title__,
       author                        = metos3dpy.__author__,
       author_email                  = metos3dpy.__email__,
       license                       = metos3dpy.__license__,
-      packages                      = ["metos3dpy"],
+      packages                      = find_packages(),
+      package_data={
+      "metos3dpy": ["env/*", "petsc/*"],
+      },
       entry_points                  = {
-        "console_scripts": ["metos3d=metos3dpy.metos3d:metos3d"],
+      "console_scripts": ["metos3d=metos3dpy.metos3d:metos3d"],
       },
       install_requires              = ["future", "click", "pyyaml"],
-      zip_safe                      = False)
+      zip_safe                      = False,
+      )
 
 

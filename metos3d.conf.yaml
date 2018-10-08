@@ -16,10 +16,24 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+metos3d:
+    env:    {env}
+    petsc:  {petsc}
+    data:   {data}
+    model:  {model}
+
+
+
+#//env:    env/de.uni-kiel.rz.rzcluster.env.sh
+#//petsc:  petsc/...../arch-metos3d-linux...
+#//data:   data/
+#//model:  model/
+#//    simpack:
+#//    optpack:
 #
 #   This is a standard Metos3D configuration file.
-#   We assume the following directory structure:
 #
+#   We assume the following directory structure:
 #   metos3d/                # overarching folder
 #       metos3d/            # metos3d repository
 #       optpack/            # optpack repository
@@ -27,13 +41,3 @@
 #       data/               # data repository/resources
 #       model/              # model repository/resources
 #
-metos3d:
-    config:
-        env:
-        petsc:
-        data:
-        model:
-//    simpack:
-//    optpack:
-
-

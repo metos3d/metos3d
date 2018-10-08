@@ -16,6 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+"""Metos3D python module."""
+
 from .version   import __version__
 from .config    import config
 from .config    import config_show

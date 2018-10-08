@@ -14,3 +14,5 @@ metos3dpy/optpack.py
 metos3dpy/simpack.py
 metos3dpy/util.py
 metos3dpy/version.py
+metos3dpy/env/de.uni-kiel.rz.rzcluster.env.sh
+metos3dpy/petsc/petsc.conf.sh
