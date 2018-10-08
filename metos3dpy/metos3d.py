@@ -17,6 +17,7 @@
 #
 
 import os
+import glob
 import socket
 import click
 import yaml
@@ -25,7 +26,11 @@ import metos3dpy
 class Context():
     pass
 
-@click.group("metos3d")
+class Metos3DGroup(click.Group):
+    def list_commands(self, ctx):
+        return ["config", "simpack", "optpack"]
+
+@click.command("metos3d", cls=Metos3DGroup)
 @click.help_option("-h", "--help")
 @click.version_option(metos3dpy.__version__, "-V", "--version")
 @click.option("-v", "--verbose", is_flag=True, help="Show invoked shell commands and their output.")
@@ -45,8 +50,10 @@ def metos3d(ctx, verbose):
     """
     ctx.obj = Context()
     ctx.obj.verbose = verbose
-
-    print("METOS3D")
+    print(os.path.realpath(__file__))
+    print(os.path.dirname(os.path.realpath(__file__)))
+    print(os.getcwd())
+    print(glob.glob("*"))
 
 # config
 @metos3d.group("config")
@@ -55,7 +62,6 @@ def metos3d(ctx, verbose):
 def metos3d_config(obj):
     """Metos3D configuration."""
     metos3dpy.config(obj)
-    
     print("METOS3D CONFIG")
 
 @metos3d_config.command("show")
@@ -80,14 +86,14 @@ def metos3d_config_data(obj):
 @metos3d.command("simpack")
 @click.pass_context
 def metos3d_simpack(ctx):
-    """Prepare simulation experiment."""
+    """Prepare Metos3D simulation experiment."""
     metos3dpy.simpack(ctx)
 
 # optpack
 @metos3d.command("optpack")
 @click.pass_context
 def metos3d_optpack(ctx):
-    """Prepare optimization experiment."""
+    """Prepare Metos3D optimization experiment."""
     metos3dpy.optpack(ctx)
 
 
