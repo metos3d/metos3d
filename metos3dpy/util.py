@@ -20,6 +20,8 @@
 #import sys
 #import socket
 
+from __future__ import print_function
+
 def print_format(message, *extr_args):
     message = message + " "
     print("{:.<40}".format(message), *extr_args)

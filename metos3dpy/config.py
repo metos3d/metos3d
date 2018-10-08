@@ -40,7 +40,7 @@ def config_data(obj):
 def config_model(obj):
     print_format("Configure Metos3D model")
     pass
-    
+
 #    print()
 
 #    print("Checking hostname")
