@@ -55,13 +55,13 @@ YAML [YAML](http://yaml.org/), configuration files, run files, examples, formats
 Configuration, compilation:
 
 ```sh
-metos3d simpack NPZD-DOP.conf.yaml
+metos3d simpack model/NPZD-DOP/NPZD-DOP.conf.yaml
 ```
 
 Run:
 
 ```sh
-./metos3d-simpack-NPZD-DOP.exe mitgcm-128x64x15x10800.3000y.run.yaml 
+./metos3d-simpack-NPZD-DOP.exe experiment/mitgcm-128x64x15x10800.3000y.run.yaml 
 
 # sequential run
 # parallel run
