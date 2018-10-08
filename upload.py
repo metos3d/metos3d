@@ -71,6 +71,9 @@ if __name__ == "__main__":
         cmd = "git describe --always"
         print("$> " + cmd)
         os.system(cmd)
+        cmd = "cat metos3dpy/version.py"
+        print("$> " + cmd)
+        os.system(cmd)
         sys.exit(0)
 
     version = sys.argv[1]
