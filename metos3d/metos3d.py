@@ -26,12 +26,12 @@ import metos3d
 class Context():
     pass
 
-#class Metos3DGroup(click.Group):
-#    def list_commands(self, ctx):
-#        return ["env", "simpack", "optpack"]
+class Metos3DGroup(click.Group):
+    def list_commands(self, ctx):
+        return ["info", "env", "petsc", "data", "model", "simpack", "optpack"]
 
+@click.command("metos3d", cls=Metos3DGroup, invoke_without_command=True)
 #@click.command("metos3d", cls=Metos3DGroup)
-@click.group("metos3d")
 @click.help_option("-h", "--help")
 @click.version_option(metos3d.__version__, "-V", "--version")
 @click.option("-v", "--verbose", is_flag=True, help="Show invoked shell commands and their output.")
@@ -51,79 +51,58 @@ def metos3d_cli(ctx, verbose):
     """
     ctx.obj = Context()
     ctx.obj.verbose = verbose
-    print(os.path.realpath(__file__))
-    print(os.path.dirname(os.path.realpath(__file__)))
-    print(os.getcwd())
-    print(glob.glob("*"))
-    from distutils.util import get_platform
-    print(get_platform())
+
+    print(ctx.invoked_subcommand)
+    if ctx.invoked_subcommand is None:
+        print(ctx.get_help())
+
+# info
+@metos3d_cli.command("info")
+@click.pass_context
+def metos3d_info(ctx):
+    """Show Metos3D configuration"""
+    print(metos3d_info.__doc__)
 
 # env
 @metos3d_cli.command("env")
 @click.pass_context
 def metos3d_env(ctx):
-    """Metos3D environment."""
+    """Configure Metos3D compiler environment"""
     print(metos3d_env.__doc__)
 
 # petsc
 @metos3d_cli.command("petsc")
 @click.pass_context
 def metos3d_petsc(ctx):
-    """PETSc library."""
+    """Configure PETSc library"""
     print(metos3d_petsc.__doc__)
 
 # data
 @metos3d_cli.command("data")
 @click.pass_context
 def metos3d_data(ctx):
-    """Data location."""
+    """Configure Metos3D data"""
     print(metos3d_data.__doc__)
 
 # model
 @metos3d_cli.command("model")
 @click.pass_context
 def metos3d_model(ctx):
-    """Model location."""
+    """Configure Metos3D BGC models"""
     print(metos3d_model.__doc__)
 
 # simpack
 @metos3d_cli.command("simpack")
 @click.pass_context
 def metos3d_simpack(ctx):
-    """Prepare Metos3D simulation experiment."""
+    """Prepare Metos3D simulation experiment"""
     print(metos3d_simpack.__doc__)
 
 # optpack
 @metos3d_cli.command("optpack")
 @click.pass_context
 def metos3d_optpack(ctx):
-    """Prepare Metos3D optimization experiment."""
+    """Prepare Metos3D optimization experiment"""
     print(metos3d_optpack.__doc__)
 
 
-## config
-#@metos3d.group("config")
-#@click.help_option("-h", "--help")
-#@click.pass_obj
-#def metos3d_config(obj):
-#    """Metos3D configuration."""
-#    metos3dpy.config(obj)
-#    print("METOS3D CONFIG")
-#
-#@metos3d_config.command("show")
-#@click.pass_obj
-#def metos3d_config_show(obj):
-#    """Show Metos3D configuration."""
-#    metos3dpy.config_show(obj)
-#
-#@metos3d_config.command("data")
-#@click.pass_obj
-#def metos3d_config_data(obj):
-#    """Configure Metos3D data."""
-#    metos3dpy.config_data(obj)
-#
-#@metos3d_config.command("model")
-#@click.pass_obj
-#def metos3d_config_data(obj):
-#    """Configure Metos3D models."""
-#    metos3dpy.config_model(obj)
