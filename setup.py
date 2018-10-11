@@ -33,11 +33,11 @@ setup(
       author_email                  = metos3dpy.__email__,
       license                       = metos3dpy.__license__,
       packages                      = find_packages(),
-      package_data={
-      "metos3dpy": ["env/*", "petsc/*"],
-      },
+#      package_data={
+#      "metos3dpy": ["env/*", "petsc/*"],
+#      },
       entry_points                  = {
-      "console_scripts": ["metos3d=metos3dpy.metos3d:metos3d"],
+      "console_scripts": ["metos3d=metos3d.metos3d:metos3d"],
       },
       install_requires              = ["future", "click", "pyyaml"],
       zip_safe                      = False,

@@ -17,27 +17,10 @@
 #
 
 metos3d:
-    env:    {env}
-    petsc:  {petsc}
-    data:   {data}
-    model:  {model}
+    version:    {metos3d[version]}
+    env:        {metos3d[env]}
+    petsc:      {metos3d[petsc]}
+    data:       {metos3d[data]}
+    model:      {metos3d[model]}
 
 
-
-#//env:    env/de.uni-kiel.rz.rzcluster.env.sh
-#//petsc:  petsc/...../arch-metos3d-linux...
-#//data:   data/
-#//model:  model/
-#//    simpack:
-#//    optpack:
-#
-#   This is a standard Metos3D configuration file.
-#
-#   We assume the following directory structure:
-#   metos3d/                # overarching folder
-#       metos3d/            # metos3d repository
-#       optpack/            # optpack repository
-#       simpack/            # simpack repository
-#       data/               # data repository/resources
-#       model/              # model repository/resources
-#
