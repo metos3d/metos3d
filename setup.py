@@ -17,27 +17,27 @@
 #
 
 from setuptools import setup, find_packages
-import metos3dpy
+import metos3d
 
 with open("README.md", "rb") as f:
     long_description = f.read().decode("utf-8")
 
 setup(
-      name                          = metos3dpy.__title__,
-      version                       = metos3dpy.__version__,
-      description                   = metos3dpy.__summary__,
+      name                          = metos3d.__title__,
+      version                       = metos3d.__version__,
+      description                   = metos3d.__summary__,
       long_description              = long_description,
       long_description_content_type = "text/markdown",
-      url                           = metos3dpy.__uri__,
-      author                        = metos3dpy.__author__,
-      author_email                  = metos3dpy.__email__,
-      license                       = metos3dpy.__license__,
+      url                           = metos3d.__uri__,
+      author                        = metos3d.__author__,
+      author_email                  = metos3d.__email__,
+      license                       = metos3d.__license__,
       packages                      = find_packages(),
 #      package_data={
 #      "metos3dpy": ["env/*", "petsc/*"],
 #      },
       entry_points                  = {
-      "console_scripts": ["metos3d=metos3d.metos3d:metos3d"],
+      "console_scripts": ["metos3d=metos3d.metos3d:metos3d_cli"],
       },
       install_requires              = ["future", "click", "pyyaml"],
       zip_safe                      = False,

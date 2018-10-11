@@ -21,7 +21,7 @@ import glob
 import socket
 import click
 import yaml
-import metos3dpy
+import metos3d
 
 class Context():
     pass
@@ -33,10 +33,10 @@ class Context():
 #@click.command("metos3d", cls=Metos3DGroup)
 @click.group("metos3d")
 @click.help_option("-h", "--help")
-@click.version_option(metos3dpy.__version__, "-V", "--version")
+@click.version_option(metos3d.__version__, "-V", "--version")
 @click.option("-v", "--verbose", is_flag=True, help="Show invoked shell commands and their output.")
 @click.pass_context
-def metos3d(ctx, verbose):
+def metos3d_cli(ctx, verbose):
     """
         Metos3D: A Marine Ecosystem Toolkit for Optimization and Simulation in 3-D
         
@@ -59,46 +59,46 @@ def metos3d(ctx, verbose):
     print(get_platform())
 
 # env
-@metos3d.command("env")
+@metos3d_cli.command("env")
 @click.pass_context
 def metos3d_env(ctx):
     """Metos3D environment."""
     print(metos3d_env.__doc__)
 
 # petsc
-@metos3d.command("petsc")
+@metos3d_cli.command("petsc")
 @click.pass_context
 def metos3d_petsc(ctx):
     """PETSc library."""
     print(metos3d_petsc.__doc__)
 
 # data
-@metos3d.command("data")
+@metos3d_cli.command("data")
 @click.pass_context
 def metos3d_data(ctx):
     """Data location."""
     print(metos3d_data.__doc__)
 
 # model
-@metos3d.command("model")
+@metos3d_cli.command("model")
 @click.pass_context
 def metos3d_model(ctx):
     """Model location."""
     print(metos3d_model.__doc__)
 
 # simpack
-@metos3d.command("simpack")
+@metos3d_cli.command("simpack")
 @click.pass_context
 def metos3d_simpack(ctx):
     """Prepare Metos3D simulation experiment."""
-    metos3dpy.simpack(ctx)
+    print(metos3d_simpack.__doc__)
 
 # optpack
-@metos3d.command("optpack")
+@metos3d_cli.command("optpack")
 @click.pass_context
 def metos3d_optpack(ctx):
     """Prepare Metos3D optimization experiment."""
-    metos3dpy.optpack(ctx)
+    print(metos3d_optpack.__doc__)
 
 
 ## config
