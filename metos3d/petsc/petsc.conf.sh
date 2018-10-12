@@ -16,23 +16,47 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-#PETSC_DIR  = os.path.abspath(os.getcwd())
-#PETSC_ARCH = 'arch-python-' + get_platform()
-#os.environ['PETSC_DIR']  = PETSC_DIR
-#os.environ['PETSC_ARCH'] = PETSC_ARCH
+# set compiler variables,
+# METOS3D_CC
+# METOS3D_CXX
+# METOS3D_FC
+# source generic.mpich.gcc.env.sh
 
-#export PETSC_DIR=
-#export PETSC_ARCH=arch-metos3d-
-#
-#python2 ./configure \
-#-CC=$METOS3D_CC \
-#-CXX=$METOS3D_CXX \
-#-FC=$METOS3D_FC \
-#--with-debugging=0 \
+#tar -xzf petsc-lite-3.10.2.tar.gz
+#cd petsc-3.10.2/
+
+conda create --yes --name metos3d-petsc-python2 python=2
+source activate metos3d-petsc-python2
+
+export PETSC_DIR=`pwd`
+export PETSC_ARCH=arch-metos3d-petsc
+
+./configure \
+--scrollOutput=1 \
+--with-debugging=0 \
+--with-x=0 \
+--CC="$METOS3D_CC" \
+--CXX="$METOS3D_CXX" \
+--FC="$METOS3D_FC" \
+--COPTFLAGS="-O3" \
+--CXXOPTFLAGS="-O3" \
+--FCOPTFLAGS="-O3" \
+--download-yaml=1 \
+
+#> configure_lines.txt
 #--download-fblaslapack=1 \
-#--download-hdf5=1 \
-#--download-yaml=1 \
-#
-#make
+#--download-hdf5=1
+
+# wc configure_lines.txt
+# 430    1704   60983 configure_lines.txt
+
+# make >
+# make_lines.txt
+
+# wc make_lines.txt
+# 1583    3810  102160 make_lines.txt
+
+source deactivate metos3d-petsc-python2
+conda remove --yes --name metos3d-petsc-python2 --all
 
 

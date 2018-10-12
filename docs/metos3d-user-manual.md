@@ -1,19 +1,32 @@
 # Metos3D User Manual
 
-> **Preambel:**
->
->
-> **Why?** Metos3D is a high-performance computing software.
+> **PREAMBLE:**
+> 
+> Metos3D is a high-performance computing software.
+> combines two worlds
+> the interface are the compilers that needs to be set by the user
+> More precisely, a collection of source codes that needs to be compiled
 > parallel,
 > intended use is, on clusters, in parallel
 > computing cluster,
-> More precisely, a collection of source codes that needs to be compiled
+> 
 > each providing its optimal set of compilers
+> shell command `metos3d` that manages everything
+> and an environment that needs to be set up,
+> in the convinient case, Metos3D recognizes the system,
+> in the the other case, you as a user must provide compilers,
+> **C, C++, Fortran compilers**
 > 
 
 ## Metos3D Installation
 
-Metos3D depends on, Python ecosystem, Anaconda, Miniconda, `conda` command, installer, 
+Metos3D
+package management system,
+depends on a Python ecosystem called [Conda](https://conda.io/docs/),
+[Anaconda](https://www.anaconda.com/),
+[Miniconda](https://conda.io/miniconda.html)
+
+`conda` command, installer, 
 Install `metos3d` as a **shell command** with [`conda`](https://conda.io/miniconda.html):
 
 ```sh
