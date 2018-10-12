@@ -50,13 +50,16 @@ def metos3d_cli(ctx, verbose):
     """
     ctx.obj = Context()
     ctx.obj.verbose = verbose
+#    metos3d_check_conf_file()
+
 
 # info
 @metos3d_cli.command("info")
 @click.pass_context
 def metos3d_info(ctx):
     """Show Metos3D configuration"""
-    print(metos3d_info.__doc__)
+    click.echo(metos3d_info.__doc__)
+    metos3d.info(ctx)
 
 # env
 @metos3d_cli.command("env")

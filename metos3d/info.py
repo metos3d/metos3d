@@ -16,28 +16,33 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-"""Metos3D python module."""
+import os
+import yaml
+import click
 
-from .version   import __version__
-from .info      import info
-
-__all__ = (
-           "__version__",
-           "__title__",
-           "__summary__",
-           "__uri__",
-           "__author__",
-           "__email__",
-           "__license__",
-           "__copyright__",
-           )
-
-__title__       = "metos3d"
-__summary__     = "Marine Ecosystem Toolkit for Optimization and Simulation in 3-D"
-__uri__         = "https://github.com/metos3d"
-__author__      = "Jaroslaw Piwonski (CAU)"
-__email__       = "jpi@informatik.uni-kiel.de"
-__license__     = "GPL-3.0"
-__copyright__   = "Copyright 2018 Jaroslaw Piwonski"
+metos3d_conf_file = "metos3d.conf.yaml"
+metos3d_conf_message = """
+### ERROR: No Metos3D configuration file found
 
 
+"""
+
+def info_show_configuration(ctx):
+    metos3d_conf = load(open(metos3d_conf_file))
+    click.echo(metos3d_conf)
+    pass
+
+def info_show_message(ctx):
+    click.echo(metos3d_conf_message)
+    pass
+
+def info(ctx):
+    """
+        Retrieve information from the configuration file.
+    """
+    
+    
+    if os.path.exists(metos3d_conf_file):
+        info_show_configuration(ctx)
+    else:
+        info_show_message(ctx)
