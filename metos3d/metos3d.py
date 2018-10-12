@@ -30,8 +30,7 @@ class Metos3DGroup(click.Group):
     def list_commands(self, ctx):
         return ["info", "env", "petsc", "data", "model", "simpack", "optpack"]
 
-@click.command("metos3d", cls=Metos3DGroup, invoke_without_command=True)
-#@click.command("metos3d", cls=Metos3DGroup)
+@click.command("metos3d", cls=Metos3DGroup)
 @click.help_option("-h", "--help")
 @click.version_option(metos3d.__version__, "-V", "--version")
 @click.option("-v", "--verbose", is_flag=True, help="Show invoked shell commands and their output.")
@@ -51,10 +50,6 @@ def metos3d_cli(ctx, verbose):
     """
     ctx.obj = Context()
     ctx.obj.verbose = verbose
-
-    print(ctx.invoked_subcommand)
-    if ctx.invoked_subcommand is None:
-        print(ctx.get_help())
 
 # info
 @metos3d_cli.command("info")
