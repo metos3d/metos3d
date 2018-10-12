@@ -1,13 +1,50 @@
-# Metos3D cheat sheet
+# Metos3D Cheat Sheet
 
-**`metos3d init`**
+### Usage
 
-Initialize Metos3D ...
+```
+metos3d [OPTIONS] COMMAND [ARGS]...
+```
 
-**`metos3d simpack`**
+### Show Metos3D configuration
 
-Configure a simulation experiment ...
+```
+metos3d info
+```
 
-**`metos3d optpack`**
+### Configure Metos3D compiler environment
 
-Configure an optimization experiment ...
+```
+metos3d env
+```
+### Configure PETSc library
+
+```
+metos3d petsc
+```
+
+###  Configure Metos3D data
+
+```
+metos3d data
+```
+
+###  Configure BGC models
+
+```
+metos3d model
+```
+
+### Prepare Metos3D simulation experiment
+
+```
+metos3d simpack
+```
+
+### Prepare Metos3D optimization experiment
+
+```
+metos3d optpack
+```
+
+

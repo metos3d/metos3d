@@ -1,40 +1,8 @@
 # Metos3D User Manual
 
-## Metos3D Installation
-
-Install `metos3d` as a **shell command** with [`conda`](https://conda.io/miniconda.html):
-
-```sh
-conda install -c jpicau metos3d
-```
-
-Install `metos3d` as a **shell command** with [`pip`](https://pip.pypa.io/en/stable/quickstart/):
-
-```sh
-pip install metos3d
-```
-
-Install `metos3d` **locally** with `git`:
-
-```sh
-git clone https://github.com/metos3d/metos3d.git
-# usage
-cd metos3d/
-./metos3d
-#metos3d 
-#Usage: metos3d [OPTIONS] COMMAND [ARGS]...
-```
-
-See the [Metos3D cheat sheet](metos3d-cheat-sheet.md) for a complete list of available `metos3d` commands.
-
-## Metos3D Initialization
-
-However used, Metos3D must be initialized **at least once** at the beginning:
-
-```
-metos3d init
-```
-
+> **Preambel:**
+>
+>
 > **Why?** Metos3D is a high-performance computing software.
 > parallel,
 > intended use is, on clusters, in parallel
@@ -43,10 +11,50 @@ metos3d init
 > each providing its optimal set of compilers
 > 
 
+## Metos3D Installation
+
+Metos3D depends on, Python ecosystem, Anaconda, Miniconda, `conda` command, installer, 
+Install `metos3d` as a **shell command** with [`conda`](https://conda.io/miniconda.html):
+
+```sh
+curl -O https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+> **Note:** Let the installer, `.bashrc`, add the installation path to your environment variable
+>
+
+The `metos3d` command is part of a PyPI and usually ... 
+
+```sh
+conda install -c jpicau metos3d
+```
+
+From now on, a shell command `metos3d` is installed, can be used as, 
+
+```sh
+metos3d
+```
+
+See the [Metos3D cheat sheet](metos3d-cheat-sheet.md) for a complete list of available `metos3d` commands.
+
+## Metos3D Environment
+
 Initializes the shell environment,
 MPI compilers, C, C++, Fortran,
 compiles PETSc, including YAML, HDF5,
 F2CBLAS,
+
+```
+metos3d env
+metos3d petsc
+```
+
+## Metos3D Data and Models
+
+```
+metos3d data
+metos3d model
+```
 
 ## Metos3D Simulation
 
@@ -69,5 +77,9 @@ mpirun -n 128 ...
 #metos3d simpack experiment-001.conf.yaml
 #metos3d simpack my.first.experiment.conf.yaml
 ```
+
+
+## Metos3D Optimization
+
 
 

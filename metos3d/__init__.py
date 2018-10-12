@@ -19,12 +19,6 @@
 """Metos3D python module."""
 
 from .version   import __version__
-#from .config    import config
-#from .config    import config_show
-#from .config    import config_data
-#from .config    import config_model
-#from .simpack   import simpack
-#from .optpack   import optpack
 
 __all__ = (
            "__version__",
