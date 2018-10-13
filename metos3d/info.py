@@ -42,23 +42,21 @@ def info(ctx):
     """
 
     import subprocess
-#    proc = subprocess.Popen(["make", "clean"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-#    proc = subprocess.Popen(["make", "clean"])
-#    proc = subprocess.Popen(["make", "clean"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-#    proc = subprocess.Popen(["make"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-#    proc = subprocess.Popen(["make"], stdout=subprocess.PIPE)
-    proc = subprocess.Popen(["make"], stdout=subprocess.PIPE)
+    proc = subprocess.Popen(["source ../../../development/metos3d/metos3d/metos3d/petsc/petsc.conf.sh"], stdout=subprocess.PIPE, shell=True, stderr=subprocess.STDOUT)
 
-    with click.progressbar(length=1000, width=0, label=proc.args[0], ) as bar:
+    with click.progressbar(length=450, width=0, label="Configure PETSc", ) as bar:
         for item in bar:
             out = proc.stdout.readline()
 
-    print(proc.returncode)
+
+
+
+#    proc = subprocess.Popen(["make"], stdout=subprocess.PIPE)
+#    with click.progressbar(length=80, width=0, label=proc.args[0], ) as bar:
+
+#    print(proc.returncode)
 
 #    if proc.returncode == 0
-
-
-
 #    import time
 #    while True:
 ##        time.sleep(0.05)
@@ -155,3 +153,9 @@ def info(ctx):
 #        for item in items:
 #            time.sleep(0.05)
 #            bar.update(item)
+
+#    proc = subprocess.Popen(["make", "clean"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#    proc = subprocess.Popen(["make", "clean"])
+#    proc = subprocess.Popen(["make", "clean"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#    proc = subprocess.Popen(["make"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#    proc = subprocess.Popen(["make"], stdout=subprocess.PIPE)

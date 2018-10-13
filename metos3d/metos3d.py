@@ -30,6 +30,7 @@ class Metos3DGroup(click.Group):
     def list_commands(self, ctx):
         return ["info", "env", "petsc", "data", "model", "simpack", "optpack"]
 
+# metos3d
 @click.command("metos3d", cls=Metos3DGroup)
 @click.help_option("-h", "--help")
 @click.version_option(metos3d.__version__, "-V", "--version")
@@ -50,8 +51,6 @@ def metos3d_cli(ctx, verbose):
     """
     ctx.obj = Context()
     ctx.obj.verbose = verbose
-#    metos3d_check_conf_file()
-
 
 # info
 @metos3d_cli.command("info")

@@ -22,6 +22,7 @@
 # METOS3D_FC
 # source generic.mpich.gcc.env.sh
 
+#curl -O http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.10.2.tar.gz
 #tar -xzf petsc-lite-3.10.2.tar.gz
 #cd petsc-3.10.2/
 
