@@ -16,6 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+set -e
+
 #curl -O http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.10.2.tar.gz
 #tar -xzf petsc-3.10.2.tar.gz
 #cd petsc-3.10.2/
