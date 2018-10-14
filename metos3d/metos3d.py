@@ -51,6 +51,7 @@ def metos3d_cli(ctx, verbose):
     """
     ctx.obj = Context()
     ctx.obj.verbose = verbose
+    ctx.obj.basepath = os.path.dirname(__file__)
 
 # info
 @metos3d_cli.command("info")

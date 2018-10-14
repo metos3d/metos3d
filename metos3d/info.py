@@ -20,24 +20,24 @@ import os
 import yaml
 import click
 
-metos3d_conf_file = "metos3d.conf.yaml"
-metos3d_conf_message = """
-### ERROR: No Metos3D configuration file found
-
-
-"""
-
-def info_show_configuration(ctx):
-    metos3d_conf = yaml.load(open(metos3d_conf_file))
-    click.echo(metos3d_conf)
-    pass
-
-def info_show_message(ctx):
-    click.echo(metos3d_conf_message)
-    pass
-
-def info_item(ctx, item):
-    return ctx.item
+#metos3d_conf_file = "metos3d.conf.yaml"
+#metos3d_conf_message = """
+#### ERROR: No Metos3D configuration file found
+#
+#
+#"""
+#
+#def info_show_configuration(ctx):
+#    metos3d_conf = yaml.load(open(metos3d_conf_file))
+#    click.echo(metos3d_conf)
+#    pass
+#
+#def info_show_message(ctx):
+#    click.echo(metos3d_conf_message)
+#    pass
+#
+#def info_item(ctx, item):
+#    return ctx.item
 
 def info(ctx):
     """
@@ -45,18 +45,26 @@ def info(ctx):
     """
 
     ctx.item_list = [
-                     {"environment.+metos3d-petsc-python2": "Creating environment"},
-                     {"Configuring PETSc to compile on your system": "Configuring PETSc"},
-                     {"Running configure on YAML;", "Preparing YAML"},
-#                     {"Running configure on HDF5;", "Preparing HDF5"},
-#                     {"Compiling FBLASLAPACK;","Preparing FBLASLAPACK"},
-#                     {"make PETSC_DIR=.+PETSC_ARCH=", "Compiling PETSc"}
-                     {"environment.+metos3d-petsc-python2", "Removing environment"},
+                     ["environment.+metos3d-petsc-python2",             "Creating environment"],
+                     ["Configuring PETSc to compile on your system",    "Configuring PETSc"],
+                     ["Running configure on YAML;",                     "Preparing YAML"],
+                     ["Running configure on HDF5;",                     "Preparing HDF5"],
+                     ["Compiling FBLASLAPACK;",                         "Preparing FBLASLAPACK"],
+                     ["make PETSC_DIR=.+PETSC_ARCH=",                   "Compiling PETSc"],
+                     ["environment.+metos3d-petsc-python2",             "Removing environment"],
                      ]
-    ctx.item = "item"
+    ctx.item = "Starting"
 
     import subprocess
-    proc = subprocess.Popen(["source ../../../development/metos3d/metos3d/metos3d/petsc/petsc.conf.sh"],
+    # set compiler variables, CC, CXX,FC
+    #source ../env/de.dkrz.mistral.intelmpi.env.sh
+    #source ../env/generic.mpich.gcc.env.sh
+    #source ../../../development/metos3d/metos3d/metos3d/env/generic.mpich.gcc.env.sh
+#    cmd_env = "source " + ctx.obj.basepath + "/env/generic.mpich.gcc.env.sh"
+    cmd_env = "source " + ctx.obj.basepath + "/env/de.dkrz.mistral.intelmpi.env.sh"
+    cmd_petsc = "source " + ctx.obj.basepath + "/petsc/petsc.conf.sh"
+    cmd = cmd_env + ";" + cmd_petsc
+    proc = subprocess.Popen(cmd,
                             shell=True,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
@@ -67,20 +75,23 @@ def info(ctx):
     # 2146   5626 176734 petsc_configure_lines.txt
     with click.progressbar(length=2500,
                            width=0,
-                           label="Initializing Metos3D",
-                           item_show_func=lambda item: info_item(ctx, item),
+                           label="metos3d init",
+#                           item_show_func=lambda item: info_item(ctx, item),
                            ) as bar:
 #        import time
         import re
-        i = 0
+#        i = 0
+        pattern = ctx.item_list.pop(0)
         for item in bar:
             out = proc.stdout.readline().decode("utf-8")
-            print(out.strip())
-            m = re.search(ctx.item_list[i], out)
-#            print(item, ctx.item_list[i], out, m)
+#            print(out.strip())
+            m = re.search(pattern[0], out) if pattern else None
             if m:
-                i = i + 1
-                ctx.item = m.string.strip()
+#                ctx.item = pattern[1]
+                print()
+                bar.label = pattern[1]
+                pattern = ctx.item_list.pop(0) if ctx.item_list else None
+#                i = i + 1
 #                print(out)
 #                time.sleep(1.0)
 

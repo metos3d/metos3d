@@ -16,13 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# set compiler variables, CC, CXX,FC
-#source ../env/de.dkrz.mistral.intelmpi.env.sh
-#source ../env/generic.mpich.gcc.env.sh
-source ../../../development/metos3d/metos3d/metos3d/env/generic.mpich.gcc.env.sh
-
 #curl -O http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.10.2.tar.gz
-#tar -xzf petsc-lite-3.10.2.tar.gz
+#tar -xzf petsc-3.10.2.tar.gz
 #cd petsc-3.10.2/
 
 conda create --yes --name metos3d-petsc-python2 python=2
@@ -42,11 +37,10 @@ export PETSC_ARCH=arch-metos3d-petsc
 --CXXOPTFLAGS="-O3" \
 --FCOPTFLAGS="-O3" \
 --download-yaml=1 \
+--download-fblaslapack=1 \
+--download-hdf5=1
 
-#--download-fblaslapack=1 \
-#--download-hdf5=1
-#
-#make
+make
 
 source deactivate metos3d-petsc-python2
 conda remove --yes --name metos3d-petsc-python2 --all
