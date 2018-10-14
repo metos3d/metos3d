@@ -16,11 +16,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# set compiler variables,
-# METOS3D_CC
-# METOS3D_CXX
-# METOS3D_FC
-# source generic.mpich.gcc.env.sh
+# set compiler variables, CC, CXX,FC
+#source ../env/de.dkrz.mistral.intelmpi.env.sh
+#source ../env/generic.mpich.gcc.env.sh
+source ../../../development/metos3d/metos3d/metos3d/env/generic.mpich.gcc.env.sh
 
 #curl -O http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.10.2.tar.gz
 #tar -xzf petsc-lite-3.10.2.tar.gz
@@ -36,26 +35,18 @@ export PETSC_ARCH=arch-metos3d-petsc
 --scrollOutput=1 \
 --with-debugging=0 \
 --with-x=0 \
---CC="$METOS3D_CC" \
---CXX="$METOS3D_CXX" \
---FC="$METOS3D_FC" \
+--CC="$CC" \
+--CXX="$CXX" \
+--FC="$FC" \
 --COPTFLAGS="-O3" \
 --CXXOPTFLAGS="-O3" \
 --FCOPTFLAGS="-O3" \
 --download-yaml=1 \
 
-#> configure_lines.txt
 #--download-fblaslapack=1 \
 #--download-hdf5=1
-
-# wc configure_lines.txt
-# 430    1704   60983 configure_lines.txt
-
-# make >
-# make_lines.txt
-
-# wc make_lines.txt
-# 1583    3810  102160 make_lines.txt
+#
+#make
 
 source deactivate metos3d-petsc-python2
 conda remove --yes --name metos3d-petsc-python2 --all

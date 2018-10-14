@@ -36,17 +36,53 @@ def info_show_message(ctx):
     click.echo(metos3d_conf_message)
     pass
 
+def info_item(ctx, item):
+    return ctx.item
+
 def info(ctx):
     """
         Retrieve information from the configuration file.
     """
 
-    import subprocess
-    proc = subprocess.Popen(["source ../../../development/metos3d/metos3d/metos3d/petsc/petsc.conf.sh"], stdout=subprocess.PIPE, shell=True, stderr=subprocess.STDOUT)
+    ctx.item_list = [
+                     {"environment.+metos3d-petsc-python2": "Creating environment"},
+                     {"Configuring PETSc to compile on your system": "Configuring PETSc"},
+                     {"Running configure on YAML;", "Preparing YAML"},
+#                     {"Running configure on HDF5;", "Preparing HDF5"},
+#                     {"Compiling FBLASLAPACK;","Preparing FBLASLAPACK"},
+#                     {"make PETSC_DIR=.+PETSC_ARCH=", "Compiling PETSc"}
+                     {"environment.+metos3d-petsc-python2", "Removing environment"},
+                     ]
+    ctx.item = "item"
 
-    with click.progressbar(length=450, width=0, label="Configure PETSc", ) as bar:
+    import subprocess
+    proc = subprocess.Popen(["source ../../../development/metos3d/metos3d/metos3d/petsc/petsc.conf.sh"],
+                            shell=True,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT)
+
+    # test on dkrz
+    # time . ../../metos3d/petsc/petsc.conf.sh > petsc_configure_lines.txt &
+    # wc petsc_configure_lines.txt
+    # 2146   5626 176734 petsc_configure_lines.txt
+    with click.progressbar(length=2500,
+                           width=0,
+                           label="Initializing Metos3D",
+                           item_show_func=lambda item: info_item(ctx, item),
+                           ) as bar:
+#        import time
+        import re
+        i = 0
         for item in bar:
-            out = proc.stdout.readline()
+            out = proc.stdout.readline().decode("utf-8")
+            print(out.strip())
+            m = re.search(ctx.item_list[i], out)
+#            print(item, ctx.item_list[i], out, m)
+            if m:
+                i = i + 1
+                ctx.item = m.string.strip()
+#                print(out)
+#                time.sleep(1.0)
 
 
 

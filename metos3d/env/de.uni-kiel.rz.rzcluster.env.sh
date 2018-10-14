@@ -19,8 +19,8 @@
 module load intel16.0.0
 module load intelmpi16.0.0
 
-export METOS3D_CC='mpiicc -cc=icc'
-export METOS3D_CXX='mpiicpc -cxx=icpc'
-export METOS3D_FC='mpiifort -fc=ifort'
+export CC='mpiicc -cc=icc'
+export CXX='mpiicpc -cxx=icpc'
+export FC='mpiifort -fc=ifort'
 
     

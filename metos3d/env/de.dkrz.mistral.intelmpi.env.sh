@@ -16,8 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-export CC=mpicc
-export CXX=mpicxx
-export FC=mpifort
+module load intel/18.0.2
+module load intelmpi/5.1.3.223
 
-
+export CC='mpiicc -cc=icc'
+export CXX='mpiicpc -cxx=icpc'
+export FC='mpiifort -fc=ifort'
