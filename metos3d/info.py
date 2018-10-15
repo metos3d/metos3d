@@ -30,95 +30,100 @@ def info(ctx):
         Retrieve information from the configuration file.
     """
 
-#    metos3d_conf_file = ctx.obj.basepath + "/metos3d.conf.yaml"
-#    if ctx.obj.verbose:
-#        print("Checking configuration file ...", metos3d_conf_file)
-#    metos3d_conf = yaml.load(open(metos3d_conf_file))
-#
-#    if metos3d_conf["metos3d"]["version"] is None:
-#        print("version is not set ...")
-#        print("Setting version ...", metos3d.__version__)
-#        metos3d_conf["metos3d"]["version"] = metos3d.__version__
-#
-#        with open(metos3d_conf_file, "w") as f:
-#            f.write(yaml.dump(metos3d_conf, default_flow_style=False))
-#    else:
-#        print("Metos3D version ...", metos3d_conf["metos3d"]["version"])
-#
-#    if metos3d_conf["metos3d"]["env"] is None:
-#        print("env is not set ...")
-#
-#        host = socket.getfqdn()
-#        host_part = host.split(".")
-#        host_part.reverse()
-#        print("host ...", host, host_part)
-#
-#        hosts = glob.glob(ctx.obj.basepath + "/env/*")
-#        hosts_file = list(map(os.path.basename, hosts))
-#        for file in hosts_file:
-#            print("hosts ...", file, file.split("."))
-#
-#    else:
-#        print("Metos3D environment ...", metos3d_conf["metos3d"]["env"])
-#
-#    if metos3d_conf["metos3d"]["petsc"] is None:
-#        print("petsc is not set ...")
-#
-#    if metos3d_conf["metos3d"]["data"] is None:
-#        print("data is not set ...")
-#
-#    if metos3d_conf["metos3d"]["model"] is None:
-#        print("model is not set ...")
+    metos3d_conf_file = ctx.obj.basepath + "/metos3d.conf.yaml"
+    if os.path.exists(metos3d_conf_file):
+        pass
+    
+    if ctx.obj.verbose:
+        print("Checking configuration file ...", metos3d_conf_file)
+    metos3d_conf = yaml.load(open(metos3d_conf_file))
 
-    ctx.item_list = [
-                     ["environment.+metos3d-petsc-python2",             "Creating environment"],
-                     ["Configuring PETSc to compile on your system",    "Configuring PETSc"],
-                     ["download.+YAML",                                 "Downloading YAML"],
-                     ["Running configure on YAML",                      "Configuring YAML"],
-                     ["Running make on YAML",                           "Compiling YAML"],
-                     ["Running make install on YAML",                   "Installing YAML"],
-                     ["TESTING:",                                       "Configuring PETSc"],
-                     ["download.+HDF5",                                 "Downloading HDF5"],
-                     ["Running configure on HDF5",                      "Configuring HDF5"],
-                     ["Running make on HDF5",                           "Compiling HDF5"],
-                     ["Running make install on HDF5",                   "Installing HDF5"],
-                     ["TESTING:",                                       "Configuring PETSc"],
-                     ["download.+FBLASLAPACK",                          "Downloading FBLASLAPACK"],
-                     ["Compiling FBLASLAPACK",                          "Compiling FBLASLAPACK"],
-                     ["TESTING:",                                       "Configuring PETSc"],
-                     ["make PETSC_DIR=.+PETSC_ARCH=",                   "Compiling PETSc"],
-                     ["environment.+metos3d-petsc-python2",             "Removing environment"],
-                     ]
-    ctx.item = "Starting"
+    if metos3d_conf["metos3d"]["version"] is None:
+        print("version is not set ...")
+        print("Setting version ...", metos3d.__version__)
+        metos3d_conf["metos3d"]["version"] = metos3d.__version__
 
-    # set compiler variables, CC, CXX,FC
-#    cmd_env = "source " + ctx.obj.basepath + "/env/generic.mpich.gcc.env.sh"
-#    cmd_env = "source " + ctx.obj.basepath + "/env/de.dkrz.mistral.intelmpi.env.sh"
-    cmd_env = "source " + ctx.obj.basepath + "/env/de.uni-kiel.rz.rzcluster.env.sh"
-    cmd_petsc = "source " + ctx.obj.basepath + "/petsc/petsc.conf.sh"
-    cmd = cmd_env + ";" + cmd_petsc
-    proc = subprocess.Popen(cmd,
-                            shell=True,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT)
+        with open(metos3d_conf_file, "w") as f:
+            f.write(yaml.dump(metos3d_conf, default_flow_style=False))
+    else:
+        print("Metos3D version ...", metos3d_conf["metos3d"]["version"])
 
-    # test on dkrz
-    # time . ../../metos3d/petsc/petsc.conf.sh > petsc_configure_lines.txt &
-    # wc petsc_configure_lines.txt
-    # 2146   5626 176734 petsc_configure_lines.txt
-    with click.progressbar(length=2200,
-                           width=0,
-                           label="metos3d init",
-                           ) as bar:
+    if metos3d_conf["metos3d"]["env"] is None:
+        print("env is not set ...")
 
-        pattern = ctx.item_list.pop(0)
-        for item in bar:
-            out = proc.stdout.readline().decode("utf-8")
-            print(out.strip())
-            m = re.search(pattern[0], out) if pattern else None
-            if m:
-                bar.label = pattern[1]
-                pattern = ctx.item_list.pop(0) if ctx.item_list else None
+        host = socket.getfqdn()
+        host_part = host.split(".")
+        host_part.reverse()
+        print("host ...", host, host_part)
+
+        hosts = glob.glob(ctx.obj.basepath + "/env/*")
+        hosts_file = list(map(os.path.basename, hosts))
+        for file in hosts_file:
+            print("hosts ...", file, file.split("."))
+
+    else:
+        print("Metos3D environment ...", metos3d_conf["metos3d"]["env"])
+
+    if metos3d_conf["metos3d"]["petsc"] is None:
+        print("petsc is not set ...")
+
+    if metos3d_conf["metos3d"]["data"] is None:
+        print("data is not set ...")
+
+    if metos3d_conf["metos3d"]["model"] is None:
+        print("model is not set ...")
+
+
+
+#    ctx.item_list = [
+#                     ["environment.+metos3d-petsc-python2",             "Creating environment"],
+#                     ["Configuring PETSc to compile on your system",    "Configuring PETSc"],
+#                     ["download.+YAML",                                 "Downloading YAML"],
+#                     ["Running configure on YAML",                      "Configuring YAML"],
+#                     ["Running make on YAML",                           "Compiling YAML"],
+#                     ["Running make install on YAML",                   "Installing YAML"],
+#                     ["TESTING:",                                       "Configuring PETSc"],
+#                     ["download.+HDF5",                                 "Downloading HDF5"],
+#                     ["Running configure on HDF5",                      "Configuring HDF5"],
+#                     ["Running make on HDF5",                           "Compiling HDF5"],
+#                     ["Running make install on HDF5",                   "Installing HDF5"],
+#                     ["TESTING:",                                       "Configuring PETSc"],
+#                     ["download.+FBLASLAPACK",                          "Downloading FBLASLAPACK"],
+#                     ["Compiling FBLASLAPACK",                          "Compiling FBLASLAPACK"],
+#                     ["TESTING:",                                       "Configuring PETSc"],
+#                     ["make PETSC_DIR=.+PETSC_ARCH=",                   "Compiling PETSc"],
+#                     ["environment.+metos3d-petsc-python2",             "Removing environment"],
+#                     ]
+#    ctx.item = "Starting"
+#
+#    # set compiler variables, CC, CXX,FC
+##    cmd_env = "source " + ctx.obj.basepath + "/env/generic.mpich.gcc.env.sh"
+##    cmd_env = "source " + ctx.obj.basepath + "/env/de.dkrz.mistral.intelmpi.env.sh"
+#    cmd_env = "source " + ctx.obj.basepath + "/env/de.uni-kiel.rz.rzcluster.env.sh"
+#    cmd_petsc = "source " + ctx.obj.basepath + "/petsc/petsc.conf.sh"
+#    cmd = cmd_env + ";" + cmd_petsc
+#    proc = subprocess.Popen(cmd,
+#                            shell=True,
+#                            stdout=subprocess.PIPE,
+#                            stderr=subprocess.STDOUT)
+#
+#    # test on dkrz
+#    # time . ../../metos3d/petsc/petsc.conf.sh > petsc_configure_lines.txt &
+#    # wc petsc_configure_lines.txt
+#    # 2146   5626 176734 petsc_configure_lines.txt
+#    with click.progressbar(length=2200,
+#                           width=0,
+#                           label="metos3d init",
+#                           ) as bar:
+#
+#        pattern = ctx.item_list.pop(0)
+#        for item in bar:
+#            out = proc.stdout.readline().decode("utf-8")
+##            print(out.strip())
+#            m = re.search(pattern[0], out) if pattern else None
+#            if m:
+#                bar.label = pattern[1]
+#                pattern = ctx.item_list.pop(0) if ctx.item_list else None
 
 
 
