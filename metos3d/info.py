@@ -114,6 +114,7 @@ def info(ctx):
         pattern = ctx.item_list.pop(0)
         for item in bar:
             out = proc.stdout.readline().decode("utf-8")
+            print(out.strip())
             m = re.search(pattern[0], out) if pattern else None
             if m:
                 bar.label = pattern[1]
