@@ -16,31 +16,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import re
 import os
 import glob
 import yaml
 import click
 import socket
 import metos3d
-
-#metos3d_conf_file = "metos3d.conf.yaml"
-#metos3d_conf_message = """
-#### ERROR: No Metos3D configuration file found
-#
-#
-#"""
-#
-#def info_show_configuration(ctx):
-#    metos3d_conf = yaml.load(open(metos3d_conf_file))
-#    click.echo(metos3d_conf)
-#    pass
-#
-#def info_show_message(ctx):
-#    click.echo(metos3d_conf_message)
-#    pass
-#
-#def info_item(ctx, item):
-#    return ctx.item
+import subprocess
 
 def info(ctx):
     """
@@ -90,19 +73,25 @@ def info(ctx):
     ctx.item_list = [
                      ["environment.+metos3d-petsc-python2",             "Creating environment"],
                      ["Configuring PETSc to compile on your system",    "Configuring PETSc"],
-                     ["Running configure on YAML;",                     "Preparing YAML"],
-                     ["Running configure on HDF5;",                     "Preparing HDF5"],
-                     ["Compiling FBLASLAPACK;",                         "Preparing FBLASLAPACK"],
+                     ["download.+YAML",                                 "Downloading YAML"],
+                     ["Running configure on YAML;",                     "Configuring YAML"],
+                     ["Running make on YAML;",                          "Compiling YAML"],
+                     ["Running make install on YAML;",                  "Installing YAML"],
+                     ["TESTING:",                                       "Configuring PETSc"],
+                     ["download.+HDF5;",                                "Downloading HDF5"],
+                     ["Running configure on HDF5;",                     "Configuring HDF5"],
+                     ["Running make on HDF5;",                          "Compiling HDF5"],
+                     ["Running make install on HDF5;",                  "Installing HDF5"],
+                     ["TESTING:",                                       "Configuring PETSc"],
+                     ["download.+FBLASLAPACK;",                         "Downloading FBLASLAPACK"],
+                     ["Compiling FBLASLAPACK;",                         "Compiling FBLASLAPACK"],
+                     ["TESTING:",                                       "Configuring PETSc"],
                      ["make PETSC_DIR=.+PETSC_ARCH=",                   "Compiling PETSc"],
                      ["environment.+metos3d-petsc-python2",             "Removing environment"],
                      ]
     ctx.item = "Starting"
 
-    import subprocess
     # set compiler variables, CC, CXX,FC
-    #source ../env/de.dkrz.mistral.intelmpi.env.sh
-    #source ../env/generic.mpich.gcc.env.sh
-    #source ../../../development/metos3d/metos3d/metos3d/env/generic.mpich.gcc.env.sh
 #    cmd_env = "source " + ctx.obj.basepath + "/env/generic.mpich.gcc.env.sh"
 #    cmd_env = "source " + ctx.obj.basepath + "/env/de.dkrz.mistral.intelmpi.env.sh"
     cmd_env = "source " + ctx.obj.basepath + "/env/de.uni-kiel.rz.rzcluster.env.sh"
@@ -120,24 +109,24 @@ def info(ctx):
     with click.progressbar(length=2200,
                            width=0,
                            label="metos3d init",
-#                           item_show_func=lambda item: info_item(ctx, item),
                            ) as bar:
-#        import time
-        import re
-#        i = 0
+
         pattern = ctx.item_list.pop(0)
         for item in bar:
             out = proc.stdout.readline().decode("utf-8")
-            print(out.strip())
             m = re.search(pattern[0], out) if pattern else None
             if m:
-#                ctx.item = pattern[1]
-#                print()
                 bar.label = pattern[1]
                 pattern = ctx.item_list.pop(0) if ctx.item_list else None
-#                i = i + 1
-#                print(out)
-#                time.sleep(1.0)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -157,7 +146,6 @@ def info(ctx):
 #            break
 #        print(out)
 
-
 #    with click.progressbar(length=100, width=0, label="Configure PETSc", ) as bar:
 #        for item in bar:
 ##            print(type(item))
@@ -165,8 +153,6 @@ def info(ctx):
 #            if item > 50:
 #                break
 #            time.sleep(0.05)
-
-
 
 #    if os.path.exists(metos3d_conf_file):
 #        info_show_configuration(ctx)
@@ -234,11 +220,6 @@ def info(ctx):
 #                break
 #            time.sleep(0.05)
 
-
-
-
-
-
 #    with click.progressbar(length=100, width=0, label="Configure PETSc", show_pos=True, item_show_func=my_func) as bar:
 #            print(item)
 #        for item in items:
@@ -250,3 +231,35 @@ def info(ctx):
 #    proc = subprocess.Popen(["make", "clean"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 #    proc = subprocess.Popen(["make"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 #    proc = subprocess.Popen(["make"], stdout=subprocess.PIPE)
+
+#metos3d_conf_file = "metos3d.conf.yaml"
+#metos3d_conf_message = """
+#### ERROR: No Metos3D configuration file found
+#
+#
+#"""
+#
+#def info_show_configuration(ctx):
+#    metos3d_conf = yaml.load(open(metos3d_conf_file))
+#    click.echo(metos3d_conf)
+#    pass
+#
+#def info_show_message(ctx):
+#    click.echo(metos3d_conf_message)
+#    pass
+#
+#def info_item(ctx, item):
+#    return ctx.item
+
+#source ../env/de.dkrz.mistral.intelmpi.env.sh
+#source ../env/generic.mpich.gcc.env.sh
+#source ../../../development/metos3d/metos3d/metos3d/env/generic.mpich.gcc.env.sh
+#            print(out.strip())
+#                ctx.item = pattern[1]
+#                print()
+#                i = i + 1
+#                print(out)
+#                time.sleep(1.0)
+#                           item_show_func=lambda item: info_item(ctx, item),
+#        import time
+#        i = 0
