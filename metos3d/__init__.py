@@ -20,6 +20,7 @@
 
 from .version   import __version__
 from .info      import info
+from .metos3d   import debug, error
 
 __all__ = (
            "__version__",

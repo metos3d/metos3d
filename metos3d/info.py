@@ -26,52 +26,58 @@ import metos3d
 import subprocess
 
 def info(ctx):
-    """
-        Retrieve information from the configuration file.
-    """
 
-    metos3d_conf_file = ctx.obj.basepath + "/metos3d.conf.yaml"
-    if os.path.exists(metos3d_conf_file):
-        pass
-    
-    if ctx.obj.verbose:
-        print("Checking configuration file ...", metos3d_conf_file)
-    metos3d_conf = yaml.load(open(metos3d_conf_file))
+    metos3d_conf_file_path = ctx.obj.basepath + "/metos3d.conf.yaml"
+    metos3d.debug(ctx, "Checking configuration file", metos3d_conf_file_path)
 
-    if metos3d_conf["metos3d"]["version"] is None:
-        print("version is not set ...")
-        print("Setting version ...", metos3d.__version__)
-        metos3d_conf["metos3d"]["version"] = metos3d.__version__
+    try:    metos3d_conf_file = open(metos3d_conf_file_path)
+    except: metos3d.error(True, "Can't open configuration file")
 
-        with open(metos3d_conf_file, "w") as f:
-            f.write(yaml.dump(metos3d_conf, default_flow_style=False))
-    else:
+    try:    metos3d_conf = yaml.load(metos3d_conf_file)
+    except: metos3d.error(True, "Can't load configuration as YAML file")
+
+    try:
         print("Metos3D version ...", metos3d_conf["metos3d"]["version"])
-
-    if metos3d_conf["metos3d"]["env"] is None:
-        print("env is not set ...")
-
-        host = socket.getfqdn()
-        host_part = host.split(".")
-        host_part.reverse()
-        print("host ...", host, host_part)
-
-        hosts = glob.glob(ctx.obj.basepath + "/env/*")
-        hosts_file = list(map(os.path.basename, hosts))
-        for file in hosts_file:
-            print("hosts ...", file, file.split("."))
-
-    else:
         print("Metos3D environment ...", metos3d_conf["metos3d"]["env"])
+        print("PETSc library ...", metos3d_conf["metos3d"]["petsc"])
+        print("Metos3D data ...", metos3d_conf["metos3d"]["data"])
+        print("Metos3D model ...", metos3d_conf["metos3d"]["model"])
+    except:
+        metos3d.error(True, "Can't access configuration")
 
-    if metos3d_conf["metos3d"]["petsc"] is None:
-        print("petsc is not set ...")
 
-    if metos3d_conf["metos3d"]["data"] is None:
-        print("data is not set ...")
-
-    if metos3d_conf["metos3d"]["model"] is None:
-        print("model is not set ...")
+#    if metos3d_conf["metos3d"]["version"] is None:
+#        print("version is not set ...")
+#        print("Setting version ...", metos3d.__version__)
+#        metos3d_conf["metos3d"]["version"] = metos3d.__version__
+#
+#        with open(metos3d_conf_file, "w") as f:
+#            f.write(yaml.dump(metos3d_conf, default_flow_style=False))
+#    else:
+#
+#    if metos3d_conf["metos3d"]["env"] is None:
+#        print("env is not set ...")
+#
+#        host = socket.getfqdn()
+#        host_part = host.split(".")
+#        host_part.reverse()
+#        print("host ...", host, host_part)
+#
+#        hosts = glob.glob(ctx.obj.basepath + "/env/*")
+#        hosts_file = list(map(os.path.basename, hosts))
+#        for file in hosts_file:
+#            print("hosts ...", file, file.split("."))
+#
+#    else:
+#
+#    if metos3d_conf["metos3d"]["petsc"] is None:
+#        print("petsc is not set ...")
+#
+#    if metos3d_conf["metos3d"]["data"] is None:
+#        print("data is not set ...")
+#
+#    if metos3d_conf["metos3d"]["model"] is None:
+#        print("model is not set ...")
 
 
 

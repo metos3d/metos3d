@@ -17,6 +17,7 @@
 #
     
 import os
+import sys
 import click
 import metos3d
 
@@ -26,6 +27,18 @@ class Context():
 class Metos3DGroup(click.Group):
     def list_commands(self, ctx):
         return ["info", "env", "petsc", "data", "model", "simpack", "optpack"]
+
+def debug(ctx, item, content):
+    if ctx.obj.verbose:
+        text = "[DEBUG] {} ... {}".format(item, content)
+        click.echo(text)
+
+def error(cond, content):
+    if cond:
+        text = click.style("[ERROR]", fg="red")
+        text = text + " {} ...".format(content)
+        click.echo(text)
+        sys.exit(1)
 
 # metos3d
 @click.command("metos3d", cls=Metos3DGroup)
@@ -49,13 +62,15 @@ def metos3d_cli(ctx, verbose):
     ctx.obj = Context()
     ctx.obj.verbose = verbose
     ctx.obj.basepath = os.path.dirname(__file__)
+    
+    metos3d.debug(ctx, "Metos3D version", metos3d.__version__)
+    metos3d.debug(ctx, "Metos3D path", ctx.obj.basepath)
 
 # info
 @metos3d_cli.command("info")
 @click.pass_context
 def metos3d_info(ctx):
     """Show Metos3D configuration"""
-    click.echo(metos3d_info.__doc__)
     metos3d.info(ctx)
 
 # env
