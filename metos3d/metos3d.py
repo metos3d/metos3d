@@ -17,10 +17,7 @@
 #
     
 import os
-import glob
-import socket
 import click
-import yaml
 import metos3d
 
 class Context():

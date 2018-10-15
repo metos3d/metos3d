@@ -17,8 +17,11 @@
 #
 
 import os
+import glob
 import yaml
 import click
+import socket
+import metos3d
 
 #metos3d_conf_file = "metos3d.conf.yaml"
 #metos3d_conf_message = """
@@ -44,6 +47,46 @@ def info(ctx):
         Retrieve information from the configuration file.
     """
 
+#    metos3d_conf_file = ctx.obj.basepath + "/metos3d.conf.yaml"
+#    if ctx.obj.verbose:
+#        print("Checking configuration file ...", metos3d_conf_file)
+#    metos3d_conf = yaml.load(open(metos3d_conf_file))
+#
+#    if metos3d_conf["metos3d"]["version"] is None:
+#        print("version is not set ...")
+#        print("Setting version ...", metos3d.__version__)
+#        metos3d_conf["metos3d"]["version"] = metos3d.__version__
+#
+#        with open(metos3d_conf_file, "w") as f:
+#            f.write(yaml.dump(metos3d_conf, default_flow_style=False))
+#    else:
+#        print("Metos3D version ...", metos3d_conf["metos3d"]["version"])
+#
+#    if metos3d_conf["metos3d"]["env"] is None:
+#        print("env is not set ...")
+#
+#        host = socket.getfqdn()
+#        host_part = host.split(".")
+#        host_part.reverse()
+#        print("host ...", host, host_part)
+#
+#        hosts = glob.glob(ctx.obj.basepath + "/env/*")
+#        hosts_file = list(map(os.path.basename, hosts))
+#        for file in hosts_file:
+#            print("hosts ...", file, file.split("."))
+#
+#    else:
+#        print("Metos3D environment ...", metos3d_conf["metos3d"]["env"])
+#
+#    if metos3d_conf["metos3d"]["petsc"] is None:
+#        print("petsc is not set ...")
+#
+#    if metos3d_conf["metos3d"]["data"] is None:
+#        print("data is not set ...")
+#
+#    if metos3d_conf["metos3d"]["model"] is None:
+#        print("model is not set ...")
+
     ctx.item_list = [
                      ["environment.+metos3d-petsc-python2",             "Creating environment"],
                      ["Configuring PETSc to compile on your system",    "Configuring PETSc"],
@@ -61,7 +104,8 @@ def info(ctx):
     #source ../env/generic.mpich.gcc.env.sh
     #source ../../../development/metos3d/metos3d/metos3d/env/generic.mpich.gcc.env.sh
 #    cmd_env = "source " + ctx.obj.basepath + "/env/generic.mpich.gcc.env.sh"
-    cmd_env = "source " + ctx.obj.basepath + "/env/de.dkrz.mistral.intelmpi.env.sh"
+#    cmd_env = "source " + ctx.obj.basepath + "/env/de.dkrz.mistral.intelmpi.env.sh"
+    cmd_env = "source " + ctx.obj.basepath + "/env/de.uni-kiel.rz.rzcluster.env.sh"
     cmd_petsc = "source " + ctx.obj.basepath + "/petsc/petsc.conf.sh"
     cmd = cmd_env + ";" + cmd_petsc
     proc = subprocess.Popen(cmd,
@@ -73,7 +117,7 @@ def info(ctx):
     # time . ../../metos3d/petsc/petsc.conf.sh > petsc_configure_lines.txt &
     # wc petsc_configure_lines.txt
     # 2146   5626 176734 petsc_configure_lines.txt
-    with click.progressbar(length=2500,
+    with click.progressbar(length=2200,
                            width=0,
                            label="metos3d init",
 #                           item_show_func=lambda item: info_item(ctx, item),
