@@ -18,6 +18,8 @@
 
 import re
 import os
+import sys
+#import traceback
 import glob
 import yaml
 import click
@@ -26,16 +28,9 @@ import metos3d
 import subprocess
 
 def info(ctx):
-
-    metos3d_conf_file_path = ctx.obj.basepath + "/metos3d.conf.yaml"
-    metos3d.debug(ctx, "Checking configuration file", metos3d_conf_file_path)
-
-    try:    metos3d_conf_file = open(metos3d_conf_file_path)
-    except: metos3d.error(True, "Can't open configuration file")
-
-    try:    metos3d_conf = yaml.load(metos3d_conf_file)
-    except: metos3d.error(True, "Can't load configuration as YAML file")
-
+    
+    metos3d_conf = metos3d.read_configuration(ctx)
+    
     try:
         print("Metos3D version ...", metos3d_conf["metos3d"]["version"])
         print("Metos3D environment ...", metos3d_conf["metos3d"]["env"])
@@ -43,9 +38,16 @@ def info(ctx):
         print("Metos3D data ...", metos3d_conf["metos3d"]["data"])
         print("Metos3D model ...", metos3d_conf["metos3d"]["model"])
     except:
-        metos3d.error(True, "Can't access configuration")
+        metos3d.error("Can't access loaded Metos3D configuration", is_exception=True)
 
 
+#        import traceback
+#        traceback.print_last()
+##        traceback.print_exception(sys.last_type)
+##sys.last_value
+##sys.last_traceback
+
+#        print(sys.last_traceback)
 #    if metos3d_conf["metos3d"]["version"] is None:
 #        print("version is not set ...")
 #        print("Setting version ...", metos3d.__version__)

@@ -17,7 +17,7 @@
 #
     
 import os
-import sys
+import sys, traceback
 import click
 import metos3d
 
@@ -33,12 +33,27 @@ def debug(ctx, item, content):
         text = "[DEBUG] {} ... {}".format(item, content)
         click.echo(text)
 
-def error(cond, content):
-    if cond:
-        text = click.style("[ERROR]", fg="red")
-        text = text + " {} ...".format(content)
-        click.echo(text)
-        sys.exit(1)
+def error(item, **kwargs):
+    text = click.style("[ERROR]", fg="red", bold=True)
+    text = text + " {} ...".format(item)
+    click.echo(text)
+    if kwargs.get("is_exception"):
+        traceback.print_exc()
+    sys.exit(1)
+
+def read_configuration(ctx):
+    metos3d_conf_file_path = ctx.obj.basepath + "/metos3d.conf.yaml"
+    try:
+        metos3d.debug(ctx, "Opening Metos3D configuration file", metos3d_conf_file_path)
+        with open(metos3d_conf_file_path) as metos3d_conf_file:
+            try:
+                metos3d.debug(ctx, "Loading Metos3D configuration as YAML file", metos3d_conf_file_path)
+                metos3d_conf = yaml.load(metos3d_conf_file)
+            except:
+                metos3d.error("Can't load Metos3D configuration as YAML file", is_exception=True)
+    except:
+        metos3d.error("Can't open Metos3D configuration file", is_exception=True)
+    return metos3d_conf
 
 # metos3d
 @click.command("metos3d", cls=Metos3DGroup)
@@ -115,4 +130,22 @@ def metos3d_optpack(ctx):
     """Prepare Metos3D optimization experiment"""
     print(metos3d_optpack.__doc__)
 
+
+
+
+
+
+#
+#    exc_info
+#    with  as exc_info:
+#        if exc_info is not None:
+#            print(exc_info)
+##        kwargs.get("exception").print_exc()
+#        traceback.print_last()
+##        traceback.print_tb(sys.exc_info()[2])
+##        traceback.print_exception(sys.last_type)
+##sys.last_value
+##sys.last_traceback
+##        print(kwargs.get("exception"))
+##        click.echo(sys.exc_info()[2].format_exc())
 
