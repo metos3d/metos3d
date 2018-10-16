@@ -17,10 +17,7 @@
 #
 
 import os
-import sys
-import traceback
 import click
-import yaml
 import metos3d
 
 class Context():
@@ -33,54 +30,10 @@ class Metos3DGroup(click.Group):
     
     def get_command(self, ctx, name):
         print(self, ctx, name)
-        return metos3d.__getattribute__(name + "_cli")
-
-# echo
-def echo(item, content):
-    text = "{:.<30} {}".format(item + " ", content)
-    click.echo(text)
-
-# debug
-def debug(ctx, item, content):
-    if ctx.obj.verbose:
-        text = text = click.style("[DEBUG]", bold=True)
-        text = text + " {} ... {}".format(item, content)
-        click.echo(text)
-
-# error
-def error(item, **kwargs):
-    # error message
-    text = click.style("[ERROR]", fg="red", bold=True)
-    text = text + " {} ...".format(item)
-    click.echo(text)
-    # exception message
-    if kwargs.get("is_exception"):
-        traceback.print_exc(1)
-    # info message
-    if kwargs.get("info"):
-        text = click.style("[INFO]", fg="green", bold=True)
-        text = text + " {} ...".format(kwargs["info"])
-        click.echo(text)
-    sys.exit(1)
-
-# read metos3d config
-def read_config(ctx):
-    metos3d_conf_file_path = ctx.obj.basepath + "/metos3d.conf.yaml"
-    try:
-        metos3d.debug(ctx, "Opening Metos3D configuration file", metos3d_conf_file_path)
-        with open(metos3d_conf_file_path) as metos3d_conf_file:
-            try:
-                metos3d.debug(ctx, "Loading Metos3D configuration as YAML file", metos3d_conf_file_path)
-                metos3d_conf = yaml.load(metos3d_conf_file)
-            except Exception:
-                metos3d.error("Can't load Metos3D configuration as YAML file",
-                              info="Run 'metos3d init all' first",
-                              is_exception=True)
-    except Exception:
-        metos3d.error("Can't open Metos3D configuration file",
-                      info="Run 'metos3d init all' first",
-                      is_exception=True)
-    return metos3d_conf
+        if name in self.list_commands(ctx):
+            return metos3d.__getattribute__(name + "_cli")
+        else:
+            None
 
 # metos3d
 @click.command("metos3d", cls=Metos3DGroup)
