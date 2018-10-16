@@ -26,7 +26,10 @@ class Metos3DInitGroup(click.Group):
     
     def get_command(self, ctx, name):
         print(self, ctx, name)
-        return metos3d.__getattribute__("init_" + name)
+        if name in self.list_commands(ctx):
+            return metos3d.__getattribute__("init_" + name)
+        else:
+            None
 
 # init
 @click.group("init", cls=Metos3DInitGroup)
