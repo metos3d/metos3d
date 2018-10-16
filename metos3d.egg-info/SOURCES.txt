@@ -1,8 +1,8 @@
 README.md
 setup.py
 metos3d/__init__.py
+metos3d/info.py
 metos3d/metos3d.py
-metos3d/util.py
 metos3d/version.py
 metos3d.egg-info/PKG-INFO
 metos3d.egg-info/SOURCES.txt

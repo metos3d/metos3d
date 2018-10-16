@@ -27,8 +27,13 @@ class Context():
     pass
 
 class Metos3DGroup(click.Group):
+    
     def list_commands(self, ctx):
-        return ["info", "env", "petsc", "data", "model", "simpack", "optpack"]
+        return ["init", "info", "simpack", "optpack"]
+    
+    def get_command(self, ctx, name):
+        print(self, ctx, name)
+        return metos3d.__getattribute__(name + "_cli")
 
 # echo
 def echo(item, content):
@@ -38,17 +43,24 @@ def echo(item, content):
 # debug
 def debug(ctx, item, content):
     if ctx.obj.verbose:
-        text = "[DEBUG]"
+        text = text = click.style("[DEBUG]", bold=True)
         text = text + " {} ... {}".format(item, content)
         click.echo(text)
 
 # error
 def error(item, **kwargs):
+    # error message
     text = click.style("[ERROR]", fg="red", bold=True)
     text = text + " {} ...".format(item)
     click.echo(text)
+    # exception message
     if kwargs.get("is_exception"):
         traceback.print_exc(1)
+    # info message
+    if kwargs.get("info"):
+        text = click.style("[INFO]", fg="green", bold=True)
+        text = text + " {} ...".format(kwargs["info"])
+        click.echo(text)
     sys.exit(1)
 
 # read metos3d config
@@ -61,9 +73,13 @@ def read_config(ctx):
                 metos3d.debug(ctx, "Loading Metos3D configuration as YAML file", metos3d_conf_file_path)
                 metos3d_conf = yaml.load(metos3d_conf_file)
             except Exception:
-                metos3d.error("Can't load Metos3D configuration as YAML file", is_exception=True)
+                metos3d.error("Can't load Metos3D configuration as YAML file",
+                              info="Run 'metos3d init all' first",
+                              is_exception=True)
     except Exception:
-        metos3d.error("Can't open Metos3D configuration file", is_exception=True)
+        metos3d.error("Can't open Metos3D configuration file",
+                      info="Run 'metos3d init all' first",
+                      is_exception=True)
     return metos3d_conf
 
 # metos3d
@@ -92,71 +108,6 @@ def metos3d_cli(ctx, verbose):
     metos3d.debug(ctx, "Metos3D version", metos3d.__version__)
     metos3d.debug(ctx, "Metos3D path", ctx.obj.basepath)
 
-# info
-@metos3d_cli.command("info")
-@click.pass_context
-def metos3d_info(ctx):
-    """Show Metos3D configuration"""
-    metos3d.info(ctx)
+    print(ctx.obj)
 
-# env
-@metos3d_cli.command("env")
-@click.pass_context
-def metos3d_env(ctx):
-    """Configure Metos3D compiler environment"""
-    print(metos3d_env.__doc__)
-
-# petsc
-@metos3d_cli.command("petsc")
-@click.pass_context
-def metos3d_petsc(ctx):
-    """Configure PETSc library"""
-    print(metos3d_petsc.__doc__)
-
-# data
-@metos3d_cli.command("data")
-@click.pass_context
-def metos3d_data(ctx):
-    """Configure Metos3D data"""
-    print(metos3d_data.__doc__)
-
-# model
-@metos3d_cli.command("model")
-@click.pass_context
-def metos3d_model(ctx):
-    """Configure Metos3D BGC models"""
-    print(metos3d_model.__doc__)
-
-# simpack
-@metos3d_cli.command("simpack")
-@click.pass_context
-def metos3d_simpack(ctx):
-    """Prepare Metos3D simulation experiment"""
-    print(metos3d_simpack.__doc__)
-
-# optpack
-@metos3d_cli.command("optpack")
-@click.pass_context
-def metos3d_optpack(ctx):
-    """Prepare Metos3D optimization experiment"""
-    print(metos3d_optpack.__doc__)
-
-
-
-
-
-
-#
-#    exc_info
-#    with  as exc_info:
-#        if exc_info is not None:
-#            print(exc_info)
-##        kwargs.get("exception").print_exc()
-#        traceback.print_last()
-##        traceback.print_tb(sys.exc_info()[2])
-##        traceback.print_exception(sys.last_type)
-##sys.last_value
-##sys.last_traceback
-##        print(kwargs.get("exception"))
-##        click.echo(sys.exc_info()[2].format_exc())
 

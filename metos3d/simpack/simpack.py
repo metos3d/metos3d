@@ -16,8 +16,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-def simpack(ctx):
-    print("metos3dpy/simpack.py:", ctx)
-    print("metos3dpy/simpack.py:", ctx.obj)
+import click
+
+@click.command("simpack")
+@click.pass_context
+def simpack_cli(ctx):
+    """Prepare Metos3D simulation experiment"""
+    print(ctx.obj)
 
 

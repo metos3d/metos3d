@@ -16,8 +16,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-def optpack(ctx):
-    print("metos3dpy/optpack.py:", ctx)
-    print("metos3dpy/optpack.py:", ctx.obj)
+import click
+
+@click.command("optpack")
+@click.pass_context
+def optpack_cli(ctx):
+    """Prepare Metos3D optimization experiment"""
+    print(ctx.obj)
+
 
 
