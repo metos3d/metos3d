@@ -17,11 +17,13 @@
 #
 
 import click
+import metos3d
 
 @click.command("simpack")
 @click.pass_context
 def simpack_cli(ctx):
     """Prepare Metos3D simulation experiment"""
     print(ctx.obj)
+    metos3d_conf = metos3d.read_config(ctx)
 
 

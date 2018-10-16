@@ -17,12 +17,13 @@
 #
 
 import click
+import metos3d
 
 @click.command("optpack")
 @click.pass_context
 def optpack_cli(ctx):
     """Prepare Metos3D optimization experiment"""
     print(ctx.obj)
-
+    metos3d_conf = metos3d.read_config(ctx)
 
 

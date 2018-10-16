@@ -20,7 +20,8 @@
 
 from .version           import __version__
 from .info              import info_cli
-from .init              import init_cli
+from .init.init         import init_cli
+from .init.init         import init_all, init_env, init_petsc, init_data, init_model
 from .simpack.simpack   import simpack_cli
 from .optpack.optpack   import optpack_cli
 from .metos3d           import echo, debug, error, read_config

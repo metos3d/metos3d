@@ -19,8 +19,17 @@
 import click
 import metos3d
 
+class Metos3DInitGroup(click.Group):
+    
+    def list_commands(self, ctx):
+        return ["all", "env", "petsc", "data", "model"]
+    
+    def get_command(self, ctx, name):
+        print(self, ctx, name)
+        return metos3d.__getattribute__("init_" + name)
+
 # init
-@click.group("init")
+@click.group("init", cls=Metos3DInitGroup)
 @click.pass_context
 def init_cli(ctx):
     """Initialize Metos3D"""
