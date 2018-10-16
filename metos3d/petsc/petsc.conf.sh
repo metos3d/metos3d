@@ -18,9 +18,9 @@
 
 set -e
 
-#curl -O http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.10.2.tar.gz
-#tar -xzf petsc-3.10.2.tar.gz
-#cd petsc-3.10.2/
+curl -sO http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.10.2.tar.gz
+tar -xzf petsc-3.10.2.tar.gz
+cd petsc-3.10.2/
 
 conda create --yes --name metos3d-petsc-python2 python=2
 source activate metos3d-petsc-python2

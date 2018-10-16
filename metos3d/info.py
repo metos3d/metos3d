@@ -16,29 +16,29 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import yaml
+import metos3d
+
+def info(ctx):
+    metos3d_conf = metos3d.read_config(ctx)
+    try:
+        metos3d.echo("Metos3D environment", metos3d_conf["metos3d"]["env"])
+        metos3d.echo("PETSc library", metos3d_conf["metos3d"]["petsc"])
+        metos3d.echo("Metos3D data", metos3d_conf["metos3d"]["data"])
+        metos3d.echo("Metos3D model", metos3d_conf["metos3d"]["model"])
+    except Exception:
+        metos3d.error("Can't access loaded Metos3D configuration", is_exception=True)
+
+
+
 #import re
 #import os
 #import sys
 #import traceback
 #import glob
-import yaml
 #import click
 #import socket
 #import subprocess
-import metos3d
-
-def info(ctx):
-    
-    metos3d_conf = metos3d.read_configuration(ctx)
-    try:
-        metos3d.echo("Metos3D environment ...", metos3d_conf["metos3d"]["env"])
-        metos3d.echo("PETSc library ...", metos3d_conf["metos3d"]["petsc"])
-        metos3d.echo("Metos3D data ...", metos3d_conf["metos3d"]["data"])
-        metos3d.echo("Metos3D model ...", metos3d_conf["metos3d"]["model"])
-    except Exception:
-        metos3d.error("Can't access loaded Metos3D configuration", is_exception=True)
-
-
 #        import traceback
 #        traceback.print_last()
 ##        traceback.print_exception(sys.last_type)
@@ -100,9 +100,20 @@ def info(ctx):
 #                     ["make PETSC_DIR=.+PETSC_ARCH=",                   "Compiling PETSc"],
 #                     ["environment.+metos3d-petsc-python2",             "Removing environment"],
 #                     ]
+
+
 #    ctx.item = "Starting"
 #
 #    # set compiler variables, CC, CXX,FC
+
+#cd ctx.obj.basepath / petsc/;
+#source ../env/generic.mpich.gcc.env.sh
+#source ../env/de.dkrz.mistral.intelmpi.env.sh
+#source ../env/de.uni-kiel.rz.rzcluster.env.sh
+#...
+#;
+#source petsc.conf.sh
+
 ##    cmd_env = "source " + ctx.obj.basepath + "/env/generic.mpich.gcc.env.sh"
 ##    cmd_env = "source " + ctx.obj.basepath + "/env/de.dkrz.mistral.intelmpi.env.sh"
 #    cmd_env = "source " + ctx.obj.basepath + "/env/de.uni-kiel.rz.rzcluster.env.sh"

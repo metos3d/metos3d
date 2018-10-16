@@ -15,9 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-    
+
 import os
-import sys, traceback
+import sys
+import traceback
 import click
 import yaml
 import metos3d
@@ -31,7 +32,7 @@ class Metos3DGroup(click.Group):
 
 # echo
 def echo(item, content):
-    text = "{:.<30} {}".format(item, content)
+    text = "{:.<30} {}".format(item + " ", content)
     click.echo(text)
 
 # debug
@@ -51,7 +52,7 @@ def error(item, **kwargs):
     sys.exit(1)
 
 # read metos3d config
-def read_configuration(ctx):
+def read_config(ctx):
     metos3d_conf_file_path = ctx.obj.basepath + "/metos3d.conf.yaml"
     try:
         metos3d.debug(ctx, "Opening Metos3D configuration file", metos3d_conf_file_path)
