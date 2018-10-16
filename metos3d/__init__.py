@@ -20,7 +20,8 @@
 
 from .version   import __version__
 from .info      import info
-from .metos3d   import debug, error, read_configuration
+from .metos3d   import echo, debug, error
+from .metos3d   import read_configuration
 
 __all__ = (
            "__version__",

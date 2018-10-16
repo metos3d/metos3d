@@ -19,6 +19,7 @@
 import os
 import sys, traceback
 import click
+import yaml
 import metos3d
 
 class Context():
@@ -28,19 +29,28 @@ class Metos3DGroup(click.Group):
     def list_commands(self, ctx):
         return ["info", "env", "petsc", "data", "model", "simpack", "optpack"]
 
+# echo
+def echo(item, content):
+    text = "{:.<30} {}".format(item, content)
+    click.echo(text)
+
+# debug
 def debug(ctx, item, content):
     if ctx.obj.verbose:
-        text = "[DEBUG] {} ... {}".format(item, content)
+        text = "[DEBUG]"
+        text = text + " {} ... {}".format(item, content)
         click.echo(text)
 
+# error
 def error(item, **kwargs):
     text = click.style("[ERROR]", fg="red", bold=True)
     text = text + " {} ...".format(item)
     click.echo(text)
     if kwargs.get("is_exception"):
-        traceback.print_exc()
+        traceback.print_exc(1)
     sys.exit(1)
 
+# read metos3d config
 def read_configuration(ctx):
     metos3d_conf_file_path = ctx.obj.basepath + "/metos3d.conf.yaml"
     try:
@@ -49,9 +59,9 @@ def read_configuration(ctx):
             try:
                 metos3d.debug(ctx, "Loading Metos3D configuration as YAML file", metos3d_conf_file_path)
                 metos3d_conf = yaml.load(metos3d_conf_file)
-            except:
+            except Exception:
                 metos3d.error("Can't load Metos3D configuration as YAML file", is_exception=True)
-    except:
+    except Exception:
         metos3d.error("Can't open Metos3D configuration file", is_exception=True)
     return metos3d_conf
 

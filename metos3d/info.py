@@ -16,28 +16,26 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import re
-import os
-import sys
+#import re
+#import os
+#import sys
 #import traceback
-import glob
+#import glob
 import yaml
-import click
-import socket
+#import click
+#import socket
+#import subprocess
 import metos3d
-import subprocess
 
 def info(ctx):
     
     metos3d_conf = metos3d.read_configuration(ctx)
-    
     try:
-        print("Metos3D version ...", metos3d_conf["metos3d"]["version"])
-        print("Metos3D environment ...", metos3d_conf["metos3d"]["env"])
-        print("PETSc library ...", metos3d_conf["metos3d"]["petsc"])
-        print("Metos3D data ...", metos3d_conf["metos3d"]["data"])
-        print("Metos3D model ...", metos3d_conf["metos3d"]["model"])
-    except:
+        metos3d.echo("Metos3D environment ...", metos3d_conf["metos3d"]["env"])
+        metos3d.echo("PETSc library ...", metos3d_conf["metos3d"]["petsc"])
+        metos3d.echo("Metos3D data ...", metos3d_conf["metos3d"]["data"])
+        metos3d.echo("Metos3D model ...", metos3d_conf["metos3d"]["model"])
+    except Exception:
         metos3d.error("Can't access loaded Metos3D configuration", is_exception=True)
 
 
