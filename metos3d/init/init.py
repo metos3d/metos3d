@@ -95,20 +95,9 @@ def init_env(ctx):
               info="Set hostname file explicitly with 'metos3d init env [ENVFILE]'",
               is_exception=False)
 
-
-
-        
-#        metos3d.echo("Matching blocks", smb)
-#        metos3d.echo(file, smb)
-
-
-
-
-# 'a string'[::-1]
-
-#    for file in hosts_file:
-#        print("hosts ...", file, file.split("."))
-
+# hostname file
+# absolute path
+# relative path, current working directory
 
 # init petsc
 @init_cli.command("petsc")

@@ -16,6 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+"""Methos3D Info python file"""
+
 import click
 import metos3d
 
