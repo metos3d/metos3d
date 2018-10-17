@@ -25,7 +25,6 @@ class Metos3DInitGroup(click.Group):
         return ["all", "env", "petsc", "data", "model"]
     
     def get_command(self, ctx, name):
-        print(self, ctx, name)
         if name in self.list_commands(ctx):
             return metos3d.__getattribute__("init_" + name)
         else:
@@ -43,7 +42,7 @@ def init_cli(ctx):
 @init_cli.command("all")
 @click.pass_context
 def init_all(ctx):
-    """Initialize env, petsc, data, model"""
+    """Initialize environment, PETSc, data and models"""
     print(ctx.obj)
     pass
 
@@ -51,7 +50,7 @@ def init_all(ctx):
 @init_cli.command("env")
 @click.pass_context
 def init_env(ctx):
-    """Initialize env"""
+    """Set Metos3D compiler environment"""
     print(ctx.obj)
     pass
 
@@ -59,7 +58,7 @@ def init_env(ctx):
 @init_cli.command("petsc")
 @click.pass_context
 def init_petsc(ctx):
-    """Initialize petsc"""
+    """Configure and compile PETSc library"""
     print(ctx.obj)
     pass
 
@@ -67,7 +66,7 @@ def init_petsc(ctx):
 @init_cli.command("data")
 @click.pass_context
 def init_data(ctx):
-    """Initialize data"""
+    """Set location for Metos3D data"""
     print(ctx.obj)
     pass
 
@@ -75,7 +74,7 @@ def init_data(ctx):
 @init_cli.command("model")
 @click.pass_context
 def init_model(ctx):
-    """Initialize model"""
+    """Set location for Metos3D models"""
     print(ctx.obj)
     pass
 

@@ -29,7 +29,6 @@ class Metos3DGroup(click.Group):
         return ["init", "info", "simpack", "optpack"]
     
     def get_command(self, ctx, name):
-        print(self, ctx, name)
         if name in self.list_commands(ctx):
             return metos3d.__getattribute__(name + "_cli")
         else:
@@ -60,7 +59,5 @@ def metos3d_cli(ctx, verbose):
     
     metos3d.debug(ctx, "Metos3D version", metos3d.__version__)
     metos3d.debug(ctx, "Metos3D path", ctx.obj.basepath)
-
-    print(ctx.obj)
 
 

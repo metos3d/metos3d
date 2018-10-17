@@ -35,23 +35,30 @@ def debug(ctx, item, content):
 
 # error
 def error(item, **kwargs):
+    
     # error message
     text = click.style("[ERROR]", fg="red", bold=True)
     text = text + " {} ...".format(item)
     click.echo(text)
+    
     # exception message
     if kwargs.get("is_exception"):
         traceback.print_exc(1)
+    
     # info message
     if kwargs.get("info"):
         text = click.style("[INFO]", fg="green", bold=True)
         text = text + " {} ...".format(kwargs["info"])
         click.echo(text)
+
     sys.exit(1)
 
 # read metos3d config
 def read_config(ctx):
+    
     metos3d_conf_file_path = ctx.obj.basepath + "/metos3d.conf.yaml"
+    
+    # try to open and load config
     try:
         debug(ctx,
               "Opening Metos3D configuration file",
@@ -70,6 +77,19 @@ def read_config(ctx):
         error("Can't open Metos3D configuration file",
               info="Run 'metos3d init all' first",
               is_exception=True)
+
+    # try to access the config
+    try:
+        metos3d_conf["metos3d"]
+        metos3d_conf["metos3d"]["env"]
+        metos3d_conf["metos3d"]["petsc"]
+        metos3d_conf["metos3d"]["data"]
+        metos3d_conf["metos3d"]["model"]
+    except Exception:
+        error("Can't access loaded Metos3D configuration",
+              info="Run 'metos3d init all' first",
+              is_exception=True)
+
     return metos3d_conf
 
 
