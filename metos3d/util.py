@@ -23,7 +23,7 @@ import traceback
 
 # echo
 def echo(item, content):
-    text = "{:.<30} {}".format(item + " ", content)
+    text = "{:.<40} {}".format(item + " ", content)
     click.echo(text)
 
 # debug

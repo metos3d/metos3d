@@ -18,6 +18,9 @@
 
 import click
 import metos3d
+import socket
+import glob
+import os
 
 class Metos3DInitGroup(click.Group):
     
@@ -35,48 +38,81 @@ class Metos3DInitGroup(click.Group):
 @click.pass_context
 def init_cli(ctx):
     """Initialize Metos3D"""
-    print(ctx.obj)
     pass
 
 # init all
 @init_cli.command("all")
 @click.pass_context
 def init_all(ctx):
-    """Initialize environment, PETSc, data and models"""
-    print(ctx.obj)
-    pass
+    """Initialize compiler, PETSc, data and models"""
+    metos3d.echo("Initializing", "Metos3D")
+    # invoke env, petsc, data, model as click.commands
+    init_cmd = ctx.parent.command
+    for name in ["env", "petsc", "data", "model"]:
+        cmd = init_cmd.get_command(ctx, name)
+        cmd.invoke(ctx)
 
 # init env
 @init_cli.command("env")
+#@click.argument("envfile", type=click.File("r"))#, help="environment file")
 @click.pass_context
+#def init_env(ctx, envfile):
 def init_env(ctx):
     """Set Metos3D compiler environment"""
-    print(ctx.obj)
-    pass
+    metos3d.echo("Initializing", "Metos3D compiler environment")
+    
+    # get host name
+    host = socket.getfqdn()
+    metos3d.echo("Detecting hostname", host)
+    host_reverse = host.split(".")
+    host_reverse.reverse()
+
+    # get known environments
+    env_path = ctx.obj.basepath + "/env/*"
+    metos3d.echo("Fetching known hostname files", env_path)
+    hosts = glob.glob(env_path)
+    hosts_file = list(map(os.path.basename, hosts))
+
+    import difflib
+#    print(host_reverse)
+    # compare
+    for file in hosts_file:
+#        print(file.split("."))
+        sm = difflib.SequenceMatcher(None, host_reverse, file.split("."))
+        smb = [mb for mb in sm.get_matching_blocks() if mb.a==0 and mb.b==0 and mb.size>0]
+#               lambda m: m.a==0 and m.b==0 and m.size>0
+#        metos3d.echo(file, sm.get_matching_blocks())
+        metos3d.echo("Matching blocks", smb)
+
+
+
+
+# 'a string'[::-1]
+
+#    for file in hosts_file:
+#        print("hosts ...", file, file.split("."))
+
 
 # init petsc
 @init_cli.command("petsc")
 @click.pass_context
 def init_petsc(ctx):
     """Configure and compile PETSc library"""
-    print(ctx.obj)
-    pass
+    metos3d.echo("Initializing", "PETSc library")
 
 # init data
 @init_cli.command("data")
 @click.pass_context
 def init_data(ctx):
     """Set location for Metos3D data"""
-    print(ctx.obj)
-    pass
+    metos3d.echo("Initializing", "Metos3D data")
 
 # init model
 @init_cli.command("model")
 @click.pass_context
 def init_model(ctx):
     """Set location for Metos3D models"""
-    print(ctx.obj)
-    pass
+    metos3d.echo("Initializing", "Metos3D models")
 
 
 
@@ -107,15 +143,6 @@ def init_model(ctx):
 #    if metos3d_conf["metos3d"]["env"] is None:
 #        print("env is not set ...")
 #
-#        host = socket.getfqdn()
-#        host_part = host.split(".")
-#        host_part.reverse()
-#        print("host ...", host, host_part)
-#
-#        hosts = glob.glob(ctx.obj.basepath + "/env/*")
-#        hosts_file = list(map(os.path.basename, hosts))
-#        for file in hosts_file:
-#            print("hosts ...", file, file.split("."))
 #
 #    else:
 #
@@ -179,7 +206,7 @@ def init_model(ctx):
 #    # 2146   5626 176734 petsc_configure_lines.txt
 #    with click.progressbar(length=2200,
 #                           width=0,
-#                           label="metos3d init",
+#                           label="Downloading PETSc",
 #                           ) as bar:
 #
 #        pattern = ctx.item_list.pop(0)
