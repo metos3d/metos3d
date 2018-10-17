@@ -16,8 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-export CC='mpicc'
-export CXX='mpic++'
-export FC='mpifort'
+export CC=mpicc
+export CXX=mpicxx
+export FC=mpifort
 
 
