@@ -67,20 +67,39 @@ def init_env(ctx):
     metos3d.echo("Detecting hostname", host)
     host_reverse = host.split(".")
     host_reverse.reverse()
+    metos3d.debug(ctx, "Reverse DNS hostname splitted", host_reverse)
 
-    # get known environment files
+    # get known environment files, sorted
     env_path = ctx.obj.basepath + "/env/*"
     metos3d.echo("Fetching known hostname files", env_path)
-    hosts = glob.glob(env_path)
+    hosts = sorted(glob.glob(env_path))
     hosts_file = list(map(os.path.basename, hosts))
+    metos3d.debug(ctx, "List of hostname files", hosts_file)
 
     # compare host name and file name
+    env_file = None
     for file in hosts_file:
+        # choose only those that match 3 or more name parts from the beginning
         sm = difflib.SequenceMatcher(None, host_reverse, file.split("."))
-        # choose only those that match on 3 or more name parts
         smb = [mb for mb in sm.get_matching_blocks() if mb.a==0 and mb.b==0 and mb.size>=3]
+        metos3d.debug(ctx, "Checking", str(file.split(".")) + " ... " + str(smb))
+        if smb:
+            env_file = file
+            break
+
+    # check, if we found a match
+    if env_file:
+        metos3d.echo("Using best match", env_file)
+    else:
+        metos3d.error("Automatic detection of hostname file failed",
+              info="Set hostname file explicitly with 'metos3d init env [ENVFILE]'",
+              is_exception=False)
+
+
+
+        
 #        metos3d.echo("Matching blocks", smb)
-        metos3d.echo(file, smb)
+#        metos3d.echo(file, smb)
 
 
 

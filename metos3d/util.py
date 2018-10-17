@@ -29,8 +29,8 @@ def echo(item, content):
 # debug
 def debug(ctx, item, content):
     if ctx.obj.verbose:
-        text = text = click.style("[DEBUG]", bold=True)
-        text = text + " {} ... {}".format(item, content)
+        prefix = click.style("[DEBUG] ", bold=True)
+        text = prefix + "{} ... {}".format(item, content)
         click.echo(text)
 
 # error
