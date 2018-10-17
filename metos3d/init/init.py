@@ -21,6 +21,7 @@ import metos3d
 import socket
 import glob
 import os
+import difflib
 
 class Metos3DInitGroup(click.Group):
     
@@ -67,22 +68,19 @@ def init_env(ctx):
     host_reverse = host.split(".")
     host_reverse.reverse()
 
-    # get known environments
+    # get known environment files
     env_path = ctx.obj.basepath + "/env/*"
     metos3d.echo("Fetching known hostname files", env_path)
     hosts = glob.glob(env_path)
     hosts_file = list(map(os.path.basename, hosts))
 
-    import difflib
-#    print(host_reverse)
-    # compare
+    # compare host name and file name
     for file in hosts_file:
-#        print(file.split("."))
         sm = difflib.SequenceMatcher(None, host_reverse, file.split("."))
-        smb = [mb for mb in sm.get_matching_blocks() if mb.a==0 and mb.b==0 and mb.size>0]
-#               lambda m: m.a==0 and m.b==0 and m.size>0
-#        metos3d.echo(file, sm.get_matching_blocks())
-        metos3d.echo("Matching blocks", smb)
+        # choose only those that match on 3 or more name parts
+        smb = [mb for mb in sm.get_matching_blocks() if mb.a==0 and mb.b==0 and mb.size>=3]
+#        metos3d.echo("Matching blocks", smb)
+        metos3d.echo(file, smb)
 
 
 
