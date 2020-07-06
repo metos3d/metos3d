@@ -182,12 +182,11 @@ if __name__ == "__main__":
     print("#     metos3d [-v] update")
     print("#     metos3d [-v] info")
     print("#")
+    print("#   You may also have to set the PETSC_ARCH and PETSC_DIR shell variables.")
+    print("#")
     # example
-    print("#   As a simple example just set your PETSc variables and execute:")
+    print("#   As a simple example, execute:")
     print("#")
     print("#   $> metos3d simpack MITgcm-PO4-DOP")
     print("#   $> ./metos3d-simpack-MITgcm-PO4-DOP.exe model/MITgcm-PO4-DOP/option/test.MITgcm-PO4-DOP.option.txt")
     print("#")
-
-
-
