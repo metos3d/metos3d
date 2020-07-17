@@ -42,8 +42,7 @@ def execute_command(cmd):
         print("### ERROR ###")
         print("### ERROR ###   What now?")
         print("### ERROR ###   1. If you understand, what went wrong, solve the problem and rerun the script.")
-        print("### ERROR ###   2. If you need help, contact jpi@informatik.uni-kiel.de, attach the output of the script and kindly ask for help.")
-        print("### ERROR ###")
+        print("### ERROR ###   2. If you need help, you may contact ts@informatik.uni-kiel.de")
         sys.exit(proc.returncode)
 
 ########################################################################
@@ -139,8 +138,6 @@ def clone_repository_data(m3dprefix):
 
 # main
 if __name__ == "__main__":
-    # m3dprefix
-    m3dprefix = os.path.expanduser("~/.metos3d")
     # say hello
     print("#")
     print("#   Metos3D: Marine Ecosystem Toolkit for Optimization and Simulation in 3-D")
@@ -148,12 +145,21 @@ if __name__ == "__main__":
     print("#")
     # show steps
     print("#   The installation consists of the following steps:")
-    print("#     1. Create installation directory '" + m3dprefix + "'.")
-    print("#     2. Clone the 'metos3d', 'simpack', 'model' and 'data' git repositories into '" + m3dprefix + "'.")
-    print("#     3. Set 'PATH' environment variable.")
+    print("#     1. Create installation directory'")
+    print("#     2. Clone the 'metos3d', 'simpack', 'model' and 'data' git repositories into the installation directory")
     print("#")
+    print("#     Afterwards, you have to define/(modify) two environment/shell variables:")
+    print("#     1. Define a new one named 'METOS3D_DIR' pointing to the installation directory.")
+    print("#     2. Modify your 'PATH' variable to include the '$METOS3D_DIR/metos3d' subdirectory.")
+    print("#")
+    # ask for installation directory (m3dprefix)
+    default_answer = ".metos3d"
+    question = "Define installation directory (must not exist, path relative path to home directory) [default: ~/" + default_answer + "]\n>>> "
+    # ask user
+    answer = get_user_input(question, default_answer)
+    m3dprefix = os.path.expanduser("~/" + answer)
     ###
-    ### 1. Create installation directory '~/.metos3d'.
+    ### 1. Create installation directory:
     ###
     # directory
     create_installation_directory(m3dprefix)
@@ -167,10 +173,12 @@ if __name__ == "__main__":
     clone_repository_data(m3dprefix)
     # success
     print("#")
-    print("#   Now, add '" + m3dprefix + "/metos3d' permanently to the search path of your shell.")
+    print("#   Now, define a new environment/shell variable named 'METOS3D_DIR' pointing to the installation directory" + m3dprefix)
+    print("#   and add '" + m3dprefix + "/metos3d' to the search path of your shell.")
     print("#   This means, include")
     print("#")
-    print("#   export PATH=" + m3dprefix + "/metos3d:$PATH")
+    print("#   export METOS3D =" + m3dprefix)
+    print("#   export PATH =" + m3dprefix + "/metos3d:$PATH")
     print("#")
     print("#   in your shell config file ('~/.bashrc' or '~/.bash_profile' for example).")
     print("#   You can run Metos3D as a usual shell command then:")
@@ -191,7 +199,7 @@ if __name__ == "__main__":
     print("#")
     print("#   This will:")
     print("#   1. In the current directory, generate links \"data, model, simpack\" ")
-    print("#      pointing to the corresponding subdirectories in the installation directory (~/.metos3d)")
+    print("#      pointing to the corresponding subdirectories in the installation directory " + m3dprefix)
     print("#   2. compile the code for one model")
     print("#")
     print("#   $> ./metos3d-simpack-MITgcm-PO4-DOP.exe model/MITgcm-PO4-DOP/option/test.MITgcm-PO4-DOP.option.txt")

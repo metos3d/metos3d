@@ -19,10 +19,10 @@
 
 import os
 import sys
-import metos3d_mod as m3d
+from metos3d_mod import dispatch_command
 
 if __name__ == "__main__":
     # determine path prefix
-    m3dprefix = os.path.expanduser("~/.metos3d")
+    m3dprefix = os.getenv('METOS3D_DIR')
     # dispatch command
-    m3d.dispatch_command(m3dprefix, sys.argv)
+    dispatch_command(m3dprefix, sys.argv)

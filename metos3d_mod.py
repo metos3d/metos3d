@@ -413,12 +413,13 @@ def dispatch_info_repository(m3dprefix, repository):
 
 # dispatch_command
 def dispatch_command(m3dprefix, argv):
+    # print(m3dprefix)
     # no arguments?
     # print usage and exit with code 1
     if len(sys.argv) == 1:
         print_usage()
         sys.exit(1)
-    
+
     # should debug information be provided?
     # use global variable
     global debug
@@ -449,12 +450,3 @@ def dispatch_command(m3dprefix, argv):
     # unknown
     else:
         print_error("Unknown option or command: " + argv[1])
-
-
-
-
-
-
-
-
-
