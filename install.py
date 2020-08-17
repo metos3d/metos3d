@@ -177,7 +177,7 @@ if __name__ == "__main__":
     print("#   and add '" + m3dprefix + "/metos3d' to the search path of your shell.")
     print("#   This means, include")
     print("#")
-    print("#   export METOS3D =" + m3dprefix)
+    print("#   export METOS3D_DIR =" + m3dprefix)
     print("#   export PATH =" + m3dprefix + "/metos3d:$PATH")
     print("#")
     print("#   in your shell config file ('~/.bashrc' or '~/.bash_profile' for example).")
