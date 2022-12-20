@@ -203,6 +203,6 @@ if __name__ == "__main__":
     print("#      pointing to the corresponding subdirectories in the installation directory " + m3dprefix)
     print("#   2. compile the code for one model")
     print("#")
-    print("#   $> ./metos3d-simpack-N.exe model/MITgcm-PO4-DOP/option/test.N.option.txt")
+    print("#   $> ./metos3d-simpack-N.exe model/N/option/test.N.option.txt")
     print("#   This will run the model for a short test.")
     print("#")
