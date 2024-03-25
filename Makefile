@@ -62,7 +62,7 @@ ALL: $(PROGRAM)
 include $(PETSC_DIR)/lib/petsc/conf/variables
 include $(PETSC_DIR)/lib/petsc/conf/rules
 
-$(PROGRAM): $(M3DOBJSBGC) $(M3DOBJSC) chkopts
+$(PROGRAM): $(M3DOBJSBGC) $(M3DOBJSC)
 	-$(CLINKER) -o $@ $(M3DOBJSBGC) $(M3DOBJSC) $(PETSC_LIB)
 
 
